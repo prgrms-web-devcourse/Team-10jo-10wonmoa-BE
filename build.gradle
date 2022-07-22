@@ -3,6 +3,7 @@ plugins {
     id 'io.spring.dependency-management' version '1.0.12.RELEASE'
     id 'java'
     id 'checkstyle'
+    id 'jacoco'
 }
 
 group = 'com.prgrms'
@@ -43,6 +44,62 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
 
-tasks.named('test') {
+test {
     useJUnitPlatform()
+    finalizedBy 'jacocoTestReport'
 }
+
+jacoco {
+    toolVersion = '0.8.7'
+}
+
+jacocoTestReport {
+    reports {
+        html.enabled true
+        xml.enabled false
+        csv.enabled false
+
+        finalizedBy 'jacocoTestCoverageVerification'
+
+        afterEvaluate {
+            classDirectories.setFrom(files(classDirectories.files.collect {
+                fileTree(dir: it, exclude: [
+                        'com/prgrms/tenwonmoa/TenwonmoaApplication.class',
+                        'com/prgrms/tenwonmoa/aop/*',
+                        'com/prgrms/tenwonmoa/aws/*',
+                        'com/prgrms/tenwonmoa/config/*',
+                        'com/prgrms/tenwonmoa/filter/*',
+                        'com/prgrms/tenwonmoa/domain/budget/*',
+                        'com/prgrms/tenwonmoa/domain/common/*',
+                ])
+            }))
+        }
+
+    }
+}
+
+jacocoTestCoverageVerification {
+    violationRules {
+        rule {
+            enabled = true
+            element = 'BUNDLE'
+
+            limit {
+                counter = 'LINE'
+                value = 'COVEREDRATIO'
+                minimum = 0.00
+            }
+
+            excludes = [
+                    'com/prgrms/tenwonmoa/TenwonmoaApplication.class',
+                    'com/prgrms/tenwonmoa/aop/*',
+                    'com/prgrms/tenwonmoa/aws/*',
+                    'com/prgrms/tenwonmoa/config/*',
+                    'com/prgrms/tenwonmoa/filter/*',
+                    'com/prgrms/tenwonmoa/domain/budget/*',
+                    'com/prgrms/tenwonmoa/domain/common/*',
+            ]
+        }
+    }
+}
+

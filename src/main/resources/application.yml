@@ -1,14 +1,18 @@
 spring:
   datasource:
-    url: jdbc:h2:mem:loadbook;MODE=MySQL;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
-    driver-class-name: org.h2.Driver
-    username: sa
-    password:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/tenwonmoa
+    username: ${db.user:root}
+    password: ${db.password:root1234}
+    hikari:
+      minimum-idle: 1
+      maximum-pool-size: 5
+      pool-name: MYSQL_DB
 
   jpa:
     show-sql: true
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
     properties:
       hibernate:
         dialects: org.hibernate.dialect.MySQL8Dialect

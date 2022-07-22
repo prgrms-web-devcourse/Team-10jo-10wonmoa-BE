@@ -1,0 +1,21 @@
+
+# 이 항목 밑에 실행하려는 컨테이너 들을 정의
+services:
+  # 서비스 명
+  team10-db:
+    # 사용할 이미지
+    image: mysql:8
+    # 컨테이너 이름 설정
+    container_name: tenwonmoa
+    # 접근 포트 설정 (컨테이너 외부:컨테이너 내부)
+    ports:
+      - "3306:3306"
+    # -e 옵션
+    environment:
+      - MYSQL_DATABASE=tenwonmoa
+      - MYSQL_ROOT_PASSWORD=root1234
+      - TZ=Asia/Seoul
+    # 명령어 실행 (한글 인코딩 관련)
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci

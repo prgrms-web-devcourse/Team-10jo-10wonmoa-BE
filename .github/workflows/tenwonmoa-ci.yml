@@ -41,6 +41,7 @@ jobs:
         run: |
           mkdir -p before-deploy/
           cp appspec.yml before-deploy/
+          cp /scripts/*.sh before-deploy/
           cp build/libs/*.jar before-deploy/
           cd before-deploy && zip -r before-deploy *
           cd ../ && mkdir -p deploy
@@ -55,7 +56,6 @@ jobs:
 
       - name: Upload to S3
         run: aws s3 cp --region ${{ secrets.AWS_REGION }} ./deploy/$DEPLOY_ZIP_FILE s3://$S3_BUCKET_NAME/$DEPLOY_ZIP_FILE
-
 
       - name: Code Deploy
         run: |

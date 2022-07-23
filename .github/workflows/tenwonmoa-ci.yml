@@ -11,6 +11,7 @@ env:
   S3_BUCKET_NAME: tenwonmoa-cd
   CODE_DEPLOY_APPLICATION_NAME: tenwonmoa-app
   CODE_DEPLOY_DEPLOYMENT_GROUP_NAME: tenwonmoa-deploy-group
+  DEPLOY_ZIP_FILE: tenwonmoa-boot-service.zip
 
 permissions:
   contents: read
@@ -43,7 +44,7 @@ jobs:
           cp build/libs/*.jar before-deploy/
           cd before-deploy && zip -r before-deploy *
           cd ../ && mkdir -p deploy
-          mv before-deploy/before-deploy.zip deploy/tenwonmoa-boot-service.zip
+          mv before-deploy/before-deploy.zip deploy/$DEPLOY_ZIP_FILE
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
@@ -53,7 +54,8 @@ jobs:
           aws-region: ${{ secrets.AWS_REGION }}
 
       - name: Upload to S3
-        run: aws s3 cp --region ${{ secrets.AWS_REGION }} tenwonmoa-boot-service.zip s3://$S3_BUCKET_NAME/tenwonmoa-boot-service.zip
+        run: aws s3 cp --region ${{ secrets.AWS_REGION }} ./deploy/$DEPLOY_ZIP_FILE s3://$S3_BUCKET_NAME/$DEPLOY_ZIP_FILE
+
 
       - name: Code Deploy
         run: |

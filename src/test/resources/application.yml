@@ -1,0 +1,23 @@
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/tenwonmoa-test
+    username: ${db.user:root}
+    password: ${db.password:root1234}
+    hikari:
+      minimum-idle: 1
+      maximum-pool-size: 5
+      pool-name: MYSQL_DB
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: create-drop
+    properties:
+      hibernate.dialect: org.hibernate.dialect.MySQL8Dialect
+      hibernate:
+        format_sql: true
+    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
+
+logging:
+  level:
+    org.hibernate.type: trace

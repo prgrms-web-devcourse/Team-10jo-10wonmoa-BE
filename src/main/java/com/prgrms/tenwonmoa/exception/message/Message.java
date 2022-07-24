@@ -1,4 +1,4 @@
-package com.prgrms.tenwonmoa.exception;
+package com.prgrms.tenwonmoa.exception.message;
 
 import lombok.Getter;
 

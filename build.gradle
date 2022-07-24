@@ -1,9 +1,16 @@
+buildscript {
+    ext {
+        queryDslVersion = '5.0.0'
+    }
+}
+
 plugins {
     id 'org.springframework.boot' version '2.6.10'
     id 'io.spring.dependency-management' version '1.0.12.RELEASE'
     id 'java'
     id 'checkstyle'
     id 'jacoco'
+    id "com.ewerk.gradle.plugins.querydsl" version "1.0.10"
 }
 
 group = 'com.prgrms'
@@ -27,7 +34,6 @@ repositories {
 }
 
 dependencies {
-    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation('org.springframework.boot:spring-boot-starter-web') {
         exclude group: 'org.springframework.boot', module: 'spring-boot-starter-tomcat'
     }
@@ -36,6 +42,14 @@ dependencies {
 
     //Lombok
     compileOnly 'org.projectlombok:lombok'
+
+
+    //JPA
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+
+    //QueryDSL
+    implementation "com.querydsl:querydsl-jpa:${queryDslVersion}"
+    implementation "com.querydsl:querydsl-apt:${queryDslVersion}"
 
     //DB
     runtimeOnly 'mysql:mysql-connector-java'
@@ -59,7 +73,10 @@ jacocoTestReport {
         xml.enabled false
         csv.enabled false
 
-        finalizedBy 'jacocoTestCoverageVerification'
+        def Qdomains = []
+        for (qPattern in '**/QA'..'**/QZ') {
+            Qdomains.add(qPattern + '*')
+        }
 
         afterEvaluate {
             classDirectories.setFrom(files(classDirectories.files.collect {
@@ -68,17 +85,25 @@ jacocoTestReport {
                         'com/prgrms/tenwonmoa/aop/*',
                         'com/prgrms/tenwonmoa/aws/*',
                         'com/prgrms/tenwonmoa/config/*',
+                        'com/prgrms/tenwonmoa/exception/*',
                         'com/prgrms/tenwonmoa/filter/*',
                         'com/prgrms/tenwonmoa/domain/budget/*',
                         'com/prgrms/tenwonmoa/domain/common/*',
-                ])
+                ] + Qdomains)
             }))
         }
 
+        finalizedBy 'jacocoTestCoverageVerification'
     }
 }
 
 jacocoTestCoverageVerification {
+    def Qdomains = []
+
+    for (qPattern in '*.QA'..'*.QZ') {
+        Qdomains.add(qPattern + '*')
+    }
+
     violationRules {
         rule {
             enabled = true
@@ -95,10 +120,11 @@ jacocoTestCoverageVerification {
                     'com/prgrms/tenwonmoa/aop/*',
                     'com/prgrms/tenwonmoa/aws/*',
                     'com/prgrms/tenwonmoa/config/*',
+                    'com/prgrms/tenwonmoa/exception/*',
                     'com/prgrms/tenwonmoa/filter/*',
                     'com/prgrms/tenwonmoa/domain/budget/*',
                     'com/prgrms/tenwonmoa/domain/common/*',
-            ]
+            ] + Qdomains
         }
     }
 }
@@ -108,3 +134,21 @@ jar {
     enabled = false
 }
 
+def querydslDir = "$buildDir/generated/querydsl" as Object
+
+querydsl {
+    jpa = true
+    querydslSourcesDir = querydslDir
+}
+sourceSets {
+    main.java.srcDir querydslDir
+}
+compileQuerydsl {
+    options.annotationProcessorPath = configurations.querydsl
+}
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+    querydsl.extendsFrom compileClasspath
+}

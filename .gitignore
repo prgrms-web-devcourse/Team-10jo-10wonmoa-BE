@@ -39,3 +39,6 @@ out/
 ### CI/CD ###
 /before-deploy
 /deploy
+
+### Private ###
+/src/main/resources/application-dev.yml

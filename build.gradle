@@ -1,6 +1,6 @@
 buildscript {
     ext {
-        queryDslVersion = '5.0.0'
+        queryDslVersion = "5.0.0"
     }
 }
 
@@ -23,12 +23,6 @@ checkstyle {
     toolVersion = "10.2"  // checkstyle 버전 8.24 이상 선언
 }
 
-configurations {
-    compileOnly {
-        extendsFrom annotationProcessor
-    }
-}
-
 repositories {
     mavenCentral()
 }
@@ -43,13 +37,13 @@ dependencies {
     //Lombok
     compileOnly 'org.projectlombok:lombok'
 
-
     //JPA
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 
     //QueryDSL
     implementation "com.querydsl:querydsl-jpa:${queryDslVersion}"
     implementation "com.querydsl:querydsl-apt:${queryDslVersion}"
+    implementation "com.querydsl:querydsl-core:${queryDslVersion}"
 
     //DB
     runtimeOnly 'mysql:mysql-connector-java'
@@ -143,7 +137,9 @@ querydsl {
 sourceSets {
     main.java.srcDir querydslDir
 }
+
 compileQuerydsl {
+    delete file(querydslDir)
     options.annotationProcessorPath = configurations.querydsl
 }
 configurations {
@@ -152,3 +148,5 @@ configurations {
     }
     querydsl.extendsFrom compileClasspath
 }
+
+

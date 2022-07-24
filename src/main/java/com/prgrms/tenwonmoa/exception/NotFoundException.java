@@ -14,4 +14,5 @@ public class NotFoundException extends RuntimeException {
 	public String getMessage() {
 		return this.message.getMessage();
 	}
+
 }

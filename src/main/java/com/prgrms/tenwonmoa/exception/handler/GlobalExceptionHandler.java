@@ -23,9 +23,9 @@ public class GlobalExceptionHandler {
 	// 405 : Method Not Allowed
 	@ExceptionHandler(HttpRequestMethodNotSupportedException.class)
 	public ResponseEntity<ErrorResponse> handleHttpRequestMethodNotSupportedException(
-		HttpRequestMethodNotSupportedException e) {
-		log.error(e.getMessage(), e);
-		ErrorResponse errorResponse = new ErrorResponse(List.of(e.getMessage()), METHOD_NOT_ALLOWED.value());
+		HttpRequestMethodNotSupportedException exception) {
+		log.error(exception.getMessage(), exception);
+		ErrorResponse errorResponse = new ErrorResponse(List.of(exception.getMessage()), METHOD_NOT_ALLOWED.value());
 		return ResponseEntity
 			.status(METHOD_NOT_ALLOWED.value())
 			.body(errorResponse);
@@ -33,18 +33,18 @@ public class GlobalExceptionHandler {
 
 	// 400 : NotFound - 잘못된 요청
 	@ExceptionHandler(NotFoundException.class)
-	public ResponseEntity<ErrorResponse> handleNotFoundException(HttpRequestMethodNotSupportedException e) {
-		log.error(e.getMessage(), e);
-		ErrorResponse errorResponse = new ErrorResponse(List.of(e.getMessage()), BAD_REQUEST.value());
+	public ResponseEntity<ErrorResponse> handleNotFoundException(HttpRequestMethodNotSupportedException exception) {
+		log.error(exception.getMessage(), exception);
+		ErrorResponse errorResponse = new ErrorResponse(List.of(exception.getMessage()), BAD_REQUEST.value());
 		return ResponseEntity
 			.status(BAD_REQUEST.value())
 			.body(errorResponse);
 	}
 
 	@ExceptionHandler(AlreadyExistException.class)
-	public ResponseEntity<ErrorResponse> handleAlreadyExistException(HttpRequestMethodNotSupportedException e) {
-		log.error(e.getMessage(), e);
-		ErrorResponse errorResponse = new ErrorResponse(List.of(e.getMessage()), BAD_REQUEST.value());
+	public ResponseEntity<ErrorResponse> handleAlreadyExistException(HttpRequestMethodNotSupportedException exception) {
+		log.error(exception.getMessage(), exception);
+		ErrorResponse errorResponse = new ErrorResponse(List.of(exception.getMessage()), BAD_REQUEST.value());
 		return ResponseEntity
 			.status(BAD_REQUEST.value())
 			.body(errorResponse);

@@ -4,6 +4,19 @@ plugins {
     id 'java'
     id 'checkstyle'
     id 'jacoco'
+    id "org.asciidoctor.jvm.convert" version "3.3.2"
+}
+
+ext {
+    snippetsDir = file('build/generated-snippets')
+}
+
+bootJar {
+    dependsOn asciidoctor
+    copy {
+        from "${asciidoctor.outputDir}"
+        into 'src/main/resources/static/docs'
+    }
 }
 
 group = 'com.prgrms'
@@ -29,6 +42,7 @@ dependencies {
 
     //Lombok
     compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
 
     //JPA
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
@@ -42,13 +56,36 @@ dependencies {
     //DB
     runtimeOnly 'mysql:mysql-connector-java'
     runtimeOnly 'com.h2database:h2:1.4.199'
-    annotationProcessor 'org.projectlombok:lombok'
+
+    //test
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
+
 }
 
 test {
     useJUnitPlatform()
     finalizedBy 'jacocoTestReport'
+    outputs.dir snippetsDir
+}
+
+asciidoctor {
+    dependsOn test
+    inputs.dir snippetsDir
+}
+
+asciidoctor.doFirst {
+    delete file('src/main/resources/static/docs')
+}
+
+task copyDocument(type: Copy) {
+    dependsOn asciidoctor
+    from file("build/docs/asciidoc")
+    into file("src/main/resources/static/docs")
+}
+
+build {
+    dependsOn copyDocument
 }
 
 jacoco {

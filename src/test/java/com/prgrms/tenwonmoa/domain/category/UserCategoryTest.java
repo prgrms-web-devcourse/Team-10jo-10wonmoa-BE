@@ -1,5 +1,6 @@
 package com.prgrms.tenwonmoa.domain.category;
 
+import static com.prgrms.tenwonmoa.common.fixture.Fixture.*;
 import static org.assertj.core.api.Assertions.*;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -17,7 +18,7 @@ class UserCategoryTest {
 
 	@BeforeEach
 	void setup() {
-		user = new User("test@gmail.com", "123456789", "testuser");
+		user = createUser();
 		category = new Category("식비", CategoryType.EXPENDITURE);
 	}
 

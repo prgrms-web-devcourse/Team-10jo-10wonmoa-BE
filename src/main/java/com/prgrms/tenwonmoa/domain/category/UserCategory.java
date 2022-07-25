@@ -15,6 +15,7 @@ import com.prgrms.tenwonmoa.domain.user.User;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+/* 유저가 가지고 있는 카테고리*/
 @Entity
 @NoArgsConstructor(access = PROTECTED)
 @Table(name = "user_category")

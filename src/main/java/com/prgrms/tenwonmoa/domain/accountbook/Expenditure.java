@@ -1,5 +1,6 @@
 package com.prgrms.tenwonmoa.domain.accountbook;
 
+import static com.google.common.base.Preconditions.*;
 import static javax.persistence.FetchType.*;
 import static lombok.AccessLevel.*;
 
@@ -16,11 +17,13 @@ import com.prgrms.tenwonmoa.domain.category.UserCategory;
 import com.prgrms.tenwonmoa.domain.common.BaseEntity;
 import com.prgrms.tenwonmoa.domain.user.User;
 
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
 @NoArgsConstructor(access = PROTECTED)
 @Table(name = "expenditure")
+@Getter
 public class Expenditure extends BaseEntity {
 
 	@Column(name = "register_date", nullable = false)
@@ -29,10 +32,10 @@ public class Expenditure extends BaseEntity {
 	@Column(name = "amount", nullable = false)
 	private Long amount;
 
-	@Column(name = "content", nullable = false)
+	@Column(name = "content", nullable = false, length = 50)
 	private String content;
 
-	@Column(name = "category_name", nullable = false)
+	@Column(name = "category_name", nullable = false, length = 20)
 	private String categoryName;
 
 	@ManyToOne(fetch = LAZY)
@@ -45,11 +48,26 @@ public class Expenditure extends BaseEntity {
 
 	public Expenditure(LocalDate registerDate, Long amount, String content,
 		String categoryName, User user, UserCategory userCategory) {
+		checkNotNull(registerDate, "날짜는 필수입니다.");
+		validateAmount(amount);
+		validateCategoryName(categoryName);
+		checkNotNull(user, "사용자가 존재해야 합니다.");
+		checkNotNull(userCategory, "분류는 필수입니다.");
 		this.registerDate = registerDate;
 		this.amount = amount;
 		this.content = content;
 		this.categoryName = categoryName;
 		this.user = user;
 		this.userCategory = userCategory;
+	}
+
+	private void validateCategoryName(String categoryName) {
+		checkNotNull(categoryName, "분류이름은 필수 입니다.");
+		checkArgument(!categoryName.isBlank(), "분류이름은 공백일 수 없습니다.");
+	}
+
+	private void validateAmount(Long amount) {
+		checkNotNull(amount, "금액은 필수입니다.");
+		checkArgument(amount > 0 && amount <= 1000000000000L, "입력할 수 있는 범위가 아닙니다.");
 	}
 }

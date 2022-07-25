@@ -2,6 +2,9 @@ package com.prgrms.tenwonmoa.domain.accountbook.dto;
 
 import com.prgrms.tenwonmoa.domain.accountbook.Expenditure;
 
+import lombok.Getter;
+
+@Getter
 public class CreateExpenditureResponse {
 
 	private final Long id;

@@ -33,4 +33,8 @@ public class CreateExpenditureRequest {
 			userCategory
 		);
 	}
+
+	public Long getUserCategoryId() {
+		return userCategoryId;
+	}
 }

@@ -117,6 +117,7 @@ jacocoTestReport {
                         'com/prgrms/tenwonmoa/filter/*',
                         'com/prgrms/tenwonmoa/domain/budget/*',
                         'com/prgrms/tenwonmoa/domain/common/*',
+                        'com/prgrms/tenwonmoa/domain/**/dto/*'
                 ] + Qdomains)
             }))
         }
@@ -152,6 +153,7 @@ jacocoTestCoverageVerification {
                     'com/prgrms/tenwonmoa/filter/*',
                     'com/prgrms/tenwonmoa/domain/budget/*',
                     'com/prgrms/tenwonmoa/domain/common/*',
+                    'com/prgrms/tenwonmoa/domain/**/dto/*'
             ] + Qdomains
         }
     }

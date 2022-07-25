@@ -12,15 +12,9 @@ import com.prgrms.tenwonmoa.domain.user.User;
 
 class UserCategoryTest {
 
-	private User user;
+	private final User user = createUser();
 
-	private Category category;
-
-	@BeforeEach
-	void setup() {
-		user = createUser();
-		category = new Category("식비", CategoryType.EXPENDITURE);
-	}
+	private final Category category = new Category("식비", CategoryType.EXPENDITURE);
 
 	@Test
 	void 유저_카테고리_생성_성공() {

@@ -48,11 +48,11 @@ public class Expenditure extends BaseEntity {
 
 	public Expenditure(LocalDate registerDate, Long amount, String content,
 		String categoryName, User user, UserCategory userCategory) {
-		checkNotNull(registerDate, "날짜는 필수입니다.");
+		checkArgument(registerDate != null, "날짜는 필수입니다.");
 		validateAmount(amount);
 		validateCategoryName(categoryName);
-		checkNotNull(user, "사용자가 존재해야 합니다.");
-		checkNotNull(userCategory, "분류는 필수입니다.");
+		checkArgument(user != null, "사용자가 존재해야 합니다.");
+		checkArgument(userCategory != null, "분류는 필수입니다.");
 		this.registerDate = registerDate;
 		this.amount = amount;
 		this.content = content;
@@ -62,12 +62,12 @@ public class Expenditure extends BaseEntity {
 	}
 
 	private void validateCategoryName(String categoryName) {
-		checkNotNull(categoryName, "분류이름은 필수 입니다.");
+		checkArgument(categoryName != null, "분류이름은 필수 입니다.");
 		checkArgument(!categoryName.isBlank(), "분류이름은 공백일 수 없습니다.");
 	}
 
 	private void validateAmount(Long amount) {
-		checkNotNull(amount, "금액은 필수입니다.");
+		checkArgument(amount != null, "금액은 필수입니다.");
 		checkArgument(amount > 0 && amount <= 1000000000000L, "입력할 수 있는 범위가 아닙니다.");
 	}
 }

@@ -16,14 +16,18 @@ import com.prgrms.tenwonmoa.domain.user.User;
 @DisplayName("지출(Expenditure) domain 테스트")
 class ExpenditureTest {
 
-	LocalDate date = LocalDate.now();
-	Long amount = 10000L;
-	String content = "돈까스";
-	String categoryName = "식비";
+	private LocalDate date = LocalDate.now();
+
+	private Long amount = 10000L;
+
+	private String content = "돈까스";
+
+	private String categoryName = "식비";
 
 	// user 추후 수정 필요
-	User user = new User("jungki111@gmail,com", "password1234!", "개발자");
-	UserCategory userCategory = new UserCategory(user, new Category("식비", CategoryType.EXPENDITURE));
+	private User user = new User("jungki111@gmail,com", "password1234!", "개발자");
+
+	private UserCategory userCategory = new UserCategory(user, new Category("식비", CategoryType.EXPENDITURE));
 
 	@Nested
 	@DisplayName("EdgeCase 중에서")
@@ -40,7 +44,7 @@ class ExpenditureTest {
 					user,
 					userCategory
 				)
-			).isInstanceOf(NullPointerException.class);
+			).isInstanceOf(IllegalArgumentException.class);
 		}
 
 		@Test
@@ -93,7 +97,7 @@ class ExpenditureTest {
 					user,
 					userCategory
 				)
-			).isInstanceOf(NullPointerException.class);
+			).isInstanceOf(IllegalArgumentException.class);
 		}
 
 		@Test
@@ -121,7 +125,7 @@ class ExpenditureTest {
 					null,
 					userCategory
 				)
-			).isInstanceOf(NullPointerException.class);
+			).isInstanceOf(IllegalArgumentException.class);
 		}
 
 		@Test
@@ -135,7 +139,7 @@ class ExpenditureTest {
 					user,
 					null
 				)
-			).isInstanceOf(NullPointerException.class);
+			).isInstanceOf(IllegalArgumentException.class);
 		}
 	}
 

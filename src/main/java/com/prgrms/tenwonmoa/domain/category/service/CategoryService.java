@@ -8,7 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.prgrms.tenwonmoa.domain.category.Category;
 import com.prgrms.tenwonmoa.domain.category.CategoryType;
 import com.prgrms.tenwonmoa.domain.category.UserCategory;
-import com.prgrms.tenwonmoa.domain.category.controller.dto.CategoryResponse.SingleCategoryResponse;
+import com.prgrms.tenwonmoa.domain.category.service.CategoryResult.SingleCategoryResult;
 import com.prgrms.tenwonmoa.domain.category.repository.CategoryRepository;
 import com.prgrms.tenwonmoa.domain.category.repository.UserCategoryRepository;
 import com.prgrms.tenwonmoa.domain.user.User;
@@ -24,17 +24,16 @@ public class CategoryService {
 
 	public final UserCategoryRepository userCategoryRepository;
 
-	public SingleCategoryResponse register(User user, String categoryType, String name) {
+	public SingleCategoryResult register(User user, String categoryType, String name) {
 		CategoryType type = CategoryType.valueOf(categoryType.toUpperCase(Locale.ROOT));
-
 		Category savedCategory = categoryRepository.save(new Category(name, type));
 
 		userCategoryRepository.save(new UserCategory(user, savedCategory));
 
-		return SingleCategoryResponse.of(savedCategory);
+		return SingleCategoryResult.of(savedCategory);
 	}
 
-	public String updateName(User user, Long categoryId, String name) {
+	public SingleCategoryResult updateName(User user, Long categoryId, String name) {
 		// 해당 categoryId를 user가 가지고 있는지 비즈니스 로직 검증
 		// 카테고리 찾아오기
 		// 이름 업데이트

@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import com.prgrms.tenwonmoa.common.fixture.Fixture;
-import com.prgrms.tenwonmoa.domain.category.controller.dto.CategoryResponse.SingleCategoryResponse;
+import com.prgrms.tenwonmoa.domain.category.service.CategoryResult.SingleCategoryResult;
 import com.prgrms.tenwonmoa.domain.user.User;
 
 @SpringBootTest
@@ -27,11 +27,11 @@ class CategoryServiceTest {
 		String categoryName = "예시지출카테고리";
 
 		//when
-		SingleCategoryResponse categoryResponse = service.register(user, categoryType, categoryName);
+		SingleCategoryResult categoryResponse = service.register(user, categoryType, categoryName);
 
 		//then
 		assertThat(categoryResponse)
-			.extracting(SingleCategoryResponse::getType, SingleCategoryResponse::getName)
+			.extracting(SingleCategoryResult::getType, SingleCategoryResult::getName)
 			.isEqualTo(List.of(categoryType, categoryName));
 	}
 }

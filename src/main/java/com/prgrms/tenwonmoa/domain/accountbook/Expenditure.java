@@ -1,4 +1,4 @@
-package com.prgrms.tenwonmoa.domain.expenditure;
+package com.prgrms.tenwonmoa.domain.accountbook;
 
 import static javax.persistence.FetchType.*;
 import static lombok.AccessLevel.*;

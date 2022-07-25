@@ -32,7 +32,7 @@ public class Expenditure extends BaseEntity {
 	@Column(name = "amount", nullable = false)
 	private Long amount;
 
-	@Column(name = "content", nullable = false, length = 50)
+	@Column(name = "content", nullable = true, length = 50)
 	private String content;
 
 	@Column(name = "category_name", nullable = false, length = 20)

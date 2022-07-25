@@ -35,7 +35,9 @@ public class ExpenditureService {
 		Category category = getCategory(userCategory.getCategory().getId());
 		Expenditure expenditure = createExpenditureRequest.toEntity(user, userCategory, category.getName());
 
-		return CreateExpenditureResponse.of(expenditure);
+		Expenditure savedExpenditure = expenditureRepository.save(expenditure);
+
+		return CreateExpenditureResponse.of(savedExpenditure);
 	}
 
 	private User getUser(Long userId) {

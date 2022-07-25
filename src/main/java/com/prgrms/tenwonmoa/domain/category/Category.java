@@ -6,13 +6,17 @@ import static lombok.AccessLevel.*;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Enumerated;
+import javax.persistence.Table;
 
 import com.prgrms.tenwonmoa.domain.common.BaseEntity;
 
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
 @NoArgsConstructor(access = PROTECTED)
+@Getter
+@Table(name = "category")
 public class Category extends BaseEntity {
 
 	@Column(nullable = false)

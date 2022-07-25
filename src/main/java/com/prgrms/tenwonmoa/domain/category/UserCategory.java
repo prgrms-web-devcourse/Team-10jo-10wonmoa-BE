@@ -10,10 +10,12 @@ import javax.persistence.ManyToOne;
 import com.prgrms.tenwonmoa.domain.common.BaseEntity;
 import com.prgrms.tenwonmoa.domain.user.User;
 
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
 @NoArgsConstructor(access = PROTECTED)
+@Getter
 public class UserCategory extends BaseEntity {
 
 	@ManyToOne(fetch = LAZY)

@@ -56,13 +56,14 @@ class ExpenditureServiceTest {
 	Expenditure expenditure = new Expenditure(LocalDate.now(), 10000L, "피자", category.getName(), user, userCategory);
 
 	@Nested
-	class 지출_생성_중 {
+	@DisplayName("지출 생성 중")
+	class CreateExpenditure {
 
 		Long userId = 1L;
 		CreateExpenditureRequest request = new CreateExpenditureRequest(LocalDate.now(), 10000L, "식비", 1L);
 
 		@Test
-		public void User가_없을_경우() {
+		public void user가_없을_경우() {
 			given(userRepository.findById(userId)).willThrow(
 				new NoSuchElementException(Message.USER_NOT_FOUND.getMessage()));
 
@@ -72,7 +73,7 @@ class ExpenditureServiceTest {
 		}
 
 		@Test
-		public void User_Category가_없을_경우() {
+		public void user_Category가_없을_경우() {
 			given(userRepository.findById(any())).willReturn(of(user));
 			given(userCategoryRepository.findById(request.getUserCategoryId()))
 				.willThrow(new NoSuchElementException(Message.USER_CATEGORY_NOT_FOUND.getMessage()));
@@ -84,7 +85,7 @@ class ExpenditureServiceTest {
 		}
 
 		@Test
-		public void Category가_없을_경우() {
+		public void category가_없을_경우() {
 			given(userRepository.findById(any())).willReturn(ofNullable(user));
 			given(userCategoryRepository.findById(request.getUserCategoryId()))
 				.willReturn(of(userCategory));

@@ -26,7 +26,8 @@ class ExpenditureTest {
 	UserCategory userCategory = new UserCategory(user, new Category("식비", CategoryType.EXPENDITURE));
 
 	@Nested
-	class Edge_케이스_중에서 {
+	@DisplayName("EdgeCase 중에서")
+	class EdgeCase {
 
 		@Test
 		public void registerDate가_null일_때() {

@@ -47,13 +47,14 @@ class ExpenditureServiceTest {
 	@InjectMocks
 	private ExpenditureService expenditureService;
 
-	User user = new User("jungki111@gmail,com", "password1234!", "개발자");
+	private User user = new User("jungki111@gmail,com", "password1234!", "개발자");
 
-	UserCategory userCategory = new UserCategory(user, new Category("식비", CategoryType.EXPENDITURE));
+	private UserCategory userCategory = new UserCategory(user, new Category("식비", CategoryType.EXPENDITURE));
 
-	Category category = new Category("식비", CategoryType.EXPENDITURE);
+	private Category category = new Category("식비", CategoryType.EXPENDITURE);
 
-	Expenditure expenditure = new Expenditure(LocalDate.now(), 10000L, "피자", category.getName(), user, userCategory);
+	private Expenditure expenditure = new Expenditure(LocalDate.now(), 10000L, "피자", category.getName(), user,
+		userCategory);
 
 	@Nested
 	@DisplayName("지출 생성 중")

@@ -4,8 +4,6 @@ import static org.springframework.http.HttpStatus.*;
 
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -15,10 +13,11 @@ import com.prgrms.tenwonmoa.exception.AlreadyExistException;
 import com.prgrms.tenwonmoa.exception.NotFoundException;
 import com.prgrms.tenwonmoa.exception.response.ErrorResponse;
 
-@RestControllerAdvice
-public class GlobalExceptionHandler {
+import lombok.extern.slf4j.Slf4j;
 
-	private final Logger log = LoggerFactory.getLogger(getClass());
+@RestControllerAdvice
+@Slf4j
+public class GlobalExceptionHandler {
 
 	// 405 : Method Not Allowed
 	@ExceptionHandler(HttpRequestMethodNotSupportedException.class)

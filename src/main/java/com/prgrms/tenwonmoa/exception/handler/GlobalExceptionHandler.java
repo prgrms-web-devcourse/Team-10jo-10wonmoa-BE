@@ -3,6 +3,7 @@ package com.prgrms.tenwonmoa.exception.handler;
 import static org.springframework.http.HttpStatus.*;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
@@ -10,7 +11,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import com.prgrms.tenwonmoa.exception.AlreadyExistException;
-import com.prgrms.tenwonmoa.exception.NotFoundException;
 import com.prgrms.tenwonmoa.exception.response.ErrorResponse;
 
 import lombok.extern.slf4j.Slf4j;
@@ -31,7 +31,7 @@ public class GlobalExceptionHandler {
 	}
 
 	// 400 : NotFound - 잘못된 요청
-	@ExceptionHandler(NotFoundException.class)
+	@ExceptionHandler(NoSuchElementException.class)
 	public ResponseEntity<ErrorResponse> handleNotFoundException(HttpRequestMethodNotSupportedException exception) {
 		log.error(exception.getMessage(), exception);
 		ErrorResponse errorResponse = new ErrorResponse(List.of(exception.getMessage()), BAD_REQUEST.value());

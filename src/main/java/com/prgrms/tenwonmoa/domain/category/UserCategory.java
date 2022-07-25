@@ -31,6 +31,7 @@ public class UserCategory extends BaseEntity {
 	private Category category;
 
 	public UserCategory(User user, Category category) {
+		checkArgument(user != null);
 		checkArgument(category != null);
 
 		this.user = user;

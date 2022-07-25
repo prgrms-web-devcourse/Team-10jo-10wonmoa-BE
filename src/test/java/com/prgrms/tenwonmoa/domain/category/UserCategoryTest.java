@@ -31,11 +31,8 @@ class UserCategoryTest {
 
 	@ParameterizedTest
 	@NullSource
-	void 유저가_null_유저_카테고리_생성_성공(User user) {
-		UserCategory userCategory = new UserCategory(user, category);
-
-		assertThat(userCategory.getUser()).isEqualTo(user);
-		assertThat(userCategory.getCategory()).isEqualTo(category);
+	void 유저가_null_유저_카테고리_생성_실패(User user) {
+		assertThatIllegalArgumentException().isThrownBy(() -> new UserCategory(user, category));
 	}
 
 	@ParameterizedTest

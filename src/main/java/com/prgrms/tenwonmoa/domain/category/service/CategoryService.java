@@ -9,7 +9,6 @@ import org.springframework.transaction.annotation.Transactional;
 import com.prgrms.tenwonmoa.domain.category.Category;
 import com.prgrms.tenwonmoa.domain.category.CategoryType;
 import com.prgrms.tenwonmoa.domain.category.UserCategory;
-import com.prgrms.tenwonmoa.domain.category.dto.service.CategoryResult;
 import com.prgrms.tenwonmoa.domain.category.dto.service.CategoryResult.SingleCategoryResult;
 import com.prgrms.tenwonmoa.domain.category.repository.CategoryRepository;
 import com.prgrms.tenwonmoa.domain.category.repository.UserCategoryRepository;
@@ -36,7 +35,7 @@ public class CategoryService {
 		return savedCategory.getId();
 	}
 
-	public SingleCategoryResult getById(Long id){
+	public SingleCategoryResult getById(Long id) {
 		Category category = categoryRepository.findById(id).orElseThrow(
 			() -> new NoSuchElementException(Message.CATEGORY_NOT_FOUND.getMessage()));
 		// 해당 예외는 공격인 것임. 없는 카테고리에 대한 조회는 정상적인 환경에서는 나올 수 가없음

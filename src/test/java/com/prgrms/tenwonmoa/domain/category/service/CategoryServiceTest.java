@@ -27,7 +27,7 @@ class CategoryServiceTest {
 	// TODO : UserService 구현 시, UserService로 교체
 
 	@BeforeEach
-	void setup(){
+	void setup() {
 		userRepository.save(user);
 	}
 

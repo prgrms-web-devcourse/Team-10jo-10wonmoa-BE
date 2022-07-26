@@ -40,6 +40,9 @@ dependencies {
     // WAS: undertow
     implementation 'org.springframework.boot:spring-boot-starter-undertow'
 
+    //Bean Validation
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+
     //Guava
     implementation group: 'com.google.guava', name: 'guava', version: '30.1.1-jre'
 
@@ -117,6 +120,7 @@ jacocoTestReport {
                         'com/prgrms/tenwonmoa/filter/*',
                         'com/prgrms/tenwonmoa/domain/budget/*',
                         'com/prgrms/tenwonmoa/domain/common/*',
+                        'com/prgrms/tenwonmoa/domain/**/dto/*'
                 ] + Qdomains)
             }))
         }
@@ -152,6 +156,7 @@ jacocoTestCoverageVerification {
                     'com/prgrms/tenwonmoa/filter/*',
                     'com/prgrms/tenwonmoa/domain/budget/*',
                     'com/prgrms/tenwonmoa/domain/common/*',
+                    'com/prgrms/tenwonmoa/domain/**/dto/*'
             ] + Qdomains
         }
     }

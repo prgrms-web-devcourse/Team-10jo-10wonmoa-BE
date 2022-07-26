@@ -1,4 +1,4 @@
-가package com.prgrms.tenwonmoa.domain.user;
+package com.prgrms.tenwonmoa.domain.user;
 
 import static com.prgrms.tenwonmoa.exception.message.Message.*;
 import static org.assertj.core.api.Assertions.*;

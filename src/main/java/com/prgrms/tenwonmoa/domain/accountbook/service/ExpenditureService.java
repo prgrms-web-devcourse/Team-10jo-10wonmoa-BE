@@ -55,7 +55,7 @@ public class ExpenditureService {
 	}
 
 	private void validateUser(User currentUser, User expenditureUser) {
-		checkArgument(currentUser != expenditureUser, Message.EXPENDITURE_NO_AUTHENTICATION);
+		checkArgument(currentUser == expenditureUser, Message.EXPENDITURE_NO_AUTHENTICATION.getMessage());
 	}
 
 	private User getUser(Long userId) {

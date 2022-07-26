@@ -14,6 +14,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import com.prgrms.tenwonmoa.domain.accountbook.dto.UpdateExpenditureRequest;
 import com.prgrms.tenwonmoa.domain.category.Category;
 import com.prgrms.tenwonmoa.domain.category.UserCategory;
 import com.prgrms.tenwonmoa.domain.common.BaseEntity;
@@ -61,6 +62,13 @@ public class Expenditure extends BaseEntity {
 		this.categoryName = categoryName;
 		this.user = user;
 		this.userCategory = userCategory;
+	}
+
+	public void update(UserCategory userCategory, UpdateExpenditureRequest request) {
+		this.userCategory = userCategory;
+		this.registerDate = request.getRegisterDate();
+		this.amount = request.getAmount();
+		this.content = request.getContent();
 	}
 
 	private void validateCategoryName(String categoryName) {

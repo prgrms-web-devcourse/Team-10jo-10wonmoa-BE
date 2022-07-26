@@ -8,7 +8,6 @@ import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.prgrms.tenwonmoa.common.annotation.CustomDataJpaTest;
 import com.prgrms.tenwonmoa.common.fixture.Fixture;
@@ -19,7 +18,6 @@ import com.prgrms.tenwonmoa.domain.user.User;
 import com.prgrms.tenwonmoa.domain.user.repository.UserRepository;
 
 @CustomDataJpaTest
-@Transactional
 class UserCategoryRepositoryTest {
 
 	private Category category;

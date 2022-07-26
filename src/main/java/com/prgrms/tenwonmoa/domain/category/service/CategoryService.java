@@ -42,11 +42,10 @@ public class CategoryService {
 	}
 
 	public String updateName(User user, Long categoryId, String name) {
-		checkUserHasCategory(user, categoryId);
+		UserCategory userCategory = checkUserHasCategory(user, categoryId);
 
-		Category category = getCategoryById(categoryId);
+		Category category = userCategory.getCategory();
 		category.updateName(name);
-		categoryRepository.save(category);
 		return name;
 	}
 

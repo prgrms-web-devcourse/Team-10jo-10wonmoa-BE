@@ -8,6 +8,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.prgrms.tenwonmoa.common.fixture.Fixture;
 import com.prgrms.tenwonmoa.domain.category.dto.service.CategoryResult;
@@ -15,6 +16,7 @@ import com.prgrms.tenwonmoa.domain.user.User;
 import com.prgrms.tenwonmoa.domain.user.repository.UserRepository;
 
 @SpringBootTest
+@Transactional
 class CategoryServiceTest {
 
 	private final User user = Fixture.createUser();
@@ -47,4 +49,6 @@ class CategoryServiceTest {
 				CategoryResult.SingleCategoryResult::getType)
 			.isEqualTo(List.of(categoryName, categoryType));
 	}
+
+
 }

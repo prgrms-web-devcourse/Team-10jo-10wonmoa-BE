@@ -42,14 +42,13 @@ public class CategoryService {
 	}
 
 	public String updateName(User user, Long categoryId, String name) {
-		userCategoryRepository.findByUserAndCategory(user.getId(), categoryId)
+		UserCategory userCategory = userCategoryRepository.findByUserAndCategory(user.getId(), categoryId)
 			.orElseThrow(() -> new NoSuchElementException(USER_CATEGORY_NOT_FOUND.getMessage()));
 		// 이것도 정상이 아닌 공격 or 버그
 		// -> 개발자가 알아야 할 예외(클라이언트에게는 잘못된 요청이라고 주고, 우리가 알아야 할 예외임)
 
-		Category category = findCategoryById(categoryId);
+		Category category = userCategory.getCategory();
 		category.updateName(name);
-		categoryRepository.save(category);
 		return name;
 	}
 

@@ -1,5 +1,8 @@
 package com.prgrms.tenwonmoa.domain.user;
 
+import static com.google.common.base.Preconditions.*;
+import static com.prgrms.tenwonmoa.domain.user.UserConst.*;
+import static com.prgrms.tenwonmoa.exception.message.Message.*;
 import static lombok.AccessLevel.*;
 
 import javax.persistence.Column;
@@ -15,7 +18,7 @@ import lombok.NoArgsConstructor;
 @Table(name = "user")
 public class User extends BaseEntity {
 
-	@Column(name = "email", nullable = false)
+	@Column(name = "email", nullable = false, unique = true)
 	private String email;
 
 	@Column(name = "password", nullable = false)
@@ -25,8 +28,29 @@ public class User extends BaseEntity {
 	private String username;
 
 	public User(String email, String password, String username) {
+		validateEmail(email);
+		validatePassword(password);
+		validateUsername(username);
 		this.email = email;
 		this.password = password;
 		this.username = username;
+	}
+
+	private void validateUsername(String username) {
+		checkNotNull(username, NOT_NULL_USERNAME.getMessage());
+		checkArgument(username.length() >= MIN_USERNAME_LENGTH && username.length() <= MAX_USERNAME_LENGTH,
+			INVALID_USERNAME_LENGTH.getMessage());
+		checkArgument(username.matches(USERNAME_REGEX), INVALID_USERNAME_PATTERN.getMessage());
+	}
+
+	private void validatePassword(String password) {
+		checkNotNull(password, NOT_NULL_PASSWORD.getMessage());
+		checkArgument(password.length() >= MIN_PASSWORD_LENGTH && password.length() <= MAX_PASSWORD_LENGTH,
+			INVALID_PASSWORD_LENGTH.getMessage());
+	}
+
+	private void validateEmail(String email) {
+		checkNotNull(email, NOT_NULL_EMAIL.getMessage());
+		checkArgument(email.matches(EMAIL_REGEX), INVALID_EMAIL_PATTERN.getMessage());
 	}
 }

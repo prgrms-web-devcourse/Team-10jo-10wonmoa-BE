@@ -22,11 +22,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
+      - name: Checkout repository and submodules
         uses: actions/checkout@v2
-
-      - name: Checkout submodules
-        run: git submodule update --init --recursive
+        with:
+          submodules: recursive
 
       - uses: actions/checkout@v3
       - name: Set up JDK 11

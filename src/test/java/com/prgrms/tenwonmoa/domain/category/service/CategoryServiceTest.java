@@ -11,7 +11,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.prgrms.tenwonmoa.common.fixture.Fixture;
-import com.prgrms.tenwonmoa.domain.category.dto.service.CategoryResult;
+import com.prgrms.tenwonmoa.domain.category.dto.service.SingleCategoryResult;
 import com.prgrms.tenwonmoa.domain.user.User;
 import com.prgrms.tenwonmoa.domain.user.repository.UserRepository;
 
@@ -41,14 +41,13 @@ class CategoryServiceTest {
 
 		//when
 		Long categoryId = service.register(user, categoryType, categoryName);
-		CategoryResult.SingleCategoryResult category = service.getById(categoryId);
+		SingleCategoryResult category = service.getById(categoryId);
 
 		//then
 		assertThat(category).extracting(
-				CategoryResult.SingleCategoryResult::getName,
-				CategoryResult.SingleCategoryResult::getType)
+				SingleCategoryResult::getName,
+				SingleCategoryResult::getType)
 			.isEqualTo(List.of(categoryName, categoryType));
 	}
-
 
 }

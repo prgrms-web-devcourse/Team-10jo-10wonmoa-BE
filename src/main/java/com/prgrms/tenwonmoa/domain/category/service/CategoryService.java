@@ -9,7 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.prgrms.tenwonmoa.domain.category.Category;
 import com.prgrms.tenwonmoa.domain.category.CategoryType;
 import com.prgrms.tenwonmoa.domain.category.UserCategory;
-import com.prgrms.tenwonmoa.domain.category.dto.service.CategoryResult.SingleCategoryResult;
+import com.prgrms.tenwonmoa.domain.category.dto.service.SingleCategoryResult;
 import com.prgrms.tenwonmoa.domain.category.repository.CategoryRepository;
 import com.prgrms.tenwonmoa.domain.category.repository.UserCategoryRepository;
 import com.prgrms.tenwonmoa.domain.user.User;
@@ -35,6 +35,7 @@ public class CategoryService {
 		return savedCategory.getId();
 	}
 
+	@Transactional(readOnly = true)
 	public SingleCategoryResult getById(Long id) {
 		Category category = categoryRepository.findById(id).orElseThrow(
 			() -> new NoSuchElementException(Message.CATEGORY_NOT_FOUND.getMessage()));

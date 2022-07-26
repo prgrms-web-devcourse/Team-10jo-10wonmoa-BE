@@ -20,7 +20,7 @@ import lombok.NoArgsConstructor;
 public class User extends BaseEntity {
 
 	private static final String EMAIL_REGEX = "^[a-zA-Z0-9_!#$%&’*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+$";
-	private static final String USERNAME_REGEX = "([A-Za-z가-힣])*";
+	private static final String USERNAME_REGEX = "([A-Za-z가-힣0-9])*";
 	private static final int MAX_USERNAME_LENGTH = 20;
 	private static final int MIN_USERNAME_LENGTH = 2;
 	private static final int MAX_PASSWORD_LENGTH = 20;

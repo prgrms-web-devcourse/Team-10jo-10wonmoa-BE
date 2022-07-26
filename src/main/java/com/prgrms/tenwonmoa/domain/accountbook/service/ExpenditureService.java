@@ -45,10 +45,11 @@ public class ExpenditureService {
 
 	public void updateExpenditure(Long userId, Long expenditureId, UpdateExpenditureRequest updateExpenditureRequest) {
 		User currentUser = getUser(userId);
-		UserCategory userCategory = getUserCategory(updateExpenditureRequest.getUserCategoryId());
 		Expenditure expenditure = getExpenditure(expenditureId);
-
 		validateUser(currentUser, expenditure.getUser());
+
+		// 변경하려는 userCategory
+		UserCategory userCategory = getUserCategory(updateExpenditureRequest.getUserCategoryId());
 
 		expenditure.update(userCategory, updateExpenditureRequest);
 	}

@@ -2,18 +2,26 @@ package com.prgrms.tenwonmoa.domain.accountbook.dto;
 
 import java.time.LocalDate;
 
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
+
 import com.prgrms.tenwonmoa.domain.accountbook.Expenditure;
 import com.prgrms.tenwonmoa.domain.category.UserCategory;
 import com.prgrms.tenwonmoa.domain.user.User;
 
 public class CreateExpenditureRequest {
 
+	@NotNull
 	private final LocalDate registerDate;
 
+	@Min(0L)
+	@Max(1000000000000L)
 	private final Long amount;
 
 	private final String content;
 
+	@NotNull
 	private final Long userCategoryId;
 
 	public CreateExpenditureRequest(LocalDate registerDate, Long amount, String content, Long userCategoryId) {

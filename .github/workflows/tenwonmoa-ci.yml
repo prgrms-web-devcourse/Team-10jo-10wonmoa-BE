@@ -28,7 +28,6 @@ jobs:
         with:
           java-version: '11'
           distribution: 'temurin'
-          submodules: recursive
 
       - name: build docker-compose
         run: docker-compose up -d

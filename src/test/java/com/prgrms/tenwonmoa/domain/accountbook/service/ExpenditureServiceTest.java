@@ -110,7 +110,28 @@ class ExpenditureServiceTest {
 
 			CreateExpenditureResponse response = expenditureService.createExpenditure(userId, request);
 
-			assertThat(response.getId()).isEqualTo(expenditure.getId());
+			then(expenditureRepository).should().save(any());
 		}
+	}
+
+	@Nested
+	@DisplayName("지출 수정 중")
+	class UpdateExpenditure {
+
+		@Test
+		public void user_권한이_없을_경우() {
+
+		}
+
+		@Test
+		public void 없는_userCategoryId일_경우() {
+
+		}
+
+		@Test
+		public void 성공적으로_수정이_가능하다() {
+
+		}
+
 	}
 }

@@ -47,7 +47,7 @@ class ExpenditureServiceTest {
 	@InjectMocks
 	private ExpenditureService expenditureService;
 
-	private User user = new User("jungki111@gmail,com", "password1234!", "개발자");
+	private User user = new User("jungki111@gmail.com", "password1234!", "개발자");
 
 	private UserCategory userCategory = new UserCategory(user, new Category("식비", CategoryType.EXPENDITURE));
 

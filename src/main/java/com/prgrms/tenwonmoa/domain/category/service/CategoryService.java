@@ -24,7 +24,7 @@ public class CategoryService {
 
 	private final CategoryRepository categoryRepository;
 
-	public final UserCategoryRepository userCategoryRepository;
+	private final UserCategoryRepository userCategoryRepository;
 
 	public Long register(User user, String categoryType, String name) {
 		CategoryType type = CategoryType.valueOf(categoryType.toUpperCase(Locale.ROOT));

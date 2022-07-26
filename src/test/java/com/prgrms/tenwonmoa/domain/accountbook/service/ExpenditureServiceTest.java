@@ -18,6 +18,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import com.prgrms.tenwonmoa.domain.accountbook.Expenditure;
 import com.prgrms.tenwonmoa.domain.accountbook.dto.CreateExpenditureRequest;
 import com.prgrms.tenwonmoa.domain.accountbook.dto.CreateExpenditureResponse;
+import com.prgrms.tenwonmoa.domain.accountbook.dto.UpdateExpenditureRequest;
 import com.prgrms.tenwonmoa.domain.accountbook.repository.ExpenditureRepository;
 import com.prgrms.tenwonmoa.domain.category.Category;
 import com.prgrms.tenwonmoa.domain.category.CategoryType;
@@ -47,21 +48,23 @@ class ExpenditureServiceTest {
 	@InjectMocks
 	private ExpenditureService expenditureService;
 
-	private User user = new User("jungki111@gmail,com", "password1234!", "개발자");
+	private final User user = new User("jungki111@gmail,com", "password1234!", "개발자");
 
-	private UserCategory userCategory = new UserCategory(user, new Category("식비", CategoryType.EXPENDITURE));
+	private final UserCategory userCategory = new UserCategory(user, new Category("식비", CategoryType.EXPENDITURE));
 
-	private Category category = new Category("식비", CategoryType.EXPENDITURE);
+	private final Category category = new Category("식비", CategoryType.EXPENDITURE);
 
-	private Expenditure expenditure = new Expenditure(LocalDate.now(), 10000L, "피자", category.getName(), user,
+	private final Expenditure expenditure = new Expenditure(LocalDate.now(), 10000L, "피자", category.getName(), user,
 		userCategory);
 
 	@Nested
 	@DisplayName("지출 생성 중")
-	class CreateExpenditure {
+	class CreateExpenditureTest {
 
-		Long userId = 1L;
-		CreateExpenditureRequest request = new CreateExpenditureRequest(LocalDate.now(), 10000L, "식비", 1L);
+		private final Long userId = 1L;
+
+		private final CreateExpenditureRequest request = new CreateExpenditureRequest(LocalDate.now(), 10000L, "식비",
+			1L);
 
 		@Test
 		public void user가_없을_경우() {
@@ -116,21 +119,93 @@ class ExpenditureServiceTest {
 
 	@Nested
 	@DisplayName("지출 수정 중")
-	class UpdateExpenditure {
+	class UpdateExpenditureTest {
+
+		private final Long userId = 1L;
+
+		private final Long expenditureId = 2L;
+
+		private final Long userCategoryId = 3L;
+
+		private final UpdateExpenditureRequest request = new UpdateExpenditureRequest(LocalDate.now(), 2000L,
+			"수정", userCategoryId);
+
+		@Mock
+		private Expenditure mockExpenditure;
 
 		@Test
-		public void user_권한이_없을_경우() {
+		public void 해당_유저가_없을_경우() {
+			given(userRepository.findById(any())).willThrow(
+				new NoSuchElementException(Message.USER_NOT_FOUND.getMessage()));
+
+			assertThatThrownBy(() -> expenditureService.updateExpenditure(any(), expenditureId, request))
+				.isInstanceOf(NoSuchElementException.class)
+				.hasMessage(Message.USER_NOT_FOUND.getMessage());
+		}
+
+		@Test
+		public void expenditureId_지출이_없는_경우() {
+			given(userRepository.findById(userId))
+				.willReturn(of(user));
+
+			given(expenditureRepository.findById(any()))
+				.willThrow(new NoSuchElementException(Message.EXPENDITURE_NOT_FOUND.getMessage()));
+
+			assertThatThrownBy(() -> expenditureService.updateExpenditure(userId, any(), request))
+				.isInstanceOf(NoSuchElementException.class)
+				.hasMessage(Message.EXPENDITURE_NOT_FOUND.getMessage());
+		}
+
+		@Test
+		public void 유저가_지출에대한_수정권한이_없을_경우() {
+			given(userRepository.findById(userId))
+				.willReturn(of(user));
+
+			given(expenditureRepository.findById(expenditureId))
+				.willReturn(of(mockExpenditure));
+
+			assertThatThrownBy(() -> expenditureService.updateExpenditure(userId, expenditureId, request))
+				.isInstanceOf(IllegalArgumentException.class)
+				.hasMessage(Message.EXPENDITURE_NO_AUTHENTICATION.getMessage());
 
 		}
 
 		@Test
-		public void 없는_userCategoryId일_경우() {
+		public void userCategoryId_유저카테고리가_없는_경우() {
+			given(userRepository.findById(userId))
+				.willReturn(of(user));
 
+			given(expenditureRepository.findById(expenditureId))
+				.willReturn(of(mockExpenditure));
+
+			given(mockExpenditure.getUser())
+				.willReturn(user);
+
+			given(userCategoryRepository.findById(any()))
+				.willThrow(new NoSuchElementException(Message.USER_CATEGORY_NOT_FOUND.getMessage()));
+
+			assertThatThrownBy(() -> expenditureService.updateExpenditure(userId, expenditureId, request))
+				.isInstanceOf(NoSuchElementException.class)
+				.hasMessage(Message.USER_CATEGORY_NOT_FOUND.getMessage());
 		}
 
 		@Test
 		public void 성공적으로_수정이_가능하다() {
+			given(userRepository.findById(userId))
+				.willReturn(of(user));
 
+			given(expenditureRepository.findById(expenditureId))
+				.willReturn(of(mockExpenditure));
+
+			given(mockExpenditure.getUser())
+				.willReturn(user);
+
+			given(userCategoryRepository.findById(userCategoryId))
+				.willReturn(of(userCategory));
+
+			expenditureService.updateExpenditure(userId, expenditureId, request);
+
+			verify(mockExpenditure).update(userCategory, request);
 		}
 
 	}

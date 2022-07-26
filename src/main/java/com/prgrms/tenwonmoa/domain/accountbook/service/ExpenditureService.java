@@ -1,5 +1,7 @@
 package com.prgrms.tenwonmoa.domain.accountbook.service;
 
+import static com.google.common.base.Preconditions.*;
+
 import java.util.NoSuchElementException;
 
 import org.springframework.stereotype.Service;
@@ -8,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.prgrms.tenwonmoa.domain.accountbook.Expenditure;
 import com.prgrms.tenwonmoa.domain.accountbook.dto.CreateExpenditureRequest;
 import com.prgrms.tenwonmoa.domain.accountbook.dto.CreateExpenditureResponse;
+import com.prgrms.tenwonmoa.domain.accountbook.dto.UpdateExpenditureRequest;
 import com.prgrms.tenwonmoa.domain.accountbook.repository.ExpenditureRepository;
 import com.prgrms.tenwonmoa.domain.category.Category;
 import com.prgrms.tenwonmoa.domain.category.UserCategory;
@@ -40,6 +43,20 @@ public class ExpenditureService {
 		return CreateExpenditureResponse.of(savedExpenditure);
 	}
 
+	public void updateExpenditure(Long userId, Long expenditureId, UpdateExpenditureRequest updateExpenditureRequest) {
+		User currentUser = getUser(userId);
+		UserCategory userCategory = getUserCategory(updateExpenditureRequest.getUserCategoryId());
+		Expenditure expenditure = getExpenditure(expenditureId);
+
+		validateUser(currentUser, expenditure.getUser());
+
+		expenditure.update(userCategory, updateExpenditureRequest);
+	}
+
+	private void validateUser(User currentUser, User expenditureUser) {
+		checkArgument(currentUser != expenditureUser, Message.EXPENDITURE_NO_AUTHENTICATION);
+	}
+
 	private User getUser(Long userId) {
 		return userRepository.findById(userId)
 			.orElseThrow(() -> new NoSuchElementException(Message.USER_NOT_FOUND.getMessage()));
@@ -53,5 +70,10 @@ public class ExpenditureService {
 	private Category getCategory(Long categoryId) {
 		return categoryRepository.findById(categoryId)
 			.orElseThrow(() -> new NoSuchElementException(Message.CATEGORY_NOT_FOUND.getMessage()));
+	}
+
+	private Expenditure getExpenditure(Long expenditureId) {
+		return expenditureRepository.findById(expenditureId)
+			.orElseThrow(() -> new NoSuchElementException(Message.EXPENDITURE_NOT_FOUND.getMessage()));
 	}
 }

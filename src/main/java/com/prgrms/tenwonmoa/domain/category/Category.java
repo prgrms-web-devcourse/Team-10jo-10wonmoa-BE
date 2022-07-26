@@ -31,10 +31,19 @@ public class Category extends BaseEntity {
 	private CategoryType categoryType;
 
 	public Category(String name, CategoryType categoryType) {
-		checkArgument(hasText(name));
-		checkArgument(name.length() <= MAX_NAME_LENGTH);
+		validateName(name);
 
 		this.name = name;
 		this.categoryType = categoryType;
+	}
+
+	public void updateName(String name) {
+		validateName(name);
+		this.name = name;
+	}
+
+	private void validateName(String name) {
+		checkArgument(hasText(name));
+		checkArgument(name.length() <= MAX_NAME_LENGTH);
 	}
 }

@@ -5,39 +5,47 @@ import static org.assertj.core.api.Assertions.*;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.prgrms.tenwonmoa.common.fixture.Fixture;
 import com.prgrms.tenwonmoa.domain.category.UserCategory;
 import com.prgrms.tenwonmoa.domain.category.dto.service.SingleCategoryResult;
+import com.prgrms.tenwonmoa.domain.category.repository.CategoryRepository;
 import com.prgrms.tenwonmoa.domain.category.repository.UserCategoryRepository;
 import com.prgrms.tenwonmoa.domain.user.User;
 import com.prgrms.tenwonmoa.domain.user.repository.UserRepository;
 
 @SpringBootTest
-@Transactional
 class CategoryServiceTest {
 
-	private final User user = Fixture.createUser();
+	private User user;
 
 	@Autowired
 	private CategoryService service;
 
 	@Autowired
 	private UserRepository userRepository;
-	// TODO : UserService 구현 시, UserService로 교체
 
 	@Autowired
 	private UserCategoryRepository userCategoryRepository;
-	// TODO : UserCategoryService로 리팩토링 시, UserCategoryService로 교체
+
+	@Autowired
+	private CategoryRepository categoryRepository;
 
 	@BeforeEach
 	void setup() {
-		userRepository.save(user);
+		user = userRepository.save(Fixture.createUser());
+	}
+
+	@AfterEach
+	void tearDown() {
+		userCategoryRepository.deleteAll();
+		categoryRepository.deleteAll();
+		userRepository.deleteAll();
 	}
 
 	@Test

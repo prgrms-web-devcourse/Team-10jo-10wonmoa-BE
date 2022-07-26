@@ -28,6 +28,7 @@ jobs:
       - name: Checkout repository and submodules
         uses: actions/checkout@v2
         with:
+          token: ${{ secrets.CI_ACCESS_TOKEN }}
           submodules: true
 
       - uses: actions/checkout@v3

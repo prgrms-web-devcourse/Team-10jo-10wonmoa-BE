@@ -24,7 +24,7 @@ import lombok.RequiredArgsConstructor;
 public class ExpenditureController {
 
 	private final ExpenditureService expenditureService;
-	private final static String LOCATION_PREFIX = "/api/v1/expenditures/";
+	private static final String LOCATION_PREFIX = "/api/v1/expenditures/";
 
 	@PostMapping
 	public ResponseEntity<CreateExpenditureResponse> createExpenditure(

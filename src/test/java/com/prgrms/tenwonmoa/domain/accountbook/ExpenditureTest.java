@@ -26,7 +26,7 @@ class ExpenditureTest {
 	private final String categoryName = "식비";
 
 	// user 추후 수정 필요
-	private final User user = new User("jungki111@gmail,com", "password1234!", "개발자");
+	private final User user = new User("jungki111@gmail.com", "password1234!", "개발자");
 
 	private final UserCategory userCategory = new UserCategory(user, new Category("식비", CategoryType.EXPENDITURE));
 

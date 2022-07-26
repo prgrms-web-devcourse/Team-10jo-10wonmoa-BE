@@ -4,13 +4,15 @@ import static org.assertj.core.api.Assertions.*;
 
 import java.util.List;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import com.prgrms.tenwonmoa.common.fixture.Fixture;
-import com.prgrms.tenwonmoa.domain.category.service.CategoryResult.SingleCategoryResult;
+import com.prgrms.tenwonmoa.domain.category.dto.service.CategoryResult;
 import com.prgrms.tenwonmoa.domain.user.User;
+import com.prgrms.tenwonmoa.domain.user.repository.UserRepository;
 
 @SpringBootTest
 class CategoryServiceTest {
@@ -20,6 +22,15 @@ class CategoryServiceTest {
 	@Autowired
 	private CategoryService service;
 
+	@Autowired
+	private UserRepository userRepository;
+	// TODO : UserService 구현 시, UserService로 교체
+
+	@BeforeEach
+	void setup(){
+		userRepository.save(user);
+	}
+
 	@Test
 	void 카테고리_등록() {
 		//given
@@ -27,11 +38,13 @@ class CategoryServiceTest {
 		String categoryName = "예시지출카테고리";
 
 		//when
-		SingleCategoryResult categoryResponse = service.register(user, categoryType, categoryName);
+		Long categoryId = service.register(user, categoryType, categoryName);
+		CategoryResult.SingleCategoryResult category = service.getById(categoryId);
 
 		//then
-		assertThat(categoryResponse)
-			.extracting(SingleCategoryResult::getType, SingleCategoryResult::getName)
-			.isEqualTo(List.of(categoryType, categoryName));
+		assertThat(category).extracting(
+				CategoryResult.SingleCategoryResult::getName,
+				CategoryResult.SingleCategoryResult::getType)
+			.isEqualTo(List.of(categoryName, categoryType));
 	}
 }

@@ -1,4 +1,4 @@
-package com.prgrms.tenwonmoa.domain.category.service;
+package com.prgrms.tenwonmoa.domain.category.dto.service;
 
 import com.prgrms.tenwonmoa.domain.category.Category;
 
@@ -16,7 +16,7 @@ public class CategoryResult {
 
 		private String type;
 
-		public static SingleCategoryResult of(Category category){
+		public static SingleCategoryResult of(Category category) {
 			return new SingleCategoryResult(category.getId(), category.getName(), category.getCategoryType().name());
 		}
 	}

@@ -1,6 +1,7 @@
 package com.prgrms.tenwonmoa.domain.accountbook;
 
 import static com.google.common.base.Preconditions.*;
+import static com.prgrms.tenwonmoa.domain.accountbook.AccountBookConst.*;
 import static javax.persistence.FetchType.*;
 import static lombok.AccessLevel.*;
 
@@ -13,6 +14,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import com.prgrms.tenwonmoa.domain.category.Category;
 import com.prgrms.tenwonmoa.domain.category.UserCategory;
 import com.prgrms.tenwonmoa.domain.common.BaseEntity;
 import com.prgrms.tenwonmoa.domain.user.User;
@@ -32,10 +34,10 @@ public class Expenditure extends BaseEntity {
 	@Column(name = "amount", nullable = false)
 	private Long amount;
 
-	@Column(name = "content", nullable = true, length = 50)
+	@Column(name = "content", nullable = true, length = CONTENT_MAX)
 	private String content;
 
-	@Column(name = "category_name", nullable = false, length = 20)
+	@Column(name = "category_name", nullable = false, length = Category.MAX_NAME_LENGTH)
 	private String categoryName;
 
 	@ManyToOne(fetch = LAZY)
@@ -68,6 +70,7 @@ public class Expenditure extends BaseEntity {
 
 	private void validateAmount(Long amount) {
 		checkArgument(amount != null, "금액은 필수입니다.");
-		checkArgument(amount > 0 && amount <= 1000000000000L, "입력할 수 있는 범위가 아닙니다.");
+		checkArgument(amount >= AMOUNT_MIN && amount <= AMOUNT_MAX,
+			"입력할 수 있는 범위가 아닙니다.");
 	}
 }

@@ -41,7 +41,7 @@ class CategoryServiceTest {
 	}
 
 	@Test
-	void 카테고리_등록() {
+	void 카테고리_등록_성공() {
 		//given
 		String categoryType = "EXPENDITURE";
 		String categoryName = "예시지출카테고리";
@@ -58,7 +58,7 @@ class CategoryServiceTest {
 	}
 
 	@Test
-	void 카테고리_이름_업데이트() {
+	void 카테고리_이름_업데이트_성공() {
 		//given
 		String categoryType = "EXPENDITURE";
 		String categoryName = "예시지출카테고리";
@@ -80,7 +80,7 @@ class CategoryServiceTest {
 		Long categoryId = service.register(user, categoryType, categoryName);
 
 		UserCategory userCategory =
-			userCategoryRepository.findByUserAndCategory(user.getId(), categoryId).get();
+			userCategoryRepository.findByUserAndCategory(user.getId(), categoryId).orElseThrow();
 		userCategoryRepository.delete(userCategory);
 
 		//when
@@ -88,5 +88,40 @@ class CategoryServiceTest {
 		assertThatExceptionOfType(NoSuchElementException.class).isThrownBy(
 			() -> service.updateName(user, categoryId, "업데이트된카테고리")
 		);
+	}
+
+	@Test
+	void 카테고리_삭제_성공() {
+		//given
+		String categoryType = "EXPENDITURE";
+		String categoryName = "예시지출카테고리";
+		Long categoryId = service.register(user, categoryType, categoryName);
+
+		//when
+		service.delete(user, categoryId);
+
+		//then
+		assertThatExceptionOfType(NoSuchElementException.class).isThrownBy(
+			() -> service.getById(categoryId)
+		);
+	}
+
+	@Test
+	void 유저_카테고리에_존재하지_않을시_삭제_오류() {
+		//given
+		String categoryType = "EXPENDITURE";
+		String categoryName = "예시지출카테고리";
+		Long categoryId = service.register(user, categoryType, categoryName);
+
+		UserCategory userCategory =
+			userCategoryRepository.findByUserAndCategory(user.getId(), categoryId).orElseThrow();
+		userCategoryRepository.delete(userCategory);
+
+		//when
+		//then
+		assertThatExceptionOfType(NoSuchElementException.class).isThrownBy(
+			() -> service.delete(user, categoryId)
+		);
+
 	}
 }

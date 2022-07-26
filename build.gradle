@@ -81,16 +81,6 @@ asciidoctor.doFirst {
     delete file('src/main/resources/static/docs')
 }
 
-task copyDocument(type: Copy) {
-    dependsOn asciidoctor
-    from file("build/docs/asciidoc")
-    into file("src/main/resources/static/docs")
-}
-
-build {
-    dependsOn copyDocument
-}
-
 jacoco {
     toolVersion = '0.8.7'
 }
@@ -171,6 +161,24 @@ configurations {
 //Querydsl 추가, 자동 생성된 Q클래스 gradle clean으로 제거
 clean {
     delete file('src/main/generated')
+}
+
+// custom task
+task copyDocument(type: Copy) {
+    dependsOn asciidoctor
+    from file("build/docs/asciidoc")
+    into file("src/main/resources/static/docs")
+}
+
+task copySecret(type: Copy) {
+    from '10wonmoa-BE-Security'
+    include "*.yml" // 서브모듈에 있는 yml 설정파일을 복사한다.
+    into 'src/main/resources'
+}
+
+build {
+    dependsOn copyDocument
+    dependsOn copySecret
 }
 
 

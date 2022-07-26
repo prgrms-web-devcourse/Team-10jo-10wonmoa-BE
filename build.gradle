@@ -171,14 +171,14 @@ task copyDocument(type: Copy) {
 }
 
 task copySecret(type: Copy) {
-    from '10wonmoa-BE-Security'
-    include "*.yml" // 서브모듈에 있는 yml 설정파일을 복사한다.
-    into 'src/main/resources'
+    from file("10wonmoa-BE-Security")
+    into file("src/main/resources/")
 }
+
+processResources.dependsOn('copySecret')
 
 build {
     dependsOn copyDocument
-    dependsOn copySecret
 }
 
 

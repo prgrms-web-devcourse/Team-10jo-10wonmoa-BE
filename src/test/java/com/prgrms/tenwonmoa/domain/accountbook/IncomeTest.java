@@ -47,7 +47,13 @@ class IncomeTest {
 
 	@Test
 	void 수입금은_0원이하_등록할수없다() {
-		assertThatThrownBy(() -> new Income(LocalDate.now(), 0L, null, category.getName(), user, userCategory))
+		assertThatThrownBy(() -> new Income(LocalDate.now(),
+			0L,
+			null,
+			category.getName(),
+			user,
+			userCategory)
+		)
 			.isInstanceOf(IllegalArgumentException.class)
 			.hasMessageContaining(INVALID_AMOUNT_ERR_MSG.getMessage());
 	}
@@ -55,7 +61,13 @@ class IncomeTest {
 	@Test
 	void 수입의_내용은_최대50자() {
 		String content = RandomString.make(CONTENT_MAX + 1);
-		assertThatThrownBy(() -> new Income(LocalDate.now(), 1000L, content, category.getName(), user, userCategory))
+		assertThatThrownBy(() -> new Income(LocalDate.now(),
+			1000L,
+			content,
+			category.getName(),
+			user,
+			userCategory)
+		)
 			.isInstanceOf(IllegalArgumentException.class)
 			.hasMessageContaining(INVALID_CONTENT_ERR_MSG.getMessage());
 	}
@@ -63,7 +75,50 @@ class IncomeTest {
 	@Test
 	void 카테고리이름은_최대_20자() {
 		String categoryName = RandomString.make(Category.MAX_NAME_LENGTH + 1);
-		assertThatThrownBy(() -> new Income(LocalDate.now(), 1000L, null, categoryName, user, userCategory))
+		assertThatThrownBy(() -> new Income(LocalDate.now(),
+			1000L,
+			null,
+			categoryName,
+			user,
+			userCategory)
+		)
 			.isInstanceOf(IllegalArgumentException.class);
+	}
+
+	@Test
+	void nullable_false_필드테스트() {
+		String categoryName = null;
+		LocalDate registerDate = null;
+		Long amount = null;
+
+		assertAll(
+			() -> assertThatThrownBy(
+				() -> new Income(LocalDate.now(),
+					1000L,
+					"content",
+					categoryName,
+					user,
+					userCategory)
+			)
+				.isInstanceOf(IllegalArgumentException.class),
+			() -> assertThatThrownBy(
+				() -> new Income(registerDate,
+					1000L,
+					"content",
+					"categoryName",
+					user,
+					userCategory)
+			)
+				.isInstanceOf(IllegalArgumentException.class),
+			() -> assertThatThrownBy(
+				() -> new Income(LocalDate.now(),
+					amount,
+					"content",
+					"categoryName",
+					user,
+					userCategory)
+			)
+				.isInstanceOf(IllegalArgumentException.class)
+		);
 	}
 }

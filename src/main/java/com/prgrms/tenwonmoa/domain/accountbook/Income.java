@@ -52,9 +52,9 @@ public class Income extends BaseEntity {
 
 	public Income(LocalDate registerDate, Long amount, String content, String categoryName, User user,
 		UserCategory usercategory) {
-		checkArgument(amount >= AMOUNT_MIN && amount <= AMOUNT_MAX, INVALID_AMOUNT_ERR_MSG.getMessage());
-		checkArgument(registerDate != null, NOT_NULL_REGISTER_DATE);
+		checkArgument(registerDate != null, NOT_NULL_REGISTER_DATE.getMessage());
 		validateCategoryName(categoryName);
+		validateAmount(amount);
 		if (Objects.nonNull(content)) {
 			checkArgument(content.length() <= CONTENT_MAX, INVALID_CONTENT_ERR_MSG.getMessage());
 		}
@@ -64,6 +64,11 @@ public class Income extends BaseEntity {
 		this.categoryName = categoryName;
 		this.user = user;
 		this.usercategory = usercategory;
+	}
+
+	private void validateAmount(Long amount) {
+		checkArgument(amount != null, NOT_NULL_AMOUNT.getMessage());
+		checkArgument(amount >= AMOUNT_MIN && amount <= AMOUNT_MAX, INVALID_AMOUNT_ERR_MSG.getMessage());
 	}
 
 	private void validateCategoryName(String categoryName) {

@@ -50,8 +50,10 @@ public class Income extends BaseEntity {
 	@JoinColumn(name = "user_category_id")
 	private UserCategory usercategory;
 
-	public Income(Long amount, String content, String categoryName, User user, UserCategory usercategory) {
+	public Income(LocalDate registerDate, Long amount, String content, String categoryName, User user,
+		UserCategory usercategory) {
 		checkArgument(amount >= AMOUNT_MIN && amount <= AMOUNT_MAX, INVALID_AMOUNT_ERR_MSG.getMessage());
+		checkArgument(registerDate != null, NOT_NULL_REGISTER_DATE);
 		validateCategoryName(categoryName);
 		if (Objects.nonNull(content)) {
 			checkArgument(content.length() <= CONTENT_MAX, INVALID_CONTENT_ERR_MSG.getMessage());

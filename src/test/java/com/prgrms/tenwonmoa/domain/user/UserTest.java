@@ -19,7 +19,7 @@ class UserTest {
 	@Test
 	void 이메일이_null_일_때_예외() {
 		assertThatThrownBy(() -> new User(null, "12345678", "yanju"))
-			.isInstanceOf(IllegalArgumentException.class)
+			.isInstanceOf(NullPointerException.class)
 			.hasMessageContaining(NOT_NULL_EMAIL.getMessage());
 	}
 
@@ -45,7 +45,7 @@ class UserTest {
 	@Test
 	void 비밀번호가_null_일_때_예외() {
 		assertThatThrownBy(() -> new User("a@a.com", null, "yanju"))
-			.isInstanceOf(IllegalArgumentException.class)
+			.isInstanceOf(NullPointerException.class)
 			.hasMessageContaining(NOT_NULL_PASSWORD.getMessage());
 	}
 
@@ -67,7 +67,7 @@ class UserTest {
 	@Test
 	void 이름이_null_일_때_예외() {
 		assertThatThrownBy(() -> new User("a@a.com", "12345678", null))
-			.isInstanceOf(IllegalArgumentException.class)
+			.isInstanceOf(NullPointerException.class)
 			.hasMessageContaining(NOT_NULL_USERNAME.getMessage());
 	}
 

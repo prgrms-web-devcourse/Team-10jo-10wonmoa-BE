@@ -4,11 +4,13 @@ import static com.prgrms.tenwonmoa.domain.category.CategoryType.*;
 import static org.assertj.core.api.Assertions.*;
 
 import org.assertj.core.internal.bytebuddy.utility.RandomString;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 
+@DisplayName("카테고리 도메인 테스트")
 class CategoryTest {
 
 	@ParameterizedTest

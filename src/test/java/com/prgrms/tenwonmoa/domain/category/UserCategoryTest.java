@@ -3,13 +3,14 @@ package com.prgrms.tenwonmoa.domain.category;
 import static com.prgrms.tenwonmoa.common.fixture.Fixture.*;
 import static org.assertj.core.api.Assertions.*;
 
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullSource;
 
 import com.prgrms.tenwonmoa.domain.user.User;
 
+@DisplayName("유저카테고리 도메인 테스트")
 class UserCategoryTest {
 
 	private final User user = createUser();

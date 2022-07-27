@@ -19,7 +19,7 @@ import com.prgrms.tenwonmoa.domain.category.UserCategory;
 import com.prgrms.tenwonmoa.domain.category.repository.UserCategoryRepository;
 import com.prgrms.tenwonmoa.exception.message.Message;
 
-@DisplayName("유저 카테고리 테스트")
+@DisplayName("유저 카테고리 서비스 테스트")
 @ExtendWith(MockitoExtension.class)
 class UserCategoryServiceTest {
 	@Mock

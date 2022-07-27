@@ -136,8 +136,8 @@ class ExpenditureServiceTest {
 
 		@Test
 		public void 해당_유저가_없을_경우() {
-			given(userRepository.findById(any())).willThrow(
-				new NoSuchElementException(Message.USER_NOT_FOUND.getMessage()));
+			given(userRepository.findById(any()))
+				.willThrow(new NoSuchElementException(Message.USER_NOT_FOUND.getMessage()));
 
 			assertThatThrownBy(() -> expenditureService.updateExpenditure(any(), expenditureId, request))
 				.isInstanceOf(NoSuchElementException.class)

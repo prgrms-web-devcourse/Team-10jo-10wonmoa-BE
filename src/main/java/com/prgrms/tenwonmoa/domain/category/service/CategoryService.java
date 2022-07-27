@@ -38,14 +38,11 @@ public class CategoryService {
 
 	@Transactional(readOnly = true)
 	public SingleCategoryResult getById(Long id) {
-		return SingleCategoryResult.of(findCategoryById(id));
+		return SingleCategoryResult.of(getCategoryById(id));
 	}
 
 	public String updateName(User user, Long categoryId, String name) {
-		UserCategory userCategory = userCategoryRepository.findByUserAndCategory(user.getId(), categoryId)
-			.orElseThrow(() -> new NoSuchElementException(USER_CATEGORY_NOT_FOUND.getMessage()));
-		// 이것도 정상이 아닌 공격 or 버그
-		// -> 개발자가 알아야 할 예외(클라이언트에게는 잘못된 요청이라고 주고, 우리가 알아야 할 예외임)
+		UserCategory userCategory = getUserCategory(user, categoryId);
 
 		Category category = userCategory.getCategory();
 		category.updateName(name);
@@ -53,12 +50,21 @@ public class CategoryService {
 	}
 
 	public void delete(User user, Long categoryId) {
-		// 해당 categoryId를 user가 가지고 있는지 비즈니스 로직 검증
-		// 카테고리 삭제
-		// userCategory에서도 삭제
+		UserCategory userCategory = getUserCategory(user, categoryId);
+		Category category = getCategoryById(categoryId);
+
+		userCategoryRepository.delete(userCategory);
+		categoryRepository.delete(category);
 	}
 
-	private Category findCategoryById(Long id) {
+	private UserCategory getUserCategory(User user, Long categoryId) {
+		return userCategoryRepository.findByUserAndCategory(user.getId(), categoryId)
+			.orElseThrow(() -> new NoSuchElementException(USER_CATEGORY_NOT_FOUND.getMessage()));
+		// 이것도 정상이 아닌 공격 or 버그
+		// -> 개발자가 알아야 할 예외(클라이언트에게는 잘못된 요청이라고 주고, 우리가 알아야 할 예외임)
+	}
+
+	private Category getCategoryById(Long id) {
 		return categoryRepository.findById(id).orElseThrow(
 			() -> new NoSuchElementException(CATEGORY_NOT_FOUND.getMessage()));
 		// 해당 예외는 공격인 것임. 없는 카테고리에 대한 조회는 정상적인 환경에서는 나올 수 가없음

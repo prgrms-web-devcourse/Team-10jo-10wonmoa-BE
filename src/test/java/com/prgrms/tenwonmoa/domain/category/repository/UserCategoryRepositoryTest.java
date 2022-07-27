@@ -56,4 +56,16 @@ class UserCategoryRepositoryTest {
 			.extracting(UserCategory::getUser, UserCategory::getCategory)
 			.isEqualTo(List.of(user, category));
 	}
+
+	@Test
+	void 아이디로_유저카테고리_조회() {
+		// given
+		UserCategory savedUserCategory = userCategoryRepository.save(new UserCategory(user, category));
+		// when
+		Optional<UserCategory> userCategoryOptional = userCategoryRepository.findById(savedUserCategory.getId());
+		// then
+		assertThat(userCategoryOptional).isPresent();
+		UserCategory userCategory = userCategoryOptional.get();
+		assertThat(savedUserCategory).isEqualTo(userCategory);
+	}
 }

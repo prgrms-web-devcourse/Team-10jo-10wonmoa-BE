@@ -17,4 +17,8 @@ public interface UserCategoryRepository extends JpaRepository<UserCategory, Long
 		+ " and uc.category.id =:categoryId")
 	Optional<UserCategory> findByUserAndCategory(Long userId, Long categoryId);
 
+	@Override
+	@Query("select uc from UserCategory uc join fetch uc.category where uc.id = :userCategoryId")
+	Optional<UserCategory> findById(Long userCategoryId);
+
 }

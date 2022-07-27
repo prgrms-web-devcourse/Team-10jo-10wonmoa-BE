@@ -19,6 +19,7 @@ public class CreateExpenditureRequest {
 	@Max(1000000000000L)
 	private final Long amount;
 
+	@Max(50)
 	private final String content;
 
 	@NotNull

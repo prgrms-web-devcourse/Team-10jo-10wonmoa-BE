@@ -5,7 +5,6 @@ import static org.mockito.BDDMockito.*;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import java.time.LocalDate;
@@ -67,8 +66,7 @@ class IncomeControllerTest {
 				requestFields(
 					CreateIncomeRequestDoc.fieldDescriptors()
 				)
-			))
-			.andDo(print());
+			));
 	}
 
 	@Test
@@ -83,7 +81,6 @@ class IncomeControllerTest {
 			.andExpect(status().isBadRequest())
 			.andDo(document("income-create-fail", responseFields(
 				ErrorResponseDoc.fieldDescriptors()
-			)))
-			.andDo(print());
+			)));
 	}
 }

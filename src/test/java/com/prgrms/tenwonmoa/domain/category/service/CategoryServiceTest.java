@@ -81,7 +81,7 @@ class CategoryServiceTest {
 	}
 
 	@Test
-	void 유저_카테고리에_존재하지_않을시_업데이트_오류() {
+	void 유저_카테고리에_존재하지_않을시_업데이트_실패() {
 		//given
 		String categoryType = "EXPENDITURE";
 		String categoryName = "예시지출카테고리";
@@ -115,7 +115,17 @@ class CategoryServiceTest {
 	}
 
 	@Test
-	void 유저_카테고리에_존재하지_않을시_삭제_오류() {
+	void 카테고리_존재하지않을시_삭제_실패() {
+		//given
+		//when
+		//then
+		assertThatExceptionOfType(NoSuchElementException.class).isThrownBy(
+			() -> service.delete(user, 0L)
+		);
+	}
+
+	@Test
+	void 유저_카테고리에_존재하지_않을시_삭제_실패() {
 		//given
 		String categoryType = "EXPENDITURE";
 		String categoryName = "예시지출카테고리";

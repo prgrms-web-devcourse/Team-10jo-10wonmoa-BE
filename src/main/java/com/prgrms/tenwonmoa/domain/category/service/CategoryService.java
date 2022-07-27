@@ -51,9 +51,10 @@ public class CategoryService {
 
 	public void delete(User user, Long categoryId) {
 		UserCategory userCategory = getUserCategory(user, categoryId);
+		Category category = getCategoryById(categoryId);
 
 		userCategoryRepository.delete(userCategory);
-		categoryRepository.deleteById(categoryId);
+		categoryRepository.delete(category);
 	}
 
 	private UserCategory getUserCategory(User user, Long categoryId) {

@@ -5,6 +5,7 @@ import java.net.URISyntaxException;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -40,10 +41,19 @@ public class ExpenditureController {
 	@PutMapping("/{expenditureId}")
 	public ResponseEntity<Void> updateExpenditure(
 		@PathVariable Long expenditureId,
-		@Validated @RequestBody UpdateExpenditureRequest updateExpenditureRequest) {
+		@Validated @RequestBody UpdateExpenditureRequest updateExpenditureRequest
+	) {
 		Long userId = 1L; // 추후 Auth로 받을 예정
 		expenditureService.updateExpenditure(userId, expenditureId, updateExpenditureRequest);
 
 		return ResponseEntity.ok().build();
+	}
+
+	@DeleteMapping("/{expenditureId}")
+	public ResponseEntity<Void> deleteExpenditure(@PathVariable Long expenditureId) {
+		Long userId = 1L; // 추후 Auth로 받을 예정
+		expenditureService.deleteExpenditure(expenditureId);
+
+		return ResponseEntity.noContent().build();
 	}
 }

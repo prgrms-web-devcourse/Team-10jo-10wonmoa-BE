@@ -64,7 +64,7 @@ public class ExpenditureController {
 	@DeleteMapping("/{expenditureId}")
 	public ResponseEntity<Void> deleteExpenditure(@PathVariable Long expenditureId) {
 		Long userId = 1L; // 추후 Auth로 받을 예정
-		expenditureService.deleteExpenditure(expenditureId);
+		expenditureService.deleteExpenditure(userId, expenditureId);
 
 		return ResponseEntity.noContent().build();
 	}

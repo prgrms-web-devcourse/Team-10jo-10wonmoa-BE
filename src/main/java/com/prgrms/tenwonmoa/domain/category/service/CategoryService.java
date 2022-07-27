@@ -42,7 +42,7 @@ public class CategoryService {
 	}
 
 	public String updateName(User user, Long categoryId, String name) {
-		UserCategory userCategory = checkUserHasCategory(user, categoryId);
+		UserCategory userCategory = getUserCategory(user, categoryId);
 
 		Category category = userCategory.getCategory();
 		category.updateName(name);
@@ -50,13 +50,13 @@ public class CategoryService {
 	}
 
 	public void delete(User user, Long categoryId) {
-		UserCategory userCategory = checkUserHasCategory(user, categoryId);
+		UserCategory userCategory = getUserCategory(user, categoryId);
 
 		categoryRepository.deleteById(categoryId);
 		userCategoryRepository.delete(userCategory);
 	}
 
-	private UserCategory checkUserHasCategory(User user, Long categoryId) {
+	private UserCategory getUserCategory(User user, Long categoryId) {
 		return userCategoryRepository.findByUserAndCategory(user.getId(), categoryId)
 			.orElseThrow(() -> new NoSuchElementException(USER_CATEGORY_NOT_FOUND.getMessage()));
 		// 이것도 정상이 아닌 공격 or 버그

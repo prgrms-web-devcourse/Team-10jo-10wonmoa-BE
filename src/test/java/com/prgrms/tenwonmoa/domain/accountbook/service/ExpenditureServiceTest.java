@@ -18,6 +18,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import com.prgrms.tenwonmoa.domain.accountbook.Expenditure;
 import com.prgrms.tenwonmoa.domain.accountbook.dto.CreateExpenditureRequest;
 import com.prgrms.tenwonmoa.domain.accountbook.dto.CreateExpenditureResponse;
+import com.prgrms.tenwonmoa.domain.accountbook.dto.FindExpenditureResponse;
 import com.prgrms.tenwonmoa.domain.accountbook.dto.UpdateExpenditureRequest;
 import com.prgrms.tenwonmoa.domain.accountbook.repository.ExpenditureRepository;
 import com.prgrms.tenwonmoa.domain.category.Category;
@@ -239,24 +240,66 @@ class ExpenditureServiceTest {
 	@DisplayName("지출 조회 중")
 	class FindExpenditureTest {
 
-		@Test
-		public void 해당_유저가_없을경우() {
+		private final Long userId = 1L;
 
+		private final Long expenditureId = 2L;
+
+		@Mock
+		FindExpenditureResponse mockResponse;
+
+		@Test
+		public void 해당_유저가_없을_경우() {
+			given(userRepository.findById(any()))
+				.willThrow(new NoSuchElementException(Message.USER_NOT_FOUND.getMessage()));
+
+			assertThatThrownBy(() -> expenditureService.findExpenditure(any(), expenditureId))
+				.isInstanceOf(NoSuchElementException.class)
+				.hasMessage(Message.USER_NOT_FOUND.getMessage());
 		}
 
 		@Test
 		public void 해당_지출이_없을_경우() {
+			given(userRepository.findById(userId))
+				.willReturn(of(user));
 
+			given(expenditureRepository.findById(any()))
+				.willThrow(new NoSuchElementException(Message.EXPENDITURE_NOT_FOUND.getMessage()));
+
+			assertThatThrownBy(() -> expenditureService.findExpenditure(userId, any()))
+				.isInstanceOf(NoSuchElementException.class)
+				.hasMessage(Message.EXPENDITURE_NOT_FOUND.getMessage());
 		}
 
 		@Test
 		public void 해당_지출을_조회할_권한이_없을경우() {
+			given(userRepository.findById(userId))
+				.willReturn(of(user));
 
+			given(expenditureRepository.findById(expenditureId))
+				.willReturn(of(mockExpenditure));
+
+			assertThatThrownBy(() -> expenditureService.findExpenditure(userId, expenditureId))
+				.isInstanceOf(IllegalArgumentException.class)
+				.hasMessage(Message.EXPENDITURE_NO_AUTHENTICATION.getMessage());
 		}
 
 		@Test
 		public void 성공적으로_조회_할_때() {
 
+			given(userRepository.findById(userId))
+				.willReturn(of(user));
+
+			given(expenditureRepository.findById(expenditureId))
+				.willReturn(of(mockExpenditure));
+
+			given(mockExpenditure.getUser()).willReturn(user);
+
+			//FindExpenditureReponse에서 expenditure.getUserCategory NullPointerException 방지
+			given(mockExpenditure.getUserCategory()).willReturn(userCategory);
+
+			expenditureService.findExpenditure(userId, expenditureId);
+
+			verify(expenditureRepository).findById(any());
 		}
 
 	}

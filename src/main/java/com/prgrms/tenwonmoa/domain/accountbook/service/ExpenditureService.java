@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.prgrms.tenwonmoa.domain.accountbook.Expenditure;
 import com.prgrms.tenwonmoa.domain.accountbook.dto.CreateExpenditureRequest;
 import com.prgrms.tenwonmoa.domain.accountbook.dto.CreateExpenditureResponse;
+import com.prgrms.tenwonmoa.domain.accountbook.dto.FindExpenditureResponse;
 import com.prgrms.tenwonmoa.domain.accountbook.dto.UpdateExpenditureRequest;
 import com.prgrms.tenwonmoa.domain.accountbook.repository.ExpenditureRepository;
 import com.prgrms.tenwonmoa.domain.category.Category;
@@ -54,6 +55,18 @@ public class ExpenditureService {
 		expenditure.update(userCategory, updateExpenditureRequest);
 	}
 
+	public FindExpenditureResponse findExpenditure(Long userId, Long expenditureId) {
+		User user = getUser(userId);
+		Expenditure expenditure = getExpenditure(expenditureId);
+
+		validateUser(user, expenditure.getUser());
+
+		return FindExpenditureResponse.of(expenditure);
+	}
+
+	/**
+	 * TODO : 유저가 해당 지출을 삭제할 수 있는지 검증을 추가해야 한다.
+	 * */
 	public void deleteExpenditure(Long expenditureId) {
 		Expenditure expenditure = getExpenditure(expenditureId);
 

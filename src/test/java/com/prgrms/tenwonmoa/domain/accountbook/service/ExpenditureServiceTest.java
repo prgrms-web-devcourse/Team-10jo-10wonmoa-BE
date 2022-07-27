@@ -57,6 +57,9 @@ class ExpenditureServiceTest {
 	private final Expenditure expenditure = new Expenditure(LocalDate.now(), 10000L, "피자", category.getName(), user,
 		userCategory);
 
+	@Mock
+	private Expenditure mockExpenditure;
+
 	@Nested
 	@DisplayName("지출 생성 중")
 	class CreateExpenditureTest {
@@ -129,9 +132,6 @@ class ExpenditureServiceTest {
 
 		private final UpdateExpenditureRequest request = new UpdateExpenditureRequest(LocalDate.now(), 2000L,
 			"수정", userCategoryId);
-
-		@Mock
-		private Expenditure mockExpenditure;
 
 		@Test
 		public void 해당_유저가_없을_경우() {
@@ -208,5 +208,30 @@ class ExpenditureServiceTest {
 			verify(mockExpenditure).update(userCategory, request);
 		}
 
+	}
+
+	@Nested
+	@DisplayName("지출 삭제 중")
+	class DeleteExpenditureTEst {
+
+		@Test
+		public void 삭제하려는_지출이_없을때() {
+			given(expenditureRepository.findById(any()))
+				.willThrow(new NoSuchElementException(Message.EXPENDITURE_NOT_FOUND.getMessage()));
+
+			assertThatThrownBy(() -> expenditureService.deleteExpenditure(any()))
+				.isInstanceOf(NoSuchElementException.class)
+				.hasMessage(Message.EXPENDITURE_NOT_FOUND.getMessage());
+		}
+
+		@Test
+		public void 지출을_성공적으로_삭제_할_때() {
+			given(expenditureRepository.findById(any()))
+				.willReturn(of(expenditure));
+
+			expenditureService.deleteExpenditure(any());
+
+			verify(expenditureRepository).delete(any());
+		}
 	}
 }

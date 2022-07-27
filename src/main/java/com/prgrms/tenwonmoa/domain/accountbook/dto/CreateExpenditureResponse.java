@@ -9,7 +9,7 @@ public class CreateExpenditureResponse {
 
 	private final Long id;
 
-	public CreateExpenditureResponse(Long id) {
+	private CreateExpenditureResponse(Long id) {
 		this.id = id;
 	}
 

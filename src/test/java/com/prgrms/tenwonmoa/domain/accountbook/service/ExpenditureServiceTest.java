@@ -212,7 +212,7 @@ class ExpenditureServiceTest {
 
 	@Nested
 	@DisplayName("지출 삭제 중")
-	class DeleteExpenditureTEst {
+	class DeleteExpenditureTest {
 
 		@Test
 		public void 삭제하려는_지출이_없을때() {
@@ -233,5 +233,31 @@ class ExpenditureServiceTest {
 
 			verify(expenditureRepository).delete(any());
 		}
+	}
+
+	@Nested
+	@DisplayName("지출 조회 중")
+	class FindExpenditureTest {
+
+		@Test
+		public void 해당_유저가_없을경우() {
+
+		}
+
+		@Test
+		public void 해당_지출이_없을_경우() {
+
+		}
+
+		@Test
+		public void 해당_지출을_조회할_권한이_없을경우() {
+
+		}
+
+		@Test
+		public void 성공적으로_조회_할_때() {
+
+		}
+
 	}
 }

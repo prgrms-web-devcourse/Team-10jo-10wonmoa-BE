@@ -4,6 +4,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -28,7 +29,7 @@ public class ExpenditureController {
 
 	@PostMapping
 	public ResponseEntity<CreateExpenditureResponse> createExpenditure(
-		@RequestBody CreateExpenditureRequest createExpenditureRequest) throws URISyntaxException {
+		@Validated @RequestBody CreateExpenditureRequest createExpenditureRequest) throws URISyntaxException {
 		Long userId = 1L; // 추후 Auth로 받을 예정
 		CreateExpenditureResponse response = expenditureService.createExpenditure(userId, createExpenditureRequest);
 
@@ -39,14 +40,10 @@ public class ExpenditureController {
 	@PutMapping("/{expenditureId}")
 	public ResponseEntity<Void> updateExpenditure(
 		@PathVariable Long expenditureId,
-		@RequestBody UpdateExpenditureRequest updateExpenditureRequest) throws URISyntaxException {
+		@Validated @RequestBody UpdateExpenditureRequest updateExpenditureRequest) {
 		Long userId = 1L; // 추후 Auth로 받을 예정
 		expenditureService.updateExpenditure(userId, expenditureId, updateExpenditureRequest);
 
-		/**
-		 * TODO : 이부분 uri 어디로 지정해줘야할 지 프로트랑 의논 필요
-		 * */
-		URI uri = new URI(LOCATION_PREFIX + expenditureId);
-		return ResponseEntity.created(uri).build();
+		return ResponseEntity.ok().build();
 	}
 }

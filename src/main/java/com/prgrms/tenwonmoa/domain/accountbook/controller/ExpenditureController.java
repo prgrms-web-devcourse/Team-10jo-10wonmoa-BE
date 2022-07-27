@@ -3,8 +3,9 @@ package com.prgrms.tenwonmoa.domain.accountbook.controller;
 import java.net.URI;
 import java.net.URISyntaxException;
 
+import javax.validation.Valid;
+
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -30,7 +31,7 @@ public class ExpenditureController {
 
 	@PostMapping
 	public ResponseEntity<CreateExpenditureResponse> createExpenditure(
-		@Validated @RequestBody CreateExpenditureRequest createExpenditureRequest) throws URISyntaxException {
+		@Valid @RequestBody CreateExpenditureRequest createExpenditureRequest) throws URISyntaxException {
 		Long userId = 1L; // 추후 Auth로 받을 예정
 		CreateExpenditureResponse response = expenditureService.createExpenditure(userId, createExpenditureRequest);
 
@@ -41,7 +42,7 @@ public class ExpenditureController {
 	@PutMapping("/{expenditureId}")
 	public ResponseEntity<Void> updateExpenditure(
 		@PathVariable Long expenditureId,
-		@Validated @RequestBody UpdateExpenditureRequest updateExpenditureRequest
+		@Valid @RequestBody UpdateExpenditureRequest updateExpenditureRequest
 	) {
 		Long userId = 1L; // 추후 Auth로 받을 예정
 		expenditureService.updateExpenditure(userId, expenditureId, updateExpenditureRequest);

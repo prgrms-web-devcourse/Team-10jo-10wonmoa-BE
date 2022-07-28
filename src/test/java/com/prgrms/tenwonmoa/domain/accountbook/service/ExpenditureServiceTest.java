@@ -324,7 +324,6 @@ class ExpenditureServiceTest {
 				.willReturn(of(mockExpenditure));
 
 			given(mockExpenditure.getUser()).willReturn(user);
-			
 			expenditureService.findExpenditure(userId, expenditureId);
 
 			verify(expenditureRepository).findById(any());

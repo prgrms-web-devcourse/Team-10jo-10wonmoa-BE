@@ -58,7 +58,7 @@ class UserServiceTest {
 		CreateUserRequest createUserRequest = new CreateUserRequest("test@test.com", "12345678", "testuser1");
 		User user = createUserRequest.toEntity();
 
-		given(userRepository.findByEmail(any(String.class))).willReturn(Optional.empty());
+		given(userRepository.existsByEmail(any(String.class))).willReturn(false);
 		given(userRepository.save(any(User.class))).willReturn(user);
 
 		userService.createUser(createUserRequest);
@@ -71,7 +71,7 @@ class UserServiceTest {
 		String duplicateEmail = "test@gmail.com";
 		User user = new User(duplicateEmail, "12345678", "testuser1");
 
-		given(userRepository.findByEmail(any(String.class))).willReturn(Optional.of(user));
+		given(userRepository.existsByEmail(any(String.class))).willReturn(true);
 
 		CreateUserRequest createUserRequest = new CreateUserRequest(duplicateEmail, "123456789", "testuser2");
 

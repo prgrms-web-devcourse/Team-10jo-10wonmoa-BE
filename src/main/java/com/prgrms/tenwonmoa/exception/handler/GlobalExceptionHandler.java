@@ -31,8 +31,19 @@ public class GlobalExceptionHandler {
 	}
 
 	// 400 : NotFound - 잘못된 요청
-	@ExceptionHandler(NoSuchElementException.class)
-	public ResponseEntity<ErrorResponse> handleNotFoundException(NoSuchElementException exception) {
+	// Client의 잘못된 요청으로 인한 에러 처리
+	@ExceptionHandler({IllegalArgumentException.class, AlreadyExistException.class})
+	public ResponseEntity<ErrorResponse> handleClientBadRequest(RuntimeException exception) {
+		log.info(exception.getMessage(), exception);
+		ErrorResponse errorResponse = new ErrorResponse(List.of(exception.getMessage()), BAD_REQUEST.value());
+		return ResponseEntity
+			.status(BAD_REQUEST.value())
+			.body(errorResponse);
+	}
+
+	// 공격 or 버그
+	@ExceptionHandler({NoSuchElementException.class})
+	public ResponseEntity<ErrorResponse> handleBug(RuntimeException exception) {
 		log.error(exception.getMessage(), exception);
 		ErrorResponse errorResponse = new ErrorResponse(List.of(exception.getMessage()), BAD_REQUEST.value());
 		return ResponseEntity
@@ -40,12 +51,4 @@ public class GlobalExceptionHandler {
 			.body(errorResponse);
 	}
 
-	@ExceptionHandler(AlreadyExistException.class)
-	public ResponseEntity<ErrorResponse> handleAlreadyExistException(AlreadyExistException exception) {
-		log.error(exception.getMessage(), exception);
-		ErrorResponse errorResponse = new ErrorResponse(List.of(exception.getMessage()), BAD_REQUEST.value());
-		return ResponseEntity
-			.status(BAD_REQUEST.value())
-			.body(errorResponse);
-	}
 }

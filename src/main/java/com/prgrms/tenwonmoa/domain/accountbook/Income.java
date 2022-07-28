@@ -48,10 +48,10 @@ public class Income extends BaseEntity {
 
 	@OneToOne(fetch = LAZY)
 	@JoinColumn(name = "user_category_id")
-	private UserCategory usercategory;
+	private UserCategory userCategory;
 
 	public Income(LocalDate registerDate, Long amount, String content, String categoryName, User user,
-		UserCategory usercategory) {
+		UserCategory userCategory) {
 		checkArgument(registerDate != null, NOT_NULL_REGISTER_DATE.getMessage());
 		validateCategoryName(categoryName);
 		validateAmount(amount);
@@ -63,7 +63,7 @@ public class Income extends BaseEntity {
 		this.content = content;
 		this.categoryName = categoryName;
 		this.user = user;
-		this.usercategory = usercategory;
+		this.userCategory = userCategory;
 	}
 
 	private void validateAmount(Long amount) {

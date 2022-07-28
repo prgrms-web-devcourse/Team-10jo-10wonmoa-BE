@@ -37,7 +37,7 @@ class IncomeTotalServiceTest {
 	private IncomeTotalService accountBookService;
 
 	private final Income income = createIncome();
-	private final UserCategory userCategory = income.getUsercategory();
+	private final UserCategory userCategory = income.getUserCategory();
 	private final User user = income.getUser();
 
 	private final CreateIncomeRequest request = new CreateIncomeRequest(LocalDate.now(),

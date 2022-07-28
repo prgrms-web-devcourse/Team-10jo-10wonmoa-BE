@@ -32,7 +32,7 @@ public class GlobalExceptionHandler {
 
 	// 400 : NotFound - 잘못된 요청
 	@ExceptionHandler(NoSuchElementException.class)
-	public ResponseEntity<ErrorResponse> handleNotFoundException(HttpRequestMethodNotSupportedException exception) {
+	public ResponseEntity<ErrorResponse> handleNotFoundException(NoSuchElementException exception) {
 		log.error(exception.getMessage(), exception);
 		ErrorResponse errorResponse = new ErrorResponse(List.of(exception.getMessage()), BAD_REQUEST.value());
 		return ResponseEntity
@@ -41,7 +41,7 @@ public class GlobalExceptionHandler {
 	}
 
 	@ExceptionHandler(AlreadyExistException.class)
-	public ResponseEntity<ErrorResponse> handleAlreadyExistException(HttpRequestMethodNotSupportedException exception) {
+	public ResponseEntity<ErrorResponse> handleAlreadyExistException(AlreadyExistException exception) {
 		log.error(exception.getMessage(), exception);
 		ErrorResponse errorResponse = new ErrorResponse(List.of(exception.getMessage()), BAD_REQUEST.value());
 		return ResponseEntity

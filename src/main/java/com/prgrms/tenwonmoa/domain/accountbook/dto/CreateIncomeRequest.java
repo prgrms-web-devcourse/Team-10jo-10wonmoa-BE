@@ -11,6 +11,9 @@ import com.prgrms.tenwonmoa.domain.accountbook.Income;
 import com.prgrms.tenwonmoa.domain.category.UserCategory;
 import com.prgrms.tenwonmoa.domain.user.User;
 
+import lombok.Getter;
+
+@Getter
 public class CreateIncomeRequest {
 	@NotNull
 	private final LocalDate registerDate;
@@ -41,9 +44,5 @@ public class CreateIncomeRequest {
 			user,
 			userCategory
 		);
-	}
-
-	public Long getUserCategoryId() {
-		return userCategoryId;
 	}
 }

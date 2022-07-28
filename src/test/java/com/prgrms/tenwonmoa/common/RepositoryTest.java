@@ -14,7 +14,9 @@ public class RepositoryTest {
 	private TestEntityManager entityManager;
 
 	protected <T> T save(T entity) {
-		entityManager.persist(entity);
-		return entity;
+		T persist = entityManager.persist(entity);
+		entityManager.flush();
+		entityManager.clear();
+		return persist;
 	}
 }

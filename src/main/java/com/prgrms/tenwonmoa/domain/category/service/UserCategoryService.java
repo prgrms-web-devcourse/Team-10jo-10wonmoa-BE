@@ -54,6 +54,10 @@ public class UserCategoryService {
 			.orElseThrow(() -> new NoSuchElementException(Message.USER_CATEGORY_NOT_FOUND.getMessage()));
 	}
 
+	public void delete(Long userCategoryId) {
+
+	}
+
 	private UserCategory getUserCategory(User user, Long categoryId) {
 		return userCategoryRepository.findByUserAndCategory(user.getId(), categoryId)
 			.orElseThrow(() -> new NoSuchElementException(USER_CATEGORY_NOT_FOUND.getMessage()));

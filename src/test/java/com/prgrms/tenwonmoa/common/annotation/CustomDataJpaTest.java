@@ -10,6 +10,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 
+import com.prgrms.tenwonmoa.common.util.BeanUtil;
 import com.prgrms.tenwonmoa.config.TestConfig;
 
 @Target(ElementType.TYPE)
@@ -17,6 +18,6 @@ import com.prgrms.tenwonmoa.config.TestConfig;
 @DataJpaTest
 @ActiveProfiles("test")
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-@Import(TestConfig.class)
+@Import({TestConfig.class, BeanUtil.class})
 public @interface CustomDataJpaTest {
 }

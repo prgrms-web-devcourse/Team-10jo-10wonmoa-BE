@@ -19,4 +19,8 @@ public class IncomeService {
 	public Long save(Income income) {
 		return incomeRepository.save(income).getId();
 	}
+
+	public void setUserCategoryNull(Long userCategoryId) {
+		incomeRepository.updateUserCategoryAsNull(userCategoryId);
+	}
 }

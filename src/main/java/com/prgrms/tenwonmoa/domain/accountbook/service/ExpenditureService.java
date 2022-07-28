@@ -64,9 +64,6 @@ public class ExpenditureService {
 		return FindExpenditureResponse.of(expenditure);
 	}
 
-	/**
-	 * TODO : 유저가 해당 지출을 삭제할 수 있는지 검증을 추가해야 한다.
-	 * */
 	public void deleteExpenditure(Long userId, Long expenditureId) {
 		User user = getUser(userId);
 		Expenditure expenditure = getExpenditure(expenditureId);
@@ -74,6 +71,10 @@ public class ExpenditureService {
 		validateUser(user, expenditure.getUser());
 
 		expenditureRepository.delete(expenditure);
+	}
+
+	public void setUserCategoryNull(Long userCategoryId) {
+		expenditureRepository.updateUserCategoryAsNull(userCategoryId);
 	}
 
 	private void validateUser(User currentUser, User expenditureUser) {

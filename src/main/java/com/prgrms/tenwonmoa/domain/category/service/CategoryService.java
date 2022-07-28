@@ -11,7 +11,6 @@ import org.springframework.transaction.annotation.Transactional;
 import com.prgrms.tenwonmoa.domain.category.Category;
 import com.prgrms.tenwonmoa.domain.category.CategoryType;
 import com.prgrms.tenwonmoa.domain.category.repository.CategoryRepository;
-import com.prgrms.tenwonmoa.domain.category.repository.UserCategoryRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -21,8 +20,6 @@ import lombok.RequiredArgsConstructor;
 public class CategoryService {
 
 	private final CategoryRepository categoryRepository;
-
-	private final UserCategoryRepository userCategoryRepository;
 
 	Category register(String categoryType, String name) {
 		CategoryType type = CategoryType.valueOf(categoryType.toUpperCase(Locale.ROOT));

@@ -9,6 +9,7 @@ import java.time.LocalDate;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.ForeignKey;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
@@ -42,11 +43,15 @@ public class Expenditure extends BaseEntity {
 	private String categoryName;
 
 	@ManyToOne(fetch = LAZY)
-	@JoinColumn(name = "user_id")
+	@JoinColumn(
+		foreignKey = @ForeignKey(name = "fk_expenditure_user"),
+		name = "user_id")
 	private User user;
 
 	@OneToOne(fetch = LAZY)
-	@JoinColumn(name = "user_category_id")
+	@JoinColumn(
+		foreignKey = @ForeignKey(name = "fk_expenditure_user_category"),
+		name = "user_category_id")
 	private UserCategory userCategory;
 
 	public Expenditure(LocalDate registerDate, Long amount, String content,

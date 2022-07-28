@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 import com.prgrms.tenwonmoa.domain.accountbook.Expenditure;
 import com.prgrms.tenwonmoa.domain.category.UserCategory;
@@ -19,6 +20,7 @@ public class CreateExpenditureRequest {
 	@Max(1000000000000L)
 	private final Long amount;
 
+	@Size(max = 50)
 	private final String content;
 
 	@NotNull

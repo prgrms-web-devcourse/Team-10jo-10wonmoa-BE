@@ -54,6 +54,12 @@ public class ExpenditureService {
 		expenditure.update(userCategory, updateExpenditureRequest);
 	}
 
+	public void deleteExpenditure(Long expenditureId) {
+		Expenditure expenditure = getExpenditure(expenditureId);
+
+		expenditureRepository.delete(expenditure);
+	}
+
 	private void validateUser(User currentUser, User expenditureUser) {
 		checkArgument(currentUser == expenditureUser, Message.EXPENDITURE_NO_AUTHENTICATION.getMessage());
 	}

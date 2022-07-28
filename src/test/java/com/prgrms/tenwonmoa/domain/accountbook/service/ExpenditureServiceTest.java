@@ -18,7 +18,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import com.prgrms.tenwonmoa.domain.accountbook.Expenditure;
 import com.prgrms.tenwonmoa.domain.accountbook.dto.CreateExpenditureRequest;
 import com.prgrms.tenwonmoa.domain.accountbook.dto.CreateExpenditureResponse;
-import com.prgrms.tenwonmoa.domain.accountbook.dto.FindExpenditureResponse;
 import com.prgrms.tenwonmoa.domain.accountbook.dto.UpdateExpenditureRequest;
 import com.prgrms.tenwonmoa.domain.accountbook.repository.ExpenditureRepository;
 import com.prgrms.tenwonmoa.domain.category.Category;
@@ -280,15 +279,12 @@ class ExpenditureServiceTest {
 
 		private final Long expenditureId = 2L;
 
-		@Mock
-		FindExpenditureResponse mockResponse;
-
 		@Test
 		public void 해당_유저가_없을_경우() {
-			given(userRepository.findById(any()))
+			given(userRepository.findById(userId))
 				.willThrow(new NoSuchElementException(Message.USER_NOT_FOUND.getMessage()));
 
-			assertThatThrownBy(() -> expenditureService.findExpenditure(any(), expenditureId))
+			assertThatThrownBy(() -> expenditureService.findExpenditure(userId, expenditureId))
 				.isInstanceOf(NoSuchElementException.class)
 				.hasMessage(Message.USER_NOT_FOUND.getMessage());
 		}
@@ -321,7 +317,6 @@ class ExpenditureServiceTest {
 
 		@Test
 		public void 성공적으로_조회_할_때() {
-
 			given(userRepository.findById(userId))
 				.willReturn(of(user));
 
@@ -329,10 +324,7 @@ class ExpenditureServiceTest {
 				.willReturn(of(mockExpenditure));
 
 			given(mockExpenditure.getUser()).willReturn(user);
-
-			//FindExpenditureReponse에서 expenditure.getUserCategory NullPointerException 방지
-			given(mockExpenditure.getUserCategory()).willReturn(userCategory);
-
+			
 			expenditureService.findExpenditure(userId, expenditureId);
 
 			verify(expenditureRepository).findById(any());

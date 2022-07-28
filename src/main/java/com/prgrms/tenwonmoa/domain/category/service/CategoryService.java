@@ -38,14 +38,6 @@ public class CategoryService {
 		// 해당 예외는 공격인 것임. 없는 카테고리에 대한 조회는 정상적인 환경에서는 나올 수 가없음
 	}
 
-	public String updateName(User user, Long categoryId, String name) {
-		UserCategory userCategory = getUserCategory(user, categoryId);
-
-		Category category = userCategory.getCategory();
-		category.updateName(name);
-		return name;
-	}
-
 	public void delete(User user, Long categoryId) {
 		UserCategory userCategory = getUserCategory(user, categoryId);
 		Category category = getById(categoryId);

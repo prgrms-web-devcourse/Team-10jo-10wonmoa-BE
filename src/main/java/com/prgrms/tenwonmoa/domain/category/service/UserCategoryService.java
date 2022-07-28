@@ -1,5 +1,7 @@
 package com.prgrms.tenwonmoa.domain.category.service;
 
+import static com.google.common.base.Preconditions.*;
+
 import java.util.NoSuchElementException;
 
 import org.springframework.stereotype.Service;
@@ -27,6 +29,22 @@ public class UserCategoryService {
 
 		UserCategory userCategory = userCategoryRepository.save(new UserCategory(user, savedCategory));
 		return userCategory.getId();
+	}
+
+	public String updateName(User authenticatedUser, Long userCategoryId, String name) {
+		UserCategory userCategory = getById(userCategoryId);
+
+		User user = userCategory.getUser();
+		validateUser(authenticatedUser, user);
+
+		Category category = userCategory.getCategory();
+		category.updateName(name);
+		return category.getName();
+	}
+
+	private void validateUser(User authenticatedUser, User categoryUser) {
+		checkArgument(categoryUser.getId().equals(authenticatedUser.getId()),
+			Message.CATEGORY_NO_AUTHENTICATION.getMessage());
 	}
 
 	@Transactional(readOnly = true)

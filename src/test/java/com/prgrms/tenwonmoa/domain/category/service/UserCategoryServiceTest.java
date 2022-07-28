@@ -73,4 +73,19 @@ class UserCategoryServiceTest {
 		assertThatExceptionOfType(NoSuchElementException.class)
 			.isThrownBy(() -> userCategoryService.getById(1L));
 	}
+
+	@Test
+	void 카테고리의_이름_수정_성공() {
+		//given
+		String categoryType = "EXPENDITURE";
+		String categoryName = "예시지출카테고리";
+		Long userCategoryId = userCategoryService.register(user, categoryType, categoryName);
+
+		//when
+		userCategoryService.updateName(user, userCategoryId, "업데이트된 카테고리 이름");
+
+		//then
+		Category category = userCategoryService.getById(userCategoryId).getCategory();
+		assertThat(category.getName()).isEqualTo("업데이트된 카테고리 이름");
+	}
 }

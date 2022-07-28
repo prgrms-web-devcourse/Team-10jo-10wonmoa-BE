@@ -55,8 +55,6 @@ public class GlobalExceptionHandler {
 
 	@ExceptionHandler(MethodArgumentNotValidException.class)
 	public ResponseEntity<ErrorResponse> handleAlreadyExistException(MethodArgumentNotValidException exception) {
-		log.error(exception.getMessage(), exception);
-
 		BindingResult bindingResult = exception.getBindingResult();
 		List<String> errors = bindingResult.getAllErrors()
 			.stream()

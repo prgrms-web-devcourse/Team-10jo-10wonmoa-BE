@@ -3,6 +3,7 @@ package com.prgrms.tenwonmoa.domain.category.service;
 import static com.prgrms.tenwonmoa.common.fixture.Fixture.*;
 import static org.assertj.core.api.Assertions.*;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -13,10 +14,13 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import com.prgrms.tenwonmoa.domain.accountbook.Expenditure;
+import com.prgrms.tenwonmoa.domain.accountbook.Income;
+import com.prgrms.tenwonmoa.domain.accountbook.repository.ExpenditureRepository;
+import com.prgrms.tenwonmoa.domain.accountbook.repository.IncomeRepository;
 import com.prgrms.tenwonmoa.domain.category.Category;
 import com.prgrms.tenwonmoa.domain.category.CategoryType;
 import com.prgrms.tenwonmoa.domain.category.UserCategory;
-import com.prgrms.tenwonmoa.domain.category.repository.CategoryRepository;
 import com.prgrms.tenwonmoa.domain.category.repository.UserCategoryRepository;
 import com.prgrms.tenwonmoa.domain.user.User;
 import com.prgrms.tenwonmoa.domain.user.repository.UserRepository;
@@ -36,7 +40,10 @@ class UserCategoryServiceTest {
 	private UserRepository userRepository;
 
 	@Autowired
-	private CategoryRepository categoryRepository;
+	private ExpenditureRepository expenditureRepository;
+
+	@Autowired
+	private IncomeRepository incomeRepository;
 
 	@Autowired
 	private UserCategoryService userCategoryService;
@@ -50,8 +57,9 @@ class UserCategoryServiceTest {
 	@AfterEach
 	void tearDown() {
 		userCategoryRepository.deleteAll();
+		expenditureRepository.deleteAll();
+		incomeRepository.deleteAll();
 		userRepository.deleteAll();
-		categoryRepository.deleteAll();
 	}
 
 	@Test
@@ -119,6 +127,26 @@ class UserCategoryServiceTest {
 		//then
 		assertThatExceptionOfType(NoSuchElementException.class)
 			.isThrownBy(() -> userCategoryService.getById(userCategoryId));
+	}
+
+	@Test
+	void 유저카테고리를_갖고있는_지출과_수입이_있어도_유저카테고리_삭제_성공() {
+		//given
+		String categoryType = "EXPENDITURE";
+		String categoryName = "예시지출카테고리";
+		Long userCategoryId = userCategoryService.register(user, categoryType, categoryName);
+		UserCategory userCategory = userCategoryService.getById(userCategoryId);
+
+		expenditureRepository.save(new Expenditure(LocalDate.now(), 10000L, "내용", "식비", user, userCategory));
+		incomeRepository.save(new Income(LocalDate.now(), 10000L, "내용", "식비", user, userCategory));
+
+		//when
+		userCategoryService.delete(userCategoryId);
+
+		//then
+		assertThatExceptionOfType(NoSuchElementException.class)
+			.isThrownBy(() -> userCategoryService.getById(userCategoryId));
+
 	}
 
 	@Test

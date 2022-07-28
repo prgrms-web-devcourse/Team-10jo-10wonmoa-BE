@@ -7,6 +7,8 @@ import java.util.NoSuchElementException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.prgrms.tenwonmoa.domain.accountbook.service.ExpenditureService;
+import com.prgrms.tenwonmoa.domain.accountbook.service.IncomeService;
 import com.prgrms.tenwonmoa.domain.category.Category;
 import com.prgrms.tenwonmoa.domain.category.UserCategory;
 import com.prgrms.tenwonmoa.domain.category.repository.UserCategoryRepository;
@@ -24,6 +26,10 @@ public class UserCategoryService {
 
 	private final CategoryService categoryService;
 
+	private final ExpenditureService expenditureService;
+
+	private final IncomeService incomeService;
+
 	public Long register(User user, String catgoryType, String name) {
 		Category savedCategory = categoryService.register(catgoryType, name);
 
@@ -39,6 +45,7 @@ public class UserCategoryService {
 
 		Category category = userCategory.getCategory();
 		category.updateName(name);
+		// TODO : 해당하는 userCategoryId를 가진 지출과 수입에 대해 가지고 있는 name들도 바꿔주어야함
 		return category.getName();
 	}
 
@@ -54,6 +61,9 @@ public class UserCategoryService {
 	}
 
 	public void delete(Long userCategoryId) {
+		incomeService.setUserCategoryNull(userCategoryId);
+		expenditureService.setUserCategoryNull(userCategoryId);
+
 		UserCategory userCategory = getById(userCategoryId);
 		userCategoryRepository.delete(userCategory);
 	}

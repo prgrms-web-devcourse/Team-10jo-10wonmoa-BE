@@ -46,40 +46,6 @@ class CategoryServiceTest {
 	}
 
 	// @Test
-	// void 카테고리_이름_업데이트_성공() {
-	// 	//given
-	// 	String categoryType = "EXPENDITURE";
-	// 	String categoryName = "예시지출카테고리";
-	// 	Category category = service.register(categoryType, categoryName);
-	//
-	// 	//when
-	// 	service.updateName(user, category.getId(), "업데이트된카테고리");
-	// 	em.flush();
-	//
-	// 	//then
-	// 	Category categoryResult = service.getById(category.getId());
-	// 	assertThat(categoryResult.getName()).isEqualTo("업데이트된카테고리");
-	// }
-	//
-	// @Test
-	// void 유저_카테고리에_존재하지_않을시_업데이트_실패() {
-	// 	//given
-	// 	String categoryType = "EXPENDITURE";
-	// 	String categoryName = "예시지출카테고리";
-	// 	Category category = service.register(categoryType, categoryName);
-	//
-	// 	UserCategory userCategory =
-	// 		userCategoryRepository.findByUserAndCategory(user.getId(), category.getId()).orElseThrow();
-	// 	userCategoryRepository.delete(userCategory);
-	//
-	// 	//when
-	// 	//then
-	// 	assertThatExceptionOfType(NoSuchElementException.class).isThrownBy(
-	// 		() -> service.updateName(user, category.getId(), "업데이트된카테고리")
-	// 	);
-	// }
-	//
-	// @Test
 	// void 카테고리_삭제_성공() {
 	// 	//given
 	// 	String categoryType = "EXPENDITURE";

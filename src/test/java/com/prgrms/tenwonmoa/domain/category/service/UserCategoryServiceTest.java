@@ -27,6 +27,8 @@ class UserCategoryServiceTest {
 
 	private User user;
 
+	private User otherUser;
+
 	@Autowired
 	private UserCategoryRepository userCategoryRepository;
 
@@ -42,6 +44,7 @@ class UserCategoryServiceTest {
 	@BeforeEach
 	void setup() {
 		user = userRepository.save(createUser());
+		otherUser = userRepository.save(new User("otherUser@gmail.com", "123456789", "otherUser"));
 	}
 
 	@AfterEach
@@ -87,5 +90,19 @@ class UserCategoryServiceTest {
 		//then
 		Category category = userCategoryService.getById(userCategoryId).getCategory();
 		assertThat(category.getName()).isEqualTo("업데이트된 카테고리 이름");
+	}
+
+	@Test
+	void 유저가_권한이_없어_카테고리_수정_실패() {
+		//given
+		String categoryType = "EXPENDITURE";
+		String categoryName = "예시지출카테고리";
+		Long userCategoryId = userCategoryService.register(user, categoryType, categoryName);
+
+		//when
+		//then
+		assertThatIllegalStateException().isThrownBy(
+			() -> userCategoryService.updateName(otherUser, userCategoryId, "업데이트된 카테고리 이름")
+		);
 	}
 }

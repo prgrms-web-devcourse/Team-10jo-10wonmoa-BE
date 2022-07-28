@@ -1,9 +1,8 @@
 package com.prgrms.tenwonmoa.domain.user.controller;
 
-import java.net.URI;
-
 import javax.validation.Valid;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -25,7 +24,7 @@ public class UserController {
 	@PostMapping
 	public ResponseEntity<Void> signup(@Valid @RequestBody CreateUserRequest createUserRequest) {
 		userService.createUser(createUserRequest);
-		return ResponseEntity.created(URI.create("/users")).build();
+		return ResponseEntity.status(HttpStatus.CREATED).build();
 	}
 
 }

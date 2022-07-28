@@ -135,8 +135,8 @@ class ExpenditureServiceTest {
 
 		@Test
 		public void 해당_유저가_없을_경우() {
-			given(userRepository.findById(any())).willThrow(
-				new NoSuchElementException(Message.USER_NOT_FOUND.getMessage()));
+			given(userRepository.findById(any()))
+				.willThrow(new NoSuchElementException(Message.USER_NOT_FOUND.getMessage()));
 
 			assertThatThrownBy(() -> expenditureService.updateExpenditure(any(), expenditureId, request))
 				.isInstanceOf(NoSuchElementException.class)
@@ -212,26 +212,122 @@ class ExpenditureServiceTest {
 
 	@Nested
 	@DisplayName("지출 삭제 중")
-	class DeleteExpenditureTEst {
+	class DeleteExpenditureTest {
+
+		private Long userId = 1L;
+
+		private Long expenditureId = 2L;
+
+		@Test
+		public void 해당_유저가_없을_경우() {
+			given(userRepository.findById(any()))
+				.willThrow(new NoSuchElementException(Message.USER_NOT_FOUND.getMessage()));
+
+			assertThatThrownBy(() -> expenditureService.deleteExpenditure(any(), expenditureId))
+				.isInstanceOf(NoSuchElementException.class)
+				.hasMessage(Message.USER_NOT_FOUND.getMessage());
+		}
 
 		@Test
 		public void 삭제하려는_지출이_없을때() {
+			given(userRepository.findById(userId))
+				.willReturn(of(user));
+
 			given(expenditureRepository.findById(any()))
 				.willThrow(new NoSuchElementException(Message.EXPENDITURE_NOT_FOUND.getMessage()));
 
-			assertThatThrownBy(() -> expenditureService.deleteExpenditure(any()))
+			assertThatThrownBy(() -> expenditureService.deleteExpenditure(userId, any()))
 				.isInstanceOf(NoSuchElementException.class)
 				.hasMessage(Message.EXPENDITURE_NOT_FOUND.getMessage());
 		}
 
 		@Test
-		public void 지출을_성공적으로_삭제_할_때() {
-			given(expenditureRepository.findById(any()))
-				.willReturn(of(expenditure));
+		public void 해당_지출에_대한_삭제권한이_없을때() {
+			given(userRepository.findById(userId))
+				.willReturn(of(user));
 
-			expenditureService.deleteExpenditure(any());
+			given(expenditureRepository.findById(expenditureId))
+				.willReturn(of(mockExpenditure));
+
+			assertThatThrownBy(() -> expenditureService.deleteExpenditure(userId, expenditureId))
+				.isInstanceOf(IllegalArgumentException.class)
+				.hasMessage(Message.EXPENDITURE_NO_AUTHENTICATION.getMessage());
+
+		}
+
+		@Test
+		public void 지출을_성공적으로_삭제_할_때() {
+			given(userRepository.findById(userId))
+				.willReturn(of(user));
+
+			given(expenditureRepository.findById(expenditureId))
+				.willReturn(of(mockExpenditure));
+
+			given(mockExpenditure.getUser()).willReturn(user);
+
+			expenditureService.deleteExpenditure(userId, expenditureId);
 
 			verify(expenditureRepository).delete(any());
 		}
+	}
+
+	@Nested
+	@DisplayName("지출 조회 중")
+	class FindExpenditureTest {
+
+		private final Long userId = 1L;
+
+		private final Long expenditureId = 2L;
+
+		@Test
+		public void 해당_유저가_없을_경우() {
+			given(userRepository.findById(userId))
+				.willThrow(new NoSuchElementException(Message.USER_NOT_FOUND.getMessage()));
+
+			assertThatThrownBy(() -> expenditureService.findExpenditure(userId, expenditureId))
+				.isInstanceOf(NoSuchElementException.class)
+				.hasMessage(Message.USER_NOT_FOUND.getMessage());
+		}
+
+		@Test
+		public void 해당_지출이_없을_경우() {
+			given(userRepository.findById(userId))
+				.willReturn(of(user));
+
+			given(expenditureRepository.findById(any()))
+				.willThrow(new NoSuchElementException(Message.EXPENDITURE_NOT_FOUND.getMessage()));
+
+			assertThatThrownBy(() -> expenditureService.findExpenditure(userId, any()))
+				.isInstanceOf(NoSuchElementException.class)
+				.hasMessage(Message.EXPENDITURE_NOT_FOUND.getMessage());
+		}
+
+		@Test
+		public void 해당_지출을_조회할_권한이_없을경우() {
+			given(userRepository.findById(userId))
+				.willReturn(of(user));
+
+			given(expenditureRepository.findById(expenditureId))
+				.willReturn(of(mockExpenditure));
+
+			assertThatThrownBy(() -> expenditureService.findExpenditure(userId, expenditureId))
+				.isInstanceOf(IllegalArgumentException.class)
+				.hasMessage(Message.EXPENDITURE_NO_AUTHENTICATION.getMessage());
+		}
+
+		@Test
+		public void 성공적으로_조회_할_때() {
+			given(userRepository.findById(userId))
+				.willReturn(of(user));
+
+			given(expenditureRepository.findById(expenditureId))
+				.willReturn(of(mockExpenditure));
+
+			given(mockExpenditure.getUser()).willReturn(user);
+			expenditureService.findExpenditure(userId, expenditureId);
+
+			verify(expenditureRepository).findById(any());
+		}
+
 	}
 }

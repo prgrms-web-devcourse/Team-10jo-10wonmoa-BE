@@ -4,9 +4,13 @@ import static org.springframework.http.HttpStatus.*;
 
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 
+import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -32,7 +36,7 @@ public class GlobalExceptionHandler {
 
 	// 400 : NotFound - 잘못된 요청
 	@ExceptionHandler(NoSuchElementException.class)
-	public ResponseEntity<ErrorResponse> handleNotFoundException(HttpRequestMethodNotSupportedException exception) {
+	public ResponseEntity<ErrorResponse> handleNotFoundException(NoSuchElementException exception) {
 		log.error(exception.getMessage(), exception);
 		ErrorResponse errorResponse = new ErrorResponse(List.of(exception.getMessage()), BAD_REQUEST.value());
 		return ResponseEntity
@@ -41,11 +45,27 @@ public class GlobalExceptionHandler {
 	}
 
 	@ExceptionHandler(AlreadyExistException.class)
-	public ResponseEntity<ErrorResponse> handleAlreadyExistException(HttpRequestMethodNotSupportedException exception) {
+	public ResponseEntity<ErrorResponse> handleAlreadyExistException(AlreadyExistException exception) {
 		log.error(exception.getMessage(), exception);
 		ErrorResponse errorResponse = new ErrorResponse(List.of(exception.getMessage()), BAD_REQUEST.value());
 		return ResponseEntity
 			.status(BAD_REQUEST.value())
 			.body(errorResponse);
 	}
+
+	@ExceptionHandler(MethodArgumentNotValidException.class)
+	public ResponseEntity<ErrorResponse> handleAlreadyExistException(MethodArgumentNotValidException exception) {
+		BindingResult bindingResult = exception.getBindingResult();
+		List<String> errors = bindingResult.getAllErrors()
+			.stream()
+			.map(DefaultMessageSourceResolvable::getDefaultMessage)
+			.collect(Collectors.toList());
+
+		ErrorResponse errorResponse = new ErrorResponse(errors, BAD_REQUEST.value());
+
+		return ResponseEntity
+			.status(BAD_REQUEST)
+			.body(errorResponse);
+	}
+
 }

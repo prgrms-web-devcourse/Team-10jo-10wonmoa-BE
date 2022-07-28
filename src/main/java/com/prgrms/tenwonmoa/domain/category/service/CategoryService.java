@@ -11,7 +11,6 @@ import org.springframework.transaction.annotation.Transactional;
 import com.prgrms.tenwonmoa.domain.category.Category;
 import com.prgrms.tenwonmoa.domain.category.CategoryType;
 import com.prgrms.tenwonmoa.domain.category.UserCategory;
-import com.prgrms.tenwonmoa.domain.category.dto.service.SingleCategoryResult;
 import com.prgrms.tenwonmoa.domain.category.repository.CategoryRepository;
 import com.prgrms.tenwonmoa.domain.category.repository.UserCategoryRepository;
 import com.prgrms.tenwonmoa.domain.user.User;
@@ -27,18 +26,15 @@ public class CategoryService {
 
 	private final UserCategoryRepository userCategoryRepository;
 
-	public Long register(User user, String categoryType, String name) {
+	Category register(String categoryType, String name) {
 		CategoryType type = CategoryType.valueOf(categoryType.toUpperCase(Locale.ROOT));
-		Category savedCategory = categoryRepository.save(new Category(name, type));
 
-		userCategoryRepository.save(new UserCategory(user, savedCategory));
-
-		return savedCategory.getId();
+		return categoryRepository.save(new Category(name, type));
 	}
 
 	@Transactional(readOnly = true)
-	public SingleCategoryResult getById(Long id) {
-		return SingleCategoryResult.of(getCategoryById(id));
+	Category getById(Long id) {
+		return getCategoryById(id);
 	}
 
 	public String updateName(User user, Long categoryId, String name) {

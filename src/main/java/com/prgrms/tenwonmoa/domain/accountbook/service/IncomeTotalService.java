@@ -23,7 +23,7 @@ public class IncomeTotalService {
 	@Transactional
 	public Long createIncome(Long userId, CreateIncomeRequest createIncomeRequest) {
 		User user = userService.findById(userId);
-		UserCategory userCategory = userCategoryService.findById(createIncomeRequest.getUserCategoryId());
+		UserCategory userCategory = userCategoryService.getById(createIncomeRequest.getUserCategoryId());
 		Income income = createIncomeRequest.toEntity(user, userCategory, userCategory.getCategory().getName());
 
 		return incomeService.save(income);

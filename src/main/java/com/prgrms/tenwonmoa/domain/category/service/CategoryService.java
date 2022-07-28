@@ -28,13 +28,14 @@ public class CategoryService {
 
 	Category register(String categoryType, String name) {
 		CategoryType type = CategoryType.valueOf(categoryType.toUpperCase(Locale.ROOT));
-
 		return categoryRepository.save(new Category(name, type));
 	}
 
 	@Transactional(readOnly = true)
 	Category getById(Long id) {
-		return getCategoryById(id);
+		return categoryRepository.findById(id).orElseThrow(
+			() -> new NoSuchElementException(CATEGORY_NOT_FOUND.getMessage()));
+		// 해당 예외는 공격인 것임. 없는 카테고리에 대한 조회는 정상적인 환경에서는 나올 수 가없음
 	}
 
 	public String updateName(User user, Long categoryId, String name) {
@@ -47,7 +48,7 @@ public class CategoryService {
 
 	public void delete(User user, Long categoryId) {
 		UserCategory userCategory = getUserCategory(user, categoryId);
-		Category category = getCategoryById(categoryId);
+		Category category = getById(categoryId);
 
 		userCategoryRepository.delete(userCategory);
 		categoryRepository.delete(category);
@@ -60,9 +61,4 @@ public class CategoryService {
 		// -> 개발자가 알아야 할 예외(클라이언트에게는 잘못된 요청이라고 주고, 우리가 알아야 할 예외임)
 	}
 
-	private Category getCategoryById(Long id) {
-		return categoryRepository.findById(id).orElseThrow(
-			() -> new NoSuchElementException(CATEGORY_NOT_FOUND.getMessage()));
-		// 해당 예외는 공격인 것임. 없는 카테고리에 대한 조회는 정상적인 환경에서는 나올 수 가없음
-	}
 }

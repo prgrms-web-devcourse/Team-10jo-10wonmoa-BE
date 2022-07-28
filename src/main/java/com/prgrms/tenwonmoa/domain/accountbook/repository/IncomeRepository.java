@@ -8,8 +8,8 @@ import com.prgrms.tenwonmoa.domain.accountbook.Income;
 
 public interface IncomeRepository extends JpaRepository<Income, Long> {
 
-	@Modifying
+	@Modifying(clearAutomatically = true)
 	@Query("update Income i set i.userCategory = null where i.userCategory.id = :userCategoryId")
-	void setUserCategoryNull(Long userCategoryId);
+	void updateUserCategoryAsNull(Long userCategoryId);
 
 }

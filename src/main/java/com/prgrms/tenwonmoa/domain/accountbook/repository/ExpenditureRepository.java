@@ -8,8 +8,8 @@ import com.prgrms.tenwonmoa.domain.accountbook.Expenditure;
 
 public interface ExpenditureRepository extends JpaRepository<Expenditure, Long>, ExpenditureCustomRepository {
 
-	@Modifying
+	@Modifying(clearAutomatically = true)
 	@Query("update Expenditure e set e.userCategory = null where e.userCategory.id = :userCategoryId")
-	void setUserCategoryNull(Long userCategoryId);
+	void updateUserCategoryAsNull(Long userCategoryId);
 
 }

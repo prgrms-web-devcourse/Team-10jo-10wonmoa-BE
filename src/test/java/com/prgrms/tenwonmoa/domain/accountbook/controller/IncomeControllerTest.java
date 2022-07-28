@@ -40,7 +40,7 @@ class IncomeControllerTest {
 	@MockBean
 	private AccountBookService accountBookService;
 
-	private static final String LOCATION_PREFIX = "/api/v1/incomes/";
+	private static final String INCOME_CREATE_URI = "/api/v1/incomes/";
 
 	private CreateIncomeRequest request = new CreateIncomeRequest(
 		LocalDate.now(),
@@ -61,7 +61,7 @@ class IncomeControllerTest {
 		)
 			.andExpect(status().isCreated())
 			.andExpect(content().string(String.valueOf(createdId)))
-			.andExpect(redirectedUrl(LOCATION_PREFIX + createdId))
+			.andExpect(redirectedUrl(INCOME_CREATE_URI + createdId))
 			.andDo(document("income-create",
 				requestFields(
 					CreateIncomeRequestDoc.fieldDescriptors()

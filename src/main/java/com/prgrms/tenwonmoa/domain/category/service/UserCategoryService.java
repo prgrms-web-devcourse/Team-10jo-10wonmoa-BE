@@ -43,7 +43,7 @@ public class UserCategoryService {
 	}
 
 	private void validateUser(User authenticatedUser, User categoryUser) {
-		checkArgument(categoryUser.getId().equals(authenticatedUser.getId()),
+		checkState(categoryUser.getId().equals(authenticatedUser.getId()),
 			Message.CATEGORY_NO_AUTHENTICATION.getMessage());
 	}
 

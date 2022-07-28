@@ -24,7 +24,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.prgrms.tenwonmoa.common.documentdto.CreateIncomeRequestDoc;
 import com.prgrms.tenwonmoa.common.documentdto.ErrorResponseDoc;
 import com.prgrms.tenwonmoa.domain.accountbook.dto.CreateIncomeRequest;
-import com.prgrms.tenwonmoa.domain.accountbook.service.AccountBookService;
+import com.prgrms.tenwonmoa.domain.accountbook.service.IncomeTotalService;
 
 @WebMvcTest(controllers = IncomeController.class)
 @AutoConfigureRestDocs
@@ -38,7 +38,7 @@ class IncomeControllerTest {
 	private ObjectMapper objectMapper;
 
 	@MockBean
-	private AccountBookService accountBookService;
+	private IncomeTotalService incomeTotalService;
 
 	private static final String INCOME_CREATE_URI = "/api/v1/incomes/";
 
@@ -52,7 +52,7 @@ class IncomeControllerTest {
 	@Test
 	void 수입_등록_성공() throws Exception {
 		Long createdId = 1L;
-		given(accountBookService.createIncome(any(Long.class), any(CreateIncomeRequest.class)))
+		given(incomeTotalService.createIncome(any(Long.class), any(CreateIncomeRequest.class)))
 			.willReturn(createdId);
 
 		mockMvc.perform(post("/api/v1/incomes")
@@ -71,7 +71,7 @@ class IncomeControllerTest {
 
 	@Test
 	void 수입_등록_실패() throws Exception {
-		given(accountBookService.createIncome(any(Long.class), any(CreateIncomeRequest.class)))
+		given(incomeTotalService.createIncome(any(Long.class), any(CreateIncomeRequest.class)))
 			.willThrow(new NoSuchElementException(USER_CATEGORY_NOT_FOUND.getMessage()));
 
 		mockMvc.perform(post("/api/v1/incomes")

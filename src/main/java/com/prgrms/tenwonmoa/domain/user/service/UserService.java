@@ -25,6 +25,7 @@ public class UserService {
 			.orElseThrow(() -> new NoSuchElementException(Message.USER_NOT_FOUND.getMessage()));
 	}
 
+	@Transactional
 	public Long createUser(CreateUserRequest createUserRequest) {
 		if (userRepository.existsByEmail(createUserRequest.getEmail())) {
 			throw new AlreadyExistException(Message.ALREADY_EXISTS_USER);

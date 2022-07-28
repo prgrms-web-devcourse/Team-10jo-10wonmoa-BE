@@ -6,6 +6,7 @@ import static javax.persistence.FetchType.*;
 import static lombok.AccessLevel.*;
 
 import java.time.LocalDate;
+import java.util.Objects;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -85,5 +86,23 @@ public class Expenditure extends BaseEntity {
 		checkArgument(amount != null, "금액은 필수입니다.");
 		checkArgument(amount >= AMOUNT_MIN && amount <= AMOUNT_MAX,
 			"입력할 수 있는 범위가 아닙니다.");
+	}
+
+	/**
+	 * TODO : naming 부자연스럽지 않은지 조언 필요
+	 * */
+	public String getCategoryName() {
+		if (Objects.isNull(this.userCategory)) {
+			return this.categoryName;
+		}
+
+		return this.userCategory.getCategory().getName();
+	}
+
+	/**
+	 * TODO : 의논 필요, 윌리엄이 userCategory 만들때 null 설정할 메서드
+	 * */
+	public void deleteUserCategory() {
+		this.userCategory = null;
 	}
 }

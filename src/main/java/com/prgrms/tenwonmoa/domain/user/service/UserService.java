@@ -26,7 +26,7 @@ public class UserService {
 	}
 
 	public Long createUser(CreateUserRequest createUserRequest) {
-		if (userRepository.findByEmail(createUserRequest.getEmail()).isPresent()) {
+		if (userRepository.existsByEmail(createUserRequest.getEmail())) {
 			throw new AlreadyExistException(Message.ALREADY_EXISTS_USER);
 		}
 

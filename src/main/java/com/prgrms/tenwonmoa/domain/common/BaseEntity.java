@@ -19,7 +19,7 @@ import lombok.Getter;
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
 @Getter
-@EqualsAndHashCode
+@EqualsAndHashCode(of = "id")
 public class BaseEntity {
 
 	@Id

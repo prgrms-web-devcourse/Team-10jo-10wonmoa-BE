@@ -15,7 +15,7 @@ import lombok.RequiredArgsConstructor;
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
-public class AccountBookService {
+public class IncomeTotalService {
 	private final UserService userService;
 	private final UserCategoryService userCategoryService;
 	private final IncomeService incomeService;

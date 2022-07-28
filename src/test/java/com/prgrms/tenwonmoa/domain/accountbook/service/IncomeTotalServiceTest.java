@@ -25,7 +25,7 @@ import com.prgrms.tenwonmoa.exception.message.Message;
 
 @DisplayName("가계부 서비스 테스트")
 @ExtendWith(MockitoExtension.class)
-class AccountBookServiceTest {
+class IncomeTotalServiceTest {
 
 	@Mock
 	private UserService userService;
@@ -34,7 +34,7 @@ class AccountBookServiceTest {
 	@Mock
 	private IncomeService incomeService;
 	@InjectMocks
-	private AccountBookService accountBookService;
+	private IncomeTotalService accountBookService;
 
 	private final Income income = createIncome();
 	private final UserCategory userCategory = income.getUsercategory();

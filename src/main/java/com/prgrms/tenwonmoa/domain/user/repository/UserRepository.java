@@ -6,4 +6,6 @@ import com.prgrms.tenwonmoa.domain.user.User;
 
 public interface UserRepository extends JpaRepository<User, Long> {
 
+	boolean existsByEmail(String email);
+
 }

@@ -33,7 +33,8 @@ public enum Message {
 	INVALID_PASSWORD_LENGTH("비밀번호는 8~20 글자 사이입니다."),
 	NOT_NULL_USERNAME("이름은 필수입니다."),
 	INVALID_USERNAME_LENGTH("이름은 2~20 글자 사이입니다."),
-	INVALID_USERNAME_PATTERN("이름은 특수문자를 포함하지 않습니다.");
+	INVALID_USERNAME_PATTERN("이름은 특수문자를 포함하지 않습니다."),
+	ALREADY_EXISTS_USER("이미 존재하는 유저입니다.");
 
 	private final String message;
 

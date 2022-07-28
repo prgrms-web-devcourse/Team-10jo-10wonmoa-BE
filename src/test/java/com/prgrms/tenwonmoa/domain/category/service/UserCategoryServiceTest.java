@@ -105,4 +105,27 @@ class UserCategoryServiceTest {
 			() -> userCategoryService.updateName(otherUser, userCategoryId, "업데이트된 카테고리 이름")
 		);
 	}
+
+	@Test
+	void 유저카테고리_삭제_성공() {
+		//given
+		String categoryType = "EXPENDITURE";
+		String categoryName = "예시지출카테고리";
+		Long userCategoryId = userCategoryService.register(user, categoryType, categoryName);
+
+		//when
+		userCategoryService.delete(userCategoryId);
+
+		//then
+		assertThatExceptionOfType(NoSuchElementException.class)
+			.isThrownBy(() -> userCategoryService.getById(userCategoryId));
+	}
+
+	@Test
+	void 유저카테고리_존재하지_않을시_삭제_실패() {
+		//when
+		//then
+		assertThatExceptionOfType(NoSuchElementException.class)
+			.isThrownBy(() -> userCategoryService.delete(1L));
+	}
 }

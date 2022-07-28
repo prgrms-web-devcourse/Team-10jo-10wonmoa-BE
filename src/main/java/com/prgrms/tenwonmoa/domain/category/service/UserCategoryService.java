@@ -1,7 +1,6 @@
 package com.prgrms.tenwonmoa.domain.category.service;
 
 import static com.google.common.base.Preconditions.*;
-import static com.prgrms.tenwonmoa.exception.message.Message.*;
 
 import java.util.NoSuchElementException;
 
@@ -55,13 +54,7 @@ public class UserCategoryService {
 	}
 
 	public void delete(Long userCategoryId) {
-
-	}
-
-	private UserCategory getUserCategory(User user, Long categoryId) {
-		return userCategoryRepository.findByUserAndCategory(user.getId(), categoryId)
-			.orElseThrow(() -> new NoSuchElementException(USER_CATEGORY_NOT_FOUND.getMessage()));
-		// 이것도 정상이 아닌 공격 or 버그
-		// -> 개발자가 알아야 할 예외(클라이언트에게는 잘못된 요청이라고 주고, 우리가 알아야 할 예외임)
+		UserCategory userCategory = getById(userCategoryId);
+		userCategoryRepository.delete(userCategory);
 	}
 }

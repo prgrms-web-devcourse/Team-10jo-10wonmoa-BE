@@ -5,7 +5,7 @@ import static com.prgrms.tenwonmoa.exception.message.Message.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -25,7 +25,7 @@ class IncomeTest {
 
 	@Test
 	void 수입_생성_성공() {
-		Income income = new Income(LocalDate.now(), 1000L, null, category.getName(), user, userCategory);
+		Income income = new Income(LocalDateTime.now(), 1000L, null, category.getName(), user, userCategory);
 
 		assertAll(
 			() -> assertThat(income.getUser()).isEqualTo(user),
@@ -35,7 +35,7 @@ class IncomeTest {
 
 	@Test
 	void 수입금액은_최대크기를_넘을수없다() {
-		assertThatThrownBy(() -> new Income(LocalDate.now(),
+		assertThatThrownBy(() -> new Income(LocalDateTime.now(),
 			AMOUNT_MAX + 1,
 			null,
 			category.getName(),
@@ -47,7 +47,7 @@ class IncomeTest {
 
 	@Test
 	void 수입금은_0원이하_등록할수없다() {
-		assertThatThrownBy(() -> new Income(LocalDate.now(),
+		assertThatThrownBy(() -> new Income(LocalDateTime.now(),
 			0L,
 			null,
 			category.getName(),
@@ -61,7 +61,7 @@ class IncomeTest {
 	@Test
 	void 수입의_내용은_최대50자() {
 		String content = RandomString.make(CONTENT_MAX + 1);
-		assertThatThrownBy(() -> new Income(LocalDate.now(),
+		assertThatThrownBy(() -> new Income(LocalDateTime.now(),
 			1000L,
 			content,
 			category.getName(),
@@ -75,7 +75,7 @@ class IncomeTest {
 	@Test
 	void 카테고리이름은_최대_20자() {
 		String categoryName = RandomString.make(Category.MAX_NAME_LENGTH + 1);
-		assertThatThrownBy(() -> new Income(LocalDate.now(),
+		assertThatThrownBy(() -> new Income(LocalDateTime.now(),
 			1000L,
 			null,
 			categoryName,
@@ -88,12 +88,12 @@ class IncomeTest {
 	@Test
 	void nullable_false_필드테스트() {
 		String categoryName = null;
-		LocalDate registerDate = null;
+		LocalDateTime registerDate = null;
 		Long amount = null;
 
 		assertAll(
 			() -> assertThatThrownBy(
-				() -> new Income(LocalDate.now(),
+				() -> new Income(LocalDateTime.now(),
 					1000L,
 					"content",
 					categoryName,
@@ -111,7 +111,7 @@ class IncomeTest {
 			)
 				.isInstanceOf(IllegalArgumentException.class),
 			() -> assertThatThrownBy(
-				() -> new Income(LocalDate.now(),
+				() -> new Income(LocalDateTime.now(),
 					amount,
 					"content",
 					"categoryName",

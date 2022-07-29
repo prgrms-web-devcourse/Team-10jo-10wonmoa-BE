@@ -7,7 +7,7 @@ import static javax.persistence.FetchType.*;
 import static lombok.AccessLevel.*;
 import static org.springframework.util.StringUtils.*;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 import javax.persistence.Column;
@@ -31,7 +31,7 @@ import lombok.NoArgsConstructor;
 @Table(name = "income")
 public class Income extends BaseEntity {
 	@Column(name = "register_date", nullable = false)
-	private LocalDate registerDate;
+	private LocalDateTime registerDate;
 
 	@Column(name = "amount", nullable = false)
 	private Long amount;
@@ -50,7 +50,7 @@ public class Income extends BaseEntity {
 	@JoinColumn(name = "user_category_id")
 	private UserCategory userCategory;
 
-	public Income(LocalDate registerDate, Long amount, String content, String categoryName, User user,
+	public Income(LocalDateTime registerDate, Long amount, String content, String categoryName, User user,
 		UserCategory userCategory) {
 		checkArgument(registerDate != null, NOT_NULL_REGISTER_DATE.getMessage());
 		validateCategoryName(categoryName);
@@ -58,7 +58,7 @@ public class Income extends BaseEntity {
 		if (Objects.nonNull(content)) {
 			checkArgument(content.length() <= CONTENT_MAX, INVALID_CONTENT_ERR_MSG.getMessage());
 		}
-		this.registerDate = LocalDate.now();
+		this.registerDate = registerDate;
 		this.amount = amount;
 		this.content = content;
 		this.categoryName = categoryName;

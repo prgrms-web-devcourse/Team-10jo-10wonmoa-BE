@@ -1,6 +1,6 @@
 package com.prgrms.tenwonmoa.domain.accountbook.dto;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import com.prgrms.tenwonmoa.domain.accountbook.Income;
 
@@ -11,7 +11,7 @@ public class FindIncomeResponse {
 
 	private final Long id;
 
-	private final LocalDate registerDate;
+	private final LocalDateTime registerDate;
 
 	private final Long amount;
 
@@ -19,7 +19,7 @@ public class FindIncomeResponse {
 
 	private final String categoryName;
 
-	public FindIncomeResponse(Long id, LocalDate registerDate, Long amount, String content,
+	public FindIncomeResponse(Long id, LocalDateTime registerDate, Long amount, String content,
 		String categoryName) {
 		this.id = id;
 		this.registerDate = registerDate;

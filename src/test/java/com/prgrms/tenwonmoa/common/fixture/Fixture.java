@@ -1,6 +1,6 @@
 package com.prgrms.tenwonmoa.common.fixture;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Random;
 
 import com.prgrms.tenwonmoa.domain.accountbook.Expenditure;
@@ -50,7 +50,7 @@ public final class Fixture {
 	}
 
 	public static Income createIncome(UserCategory userCategory) {
-		return new Income(LocalDate.now(),
+		return new Income(LocalDateTime.now(),
 			1000L,
 			"content",
 			userCategory.getCategory().getName(),

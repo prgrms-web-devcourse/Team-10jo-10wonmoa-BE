@@ -37,15 +37,15 @@ public class UserCategoryService {
 		return userCategory.getId();
 	}
 
-	public String updateName(User authenticatedUser, Long userCategoryId, String name) {
+	public String updateName(User authenticatedUser, Long userCategoryId, String desiredName) {
 		UserCategory userCategory = getById(userCategoryId);
 
 		User user = userCategory.getUser();
 		validateUser(authenticatedUser, user);
 
 		Category category = userCategory.getCategory();
-		category.updateName(name);
-		// TODO : 해당하는 userCategoryId를 가진 지출과 수입에 대해 가지고 있는 name들도 바꿔주어야함
+		category.updateName(desiredName);
+
 		return category.getName();
 	}
 

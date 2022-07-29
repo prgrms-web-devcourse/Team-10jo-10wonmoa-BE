@@ -34,8 +34,4 @@ public class IncomeService {
 	public void setUserCategoryNull(Long userCategoryId) {
 		incomeRepository.updateUserCategoryAsNull(userCategoryId);
 	}
-
-	public void updateUserCategoryName(Long userCategoryId, String name) {
-		incomeRepository.updateCategoryName(userCategoryId, name);
-	}
 }

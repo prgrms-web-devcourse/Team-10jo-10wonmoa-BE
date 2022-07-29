@@ -102,6 +102,41 @@ class UserCategoryServiceTest {
 	}
 
 	@Test
+	void 유저카테고리_이름_수정시_지출_수입도_이름수정_성공() {
+		//given
+		String categoryType = "EXPENDITURE";
+		String categoryName = "예시지출카테고리";
+		Long userCategoryId = userCategoryService.register(user, categoryType, categoryName);
+		UserCategory userCategory = userCategoryService.getById(userCategoryId);
+
+		Expenditure savedExpenditure = expenditureRepository.save(
+			new Expenditure(LocalDate.now(), 10000L,
+				"내용", categoryName, user, userCategory)
+		);
+
+		Income savedIncome = incomeRepository.save(
+			new Income(LocalDate.now(), 10000L,
+				"내용", categoryName, user, userCategory)
+		);
+
+		//when
+		userCategoryService.updateName(user, userCategoryId, "업데이트 카테고리");
+
+		//then
+		UserCategory updatedUserCategory = userCategoryService.getById(userCategoryId);
+		Category updatedCategory = updatedUserCategory.getCategory();
+		assertThat(updatedCategory.getName()).isEqualTo("업데이트 카테고리");
+
+		Expenditure updatedExpenditure = expenditureRepository.findById(
+			savedExpenditure.getId()).orElseThrow();
+		assertThat(updatedExpenditure.getCategoryName()).isEqualTo("업데이트 카테고리");
+
+		Income updatedIncome = incomeRepository.findById(
+			savedIncome.getId()).orElseThrow();
+		assertThat(updatedIncome.getCategoryName()).isEqualTo("업데이트 카테고리");
+	}
+
+	@Test
 	void 유저가_권한이_없어_카테고리_수정_실패() {
 		//given
 		String categoryType = "EXPENDITURE";

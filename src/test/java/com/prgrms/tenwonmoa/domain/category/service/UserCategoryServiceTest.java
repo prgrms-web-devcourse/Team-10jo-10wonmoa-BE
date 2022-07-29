@@ -52,7 +52,7 @@ class UserCategoryServiceTest {
 	@BeforeEach
 	void setup() {
 		user = userRepository.save(createUser());
-		otherUser = userRepository.save(new User("otherUser@gmail.com", "123456789", "otherUser"));
+		otherUser = userRepository.save(createAnotherUser());
 	}
 
 	@AfterEach

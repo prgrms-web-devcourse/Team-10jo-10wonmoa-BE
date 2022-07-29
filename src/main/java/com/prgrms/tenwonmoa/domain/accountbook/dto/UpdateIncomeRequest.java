@@ -1,6 +1,7 @@
 package com.prgrms.tenwonmoa.domain.accountbook.dto;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
@@ -16,7 +17,7 @@ import lombok.Getter;
 @Getter
 public class UpdateIncomeRequest {
 	@NotNull
-	private final LocalDate registerDate;
+	private final LocalDateTime registerDate;
 
 	@Min(1L)
 	@Max(1000000000000L)
@@ -28,7 +29,7 @@ public class UpdateIncomeRequest {
 	@NotNull
 	private final Long userCategoryId;
 
-	public UpdateIncomeRequest(LocalDate registerDate, Long amount, String content, Long userCategoryId) {
+	public UpdateIncomeRequest(LocalDateTime registerDate, Long amount, String content, Long userCategoryId) {
 		this.registerDate = registerDate;
 		this.amount = amount;
 		this.content = content;

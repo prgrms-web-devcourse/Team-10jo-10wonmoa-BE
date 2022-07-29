@@ -11,23 +11,23 @@ import lombok.RequiredArgsConstructor;
 
 @AllArgsConstructor
 @Getter
-public final class ReadCategoryResult {
+public final class ReadCategoryResponse {
 
-	private final List<SingleCategoryResult> categories;
+	private final List<SingleCategoryResponse> categories;
 
-	public static ReadCategoryResult of(List<UserCategory> categories) {
-		List<SingleCategoryResult> categoryResults = categories.stream()
-			.map(userCategory -> new SingleCategoryResult(
+	public static ReadCategoryResponse of(List<UserCategory> categories) {
+		List<SingleCategoryResponse> categoryResults = categories.stream()
+			.map(userCategory -> new SingleCategoryResponse(
 				userCategory.getId(), userCategory.getCategoryName(),
 				userCategory.getCategoryType().name()))
 			.collect(Collectors.toList());
 
-		return new ReadCategoryResult(categoryResults);
+		return new ReadCategoryResponse(categoryResults);
 	}
 
 	@RequiredArgsConstructor
 	@Getter
-	public static class SingleCategoryResult {
+	public static class SingleCategoryResponse {
 
 		private final Long id;
 

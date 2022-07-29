@@ -9,7 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.prgrms.tenwonmoa.domain.category.CategoryType;
 import com.prgrms.tenwonmoa.domain.category.UserCategory;
-import com.prgrms.tenwonmoa.domain.category.dto.ReadCategoryResult;
+import com.prgrms.tenwonmoa.domain.category.dto.ReadCategoryResponse;
 import com.prgrms.tenwonmoa.domain.category.repository.UserCategoryRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -21,7 +21,7 @@ public class ReadUserCategoryService {
 
 	private final UserCategoryRepository repository;
 
-	public ReadCategoryResult getUserCategories(Long userId, String categoryType) {
+	public ReadCategoryResponse getUserCategories(Long userId, String categoryType) {
 		CategoryType type = CategoryType.valueOf(categoryType.toUpperCase(Locale.ROOT));
 
 		List<UserCategory> categories = repository.findByUserId(userId)
@@ -29,6 +29,6 @@ public class ReadUserCategoryService {
 			.filter(userCategory -> userCategory.getCategoryType().equals(type))
 			.collect(Collectors.toList());
 
-		return ReadCategoryResult.of(categories);
+		return ReadCategoryResponse.of(categories);
 	}
 }

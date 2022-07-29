@@ -10,8 +10,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import com.prgrms.tenwonmoa.domain.category.dto.ReadCategoryResult;
-import com.prgrms.tenwonmoa.domain.category.dto.ReadCategoryResult.SingleCategoryResult;
+import com.prgrms.tenwonmoa.domain.category.dto.ReadCategoryResponse;
+import com.prgrms.tenwonmoa.domain.category.dto.ReadCategoryResponse.SingleCategoryResponse;
 import com.prgrms.tenwonmoa.domain.category.repository.UserCategoryRepository;
 import com.prgrms.tenwonmoa.domain.user.User;
 import com.prgrms.tenwonmoa.domain.user.repository.UserRepository;
@@ -55,15 +55,15 @@ class ReadUserCategoryServiceTest {
 		Long id5 = userCategoryService.register(user, "INCOME", "투자");
 
 		//when
-		ReadCategoryResult expenditureCategories =
+		ReadCategoryResponse expenditureCategories =
 			readUserCategoryService.getUserCategories(user.getId(), "EXPENDITURE");
 
-		ReadCategoryResult incomeCategories =
+		ReadCategoryResponse incomeCategories =
 			readUserCategoryService.getUserCategories(user.getId(), "INCOME");
 
 		//then
 		assertThat(expenditureCategories.getCategories())
-			.extracting(SingleCategoryResult::getId, SingleCategoryResult::getName)
+			.extracting(SingleCategoryResponse::getId, SingleCategoryResponse::getName)
 			.containsExactlyInAnyOrder(
 				tuple(id1, "식비"),
 				tuple(id2, "교통비"),
@@ -71,7 +71,7 @@ class ReadUserCategoryServiceTest {
 			);
 
 		assertThat(incomeCategories.getCategories())
-			.extracting(SingleCategoryResult::getId, SingleCategoryResult::getName)
+			.extracting(SingleCategoryResponse::getId, SingleCategoryResponse::getName)
 			.containsExactlyInAnyOrder(
 				tuple(id4, "월급"),
 				tuple(id5, "투자")

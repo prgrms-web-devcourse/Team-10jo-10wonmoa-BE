@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.*;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -35,6 +36,31 @@ class ExpenditureRepositoryTest extends RepositoryTest {
 		user = save(createUser());
 		category = save(createCategory());
 		userCategory = save(new UserCategory(user, category));
+	}
+
+	@Test
+	void 해당하는_유저카테고리_아이디를_가진_지출의_유저카테고리를_null_로_업데이트() {
+		//given
+		Expenditure expenditure = new Expenditure(
+			LocalDate.now(), 10000L, "내용", category.getName(), user, userCategory);
+
+		Expenditure expenditure2 = new Expenditure(
+			LocalDate.now(), 10000L, "내용", category.getName(), user, userCategory);
+
+		Expenditure expenditure3 = new Expenditure(
+			LocalDate.now(), 10000L, "내용", category.getName(), user, userCategory);
+
+		expenditureRepository.saveAll(List.of(expenditure, expenditure2, expenditure3));
+
+		//when
+		expenditureRepository.updateUserCategoryAsNull(userCategory.getId());
+
+		//then
+		List<UserCategory> categories = expenditureRepository.findAll()
+			.stream()
+			.map(Expenditure::getUserCategory)
+			.collect(Collectors.toList());
+		assertThat(categories).containsExactly(null, null, null);
 	}
 
 	@Nested

@@ -34,7 +34,7 @@ public class IncomeController {
 		Long userId = 1L; // TODO user 정보를 시큐리티 컨텍스에서 찾도록 변경한다.
 		Long createdId = incomeTotalService.createIncome(userId, request);
 
-		String redirectUri = new StringBuilder(LOCATION_PREFIX).append(createdId).toString();
+		String redirectUri = LOCATION_PREFIX + createdId;
 		return ResponseEntity.created(URI.create(redirectUri)).body(createdId);
 	}
 

@@ -22,7 +22,7 @@ public final class Fixture {
 		for (int i = 0; i < targetStringLength; i++) {
 			int randomLimitedInt = leftLimit + (int)
 				(random.nextFloat() * (rightLimit - leftLimit + 1));
-			buffer.append((char) randomLimitedInt);
+			buffer.append((char)randomLimitedInt);
 		}
 		return buffer.toString();
 	}

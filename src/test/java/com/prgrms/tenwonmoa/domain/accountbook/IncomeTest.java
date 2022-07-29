@@ -29,7 +29,7 @@ class IncomeTest {
 
 		assertAll(
 			() -> assertThat(income.getUser()).isEqualTo(user),
-			() -> assertThat(income.getUsercategory()).isEqualTo(userCategory)
+			() -> assertThat(income.getUserCategory()).isEqualTo(userCategory)
 		);
 	}
 

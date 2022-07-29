@@ -5,7 +5,7 @@ endif::[]
 
 == 유저
 
-### 회원가입
+=== 회원가입
 
 .Request
 include::{snippets}/user-create/http-request.adoc[]

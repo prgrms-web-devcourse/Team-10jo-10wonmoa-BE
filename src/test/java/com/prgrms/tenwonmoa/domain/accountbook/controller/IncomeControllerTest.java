@@ -34,6 +34,22 @@ import com.prgrms.tenwonmoa.domain.accountbook.service.IncomeTotalService;
 @MockBean(JpaMetamodelMappingContext.class)
 @DisplayName("수입 컨트롤러 테스트")
 class IncomeControllerTest {
+	private static final String LOCATION_PREFIX = "/api/v1/incomes/";
+
+	private final CreateIncomeRequest createIncomeRequest = new CreateIncomeRequest(
+		LocalDate.now(),
+		1000L,
+		"content",
+		1L
+	);
+
+	private final FindIncomeResponse findIncomeResponse = new FindIncomeResponse(
+		1L,
+		LocalDate.now(),
+		1000L,
+		"content",
+		"용돈"
+	);
 	@Autowired
 	private MockMvc mockMvc;
 
@@ -46,23 +62,6 @@ class IncomeControllerTest {
 	@MockBean
 	private IncomeService incomeService;
 
-	private static final String LOCATION_PREFIX = "/api/v1/incomes/";
-
-	private CreateIncomeRequest createIncomeRequest = new CreateIncomeRequest(
-		LocalDate.now(),
-		1000L,
-		"content",
-		1L
-	);
-
-	private FindIncomeResponse findIncomeResponse = new FindIncomeResponse(
-		1L,
-		LocalDate.now(),
-		1000L,
-		"content",
-		"용돈"
-	);
-
 	@Test
 	void 수입_등록_성공() throws Exception {
 		Long createdId = 1L;
@@ -70,9 +69,9 @@ class IncomeControllerTest {
 			.willReturn(createdId);
 
 		mockMvc.perform(post(LOCATION_PREFIX)
-			.contentType(MediaType.APPLICATION_JSON)
-			.content(objectMapper.writeValueAsString(createIncomeRequest))
-		)
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(createIncomeRequest))
+			)
 			.andExpect(status().isCreated())
 			.andExpect(content().string(String.valueOf(createdId)))
 			.andExpect(redirectedUrl(LOCATION_PREFIX + createdId))
@@ -89,9 +88,9 @@ class IncomeControllerTest {
 			.willThrow(new NoSuchElementException(USER_CATEGORY_NOT_FOUND.getMessage()));
 
 		mockMvc.perform(post(LOCATION_PREFIX)
-			.contentType(MediaType.APPLICATION_JSON)
-			.content(objectMapper.writeValueAsString(createIncomeRequest))
-		)
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(createIncomeRequest))
+			)
 			.andExpect(status().isBadRequest())
 			.andDo(document("income-create-fail", responseFields(
 				ErrorResponseDoc.fieldDescriptors()
@@ -104,9 +103,9 @@ class IncomeControllerTest {
 			.willReturn(findIncomeResponse);
 
 		mockMvc.perform(get(LOCATION_PREFIX + "/{incomeId}", findIncomeResponse.getId())
-			.contentType(MediaType.APPLICATION_JSON)
-			.content(objectMapper.writeValueAsString(createIncomeRequest))
-		)
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(createIncomeRequest))
+			)
 			.andExpect(status().isOk())
 			.andDo(document("income-find-by-id", responseFields(
 				FindIncomeResponseDoc.fieldDescriptors()
@@ -119,9 +118,9 @@ class IncomeControllerTest {
 			.willThrow(new NoSuchElementException(INCOME_NOT_FOUND.getMessage()));
 
 		mockMvc.perform(get(LOCATION_PREFIX + "/{incomeId}", findIncomeResponse.getId())
-			.contentType(MediaType.APPLICATION_JSON)
-			.content(objectMapper.writeValueAsString(createIncomeRequest))
-		)
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(createIncomeRequest))
+			)
 			.andExpect(status().isBadRequest())
 			.andDo(document("income-find-by-id-fail", responseFields(
 				ErrorResponseDoc.fieldDescriptors()

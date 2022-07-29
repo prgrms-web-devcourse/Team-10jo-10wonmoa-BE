@@ -30,4 +30,8 @@ public class IncomeService {
 			.orElseThrow(() -> new NoSuchElementException(INCOME_NOT_FOUND.getMessage()));
 		return FindIncomeResponse.of(findIncome);
 	}
+
+	public void setUserCategoryNull(Long userCategoryId) {
+		incomeRepository.updateUserCategoryAsNull(userCategoryId);
+	}
 }

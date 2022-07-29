@@ -165,7 +165,7 @@ class ExpenditureServiceTest {
 				.willReturn(of(mockExpenditure));
 
 			assertThatThrownBy(() -> expenditureService.updateExpenditure(userId, expenditureId, request))
-				.isInstanceOf(IllegalArgumentException.class)
+				.isInstanceOf(IllegalStateException.class)
 				.hasMessage(Message.EXPENDITURE_NO_AUTHENTICATION.getMessage());
 
 		}
@@ -250,7 +250,7 @@ class ExpenditureServiceTest {
 				.willReturn(of(mockExpenditure));
 
 			assertThatThrownBy(() -> expenditureService.deleteExpenditure(userId, expenditureId))
-				.isInstanceOf(IllegalArgumentException.class)
+				.isInstanceOf(IllegalStateException.class)
 				.hasMessage(Message.EXPENDITURE_NO_AUTHENTICATION.getMessage());
 
 		}
@@ -311,7 +311,7 @@ class ExpenditureServiceTest {
 				.willReturn(of(mockExpenditure));
 
 			assertThatThrownBy(() -> expenditureService.findExpenditure(userId, expenditureId))
-				.isInstanceOf(IllegalArgumentException.class)
+				.isInstanceOf(IllegalStateException.class)
 				.hasMessage(Message.EXPENDITURE_NO_AUTHENTICATION.getMessage());
 		}
 

@@ -54,7 +54,7 @@ class UserControllerTest {
 					fieldWithPath("email").type(JsonFieldType.STRING).description("이메일"),
 					fieldWithPath("username").type(JsonFieldType.STRING).description("사용자이름"),
 					fieldWithPath("password").type(JsonFieldType.STRING).description("비밀번호"))
-				));
+			));
 	}
 
 }

@@ -16,6 +16,8 @@ public enum Message {
 	USER_CATEGORY_NOT_FOUND("해당 사용자 카테고리는 존재하지 않습니다."),
 	CATEGORY_NOT_FOUND("해당 카테고리가 존재 하지 않습니다."),
 
+	CATEGORY_NO_AUTHENTICATION("카테고리에 대한 접근권한이 없습니다."),
+
 	// 가계부(수입 지출)
 	NOT_NULL_REGISTER_DATE("등록 날짜는 필수입니다."),
 	NOT_NULL_AMOUNT("금액은 필수입니다."),

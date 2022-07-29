@@ -3,6 +3,7 @@ package com.prgrms.tenwonmoa.domain.category.service;
 import static org.assertj.core.api.Assertions.*;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
@@ -45,82 +46,30 @@ class CategoryServiceTest {
 			.isEqualTo(List.of(categoryName, CategoryType.valueOf(categoryType)));
 	}
 
-	// @Test
-	// void 카테고리_이름_업데이트_성공() {
-	// 	//given
-	// 	String categoryType = "EXPENDITURE";
-	// 	String categoryName = "예시지출카테고리";
-	// 	Category category = service.register(categoryType, categoryName);
-	//
-	// 	//when
-	// 	service.updateName(user, category.getId(), "업데이트된카테고리");
-	// 	em.flush();
-	//
-	// 	//then
-	// 	Category categoryResult = service.getById(category.getId());
-	// 	assertThat(categoryResult.getName()).isEqualTo("업데이트된카테고리");
-	// }
-	//
-	// @Test
-	// void 유저_카테고리에_존재하지_않을시_업데이트_실패() {
-	// 	//given
-	// 	String categoryType = "EXPENDITURE";
-	// 	String categoryName = "예시지출카테고리";
-	// 	Category category = service.register(categoryType, categoryName);
-	//
-	// 	UserCategory userCategory =
-	// 		userCategoryRepository.findByUserAndCategory(user.getId(), category.getId()).orElseThrow();
-	// 	userCategoryRepository.delete(userCategory);
-	//
-	// 	//when
-	// 	//then
-	// 	assertThatExceptionOfType(NoSuchElementException.class).isThrownBy(
-	// 		() -> service.updateName(user, category.getId(), "업데이트된카테고리")
-	// 	);
-	// }
-	//
-	// @Test
-	// void 카테고리_삭제_성공() {
-	// 	//given
-	// 	String categoryType = "EXPENDITURE";
-	// 	String categoryName = "예시지출카테고리";
-	// 	Category category = service.register(categoryType, categoryName);
-	//
-	// 	//when
-	// 	service.delete(user, category.getId());
-	//
-	// 	//then
-	// 	assertThatExceptionOfType(NoSuchElementException.class).isThrownBy(
-	// 		() -> service.getById(category.getId())
-	// 	);
-	// }
-	//
-	// @Test
-	// void 카테고리_존재하지않을시_삭제_실패() {
-	// 	//given
-	// 	//when
-	// 	//then
-	// 	assertThatExceptionOfType(NoSuchElementException.class).isThrownBy(
-	// 		() -> service.delete(user, 0L)
-	// 	);
-	// }
-	//
-	// @Test
-	// void 유저_카테고리에_존재하지_않을시_삭제_실패() {
-	// 	//given
-	// 	String categoryType = "EXPENDITURE";
-	// 	String categoryName = "예시지출카테고리";
-	// 	Category category = service.register(categoryType, categoryName);
-	//
-	// 	UserCategory userCategory =
-	// 		userCategoryRepository.findByUserAndCategory(user.getId(), category.getId()).orElseThrow();
-	// 	userCategoryRepository.delete(userCategory);
-	//
-	// 	//when
-	// 	//then
-	// 	assertThatExceptionOfType(NoSuchElementException.class).isThrownBy(
-	// 		() -> service.delete(user, category.getId())
-	// 	);
-	//
-	// }
+	@Test
+	void 카테고리_삭제_성공() {
+		//given
+		String categoryType = "EXPENDITURE";
+		String categoryName = "예시지출카테고리";
+		Category category = service.register(categoryType, categoryName);
+
+		//when
+		service.delete(category.getId());
+
+		//then
+		assertThatExceptionOfType(NoSuchElementException.class).isThrownBy(
+			() -> service.getById(category.getId())
+		);
+	}
+
+	@Test
+	void 카테고리_존재하지않을시_삭제_실패() {
+		//given
+		//when
+		//then
+		assertThatExceptionOfType(NoSuchElementException.class).isThrownBy(
+			() -> service.delete(0L)
+		);
+	}
+
 }

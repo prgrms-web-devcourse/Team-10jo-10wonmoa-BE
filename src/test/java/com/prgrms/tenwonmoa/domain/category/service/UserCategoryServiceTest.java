@@ -14,6 +14,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.prgrms.tenwonmoa.domain.accountbook.Expenditure;
 import com.prgrms.tenwonmoa.domain.accountbook.Income;
@@ -102,6 +103,7 @@ class UserCategoryServiceTest {
 	}
 
 	@Test
+	@Transactional
 	void 유저카테고리_이름_수정시_지출_수입도_이름수정_성공() {
 		//given
 		String categoryType = "EXPENDITURE";

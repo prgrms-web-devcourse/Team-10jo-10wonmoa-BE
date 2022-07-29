@@ -2,7 +2,6 @@ package com.prgrms.tenwonmoa.domain.category.service;
 
 import java.util.List;
 import java.util.Locale;
-import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,11 +23,8 @@ public class ReadUserCategoryService {
 	public ReadCategoryResponse getUserCategories(Long userId, String categoryType) {
 		CategoryType type = CategoryType.valueOf(categoryType.toUpperCase(Locale.ROOT));
 
-		List<UserCategory> categories = repository.findByUserId(userId)
-			.stream()
-			.filter(userCategory -> userCategory.getCategoryType().equals(type))
-			.collect(Collectors.toList());
+		List<UserCategory> userCategories = repository.findByUserIdAndCategoryType(userId, type);
 
-		return ReadCategoryResponse.of(categories);
+		return ReadCategoryResponse.of(userCategories);
 	}
 }

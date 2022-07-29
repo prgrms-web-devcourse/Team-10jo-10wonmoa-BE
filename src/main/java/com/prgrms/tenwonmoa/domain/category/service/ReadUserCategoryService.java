@@ -22,7 +22,7 @@ public class ReadUserCategoryService {
 
 	private final UserCategoryRepository repository;
 
-	public ReadCategoryResult getAllUserCategories(Long userId, String categoryType) {
+	public ReadCategoryResult getUserCategories(Long userId, String categoryType) {
 		CategoryType type = CategoryType.valueOf(categoryType.toUpperCase(Locale.ROOT));
 
 		List<Category> categories = repository.findByUserId(userId)

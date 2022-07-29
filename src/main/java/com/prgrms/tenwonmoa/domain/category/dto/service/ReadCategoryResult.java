@@ -26,7 +26,7 @@ public final class ReadCategoryResult {
 
 	@RequiredArgsConstructor
 	@Getter
-	private static class SingleCategoryResult {
+	public static class SingleCategoryResult {
 
 		private final Long id;
 

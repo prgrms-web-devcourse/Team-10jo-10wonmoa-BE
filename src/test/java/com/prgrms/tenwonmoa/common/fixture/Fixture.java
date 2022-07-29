@@ -1,6 +1,5 @@
 package com.prgrms.tenwonmoa.common.fixture;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Random;
 
@@ -60,7 +59,7 @@ public final class Fixture {
 	}
 
 	public static Expenditure createExpenditure(UserCategory userCategory) {
-		return new Expenditure(LocalDate.now(),
+		return new Expenditure(LocalDateTime.now(),
 			1000L,
 			"content",
 			userCategory.getCategory().getName(),

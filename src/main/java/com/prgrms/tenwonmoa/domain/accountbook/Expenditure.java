@@ -5,7 +5,7 @@ import static com.prgrms.tenwonmoa.domain.accountbook.AccountBookConst.*;
 import static javax.persistence.FetchType.*;
 import static lombok.AccessLevel.*;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 import javax.persistence.Column;
@@ -32,7 +32,7 @@ import lombok.NoArgsConstructor;
 public class Expenditure extends BaseEntity {
 
 	@Column(name = "register_date", nullable = false)
-	private LocalDate registerDate;
+	private LocalDateTime registerDate;
 
 	@Column(name = "amount", nullable = false)
 	private Long amount;
@@ -55,7 +55,7 @@ public class Expenditure extends BaseEntity {
 		name = "user_category_id")
 	private UserCategory userCategory;
 
-	public Expenditure(LocalDate registerDate, Long amount, String content,
+	public Expenditure(LocalDateTime registerDate, Long amount, String content,
 		String categoryName, User user, UserCategory userCategory) {
 		checkArgument(registerDate != null, "날짜는 필수입니다.");
 		validateAmount(amount);

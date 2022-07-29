@@ -5,6 +5,7 @@ import java.util.NoSuchElementException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.prgrms.tenwonmoa.domain.category.service.CreateDefaultUserCategoryService;
 import com.prgrms.tenwonmoa.domain.user.User;
 import com.prgrms.tenwonmoa.domain.user.dto.CreateUserRequest;
 import com.prgrms.tenwonmoa.domain.user.repository.UserRepository;
@@ -20,6 +21,8 @@ public class UserService {
 
 	private final UserRepository userRepository;
 
+	private final CreateDefaultUserCategoryService createDefaultUserCategoryService;
+
 	public User findById(Long userId) {
 		return userRepository.findById(userId)
 			.orElseThrow(() -> new NoSuchElementException(Message.USER_NOT_FOUND.getMessage()));
@@ -32,8 +35,8 @@ public class UserService {
 		}
 
 		User savedUser = userRepository.save(createUserRequest.toEntity());
+		createDefaultUserCategoryService.createDefaultUserCategory(savedUser);
 		return savedUser.getId();
 	}
-
 
 }

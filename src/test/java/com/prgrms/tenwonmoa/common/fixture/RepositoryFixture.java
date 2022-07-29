@@ -17,7 +17,7 @@ public class RepositoryFixture extends RepositoryTest {
 	}
 
 	public Category saveCategory() {
-		return save(createCategory());
+		return save(createIncomeCategory());
 	}
 
 	public UserCategory saveUserCategory() {

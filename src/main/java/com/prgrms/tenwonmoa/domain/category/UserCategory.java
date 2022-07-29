@@ -22,11 +22,11 @@ import lombok.NoArgsConstructor;
 @Getter
 public class UserCategory extends BaseEntity {
 
-	@ManyToOne(fetch = LAZY)
+	@ManyToOne(fetch = EAGER)
 	@JoinColumn(name = "user_id")
 	private User user;
 
-	@ManyToOne(fetch = LAZY, optional = false)
+	@ManyToOne(fetch = EAGER, optional = false)
 	@JoinColumn(name = "category_id")
 	private Category category;
 
@@ -36,5 +36,13 @@ public class UserCategory extends BaseEntity {
 
 		this.user = user;
 		this.category = category;
+	}
+
+	public String getCategoryName() {
+		return this.category.getName();
+	}
+
+	public CategoryType getCategoryType() {
+		return this.category.getCategoryType();
 	}
 }

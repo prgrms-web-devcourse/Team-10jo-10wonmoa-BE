@@ -10,8 +10,6 @@ import com.prgrms.tenwonmoa.domain.category.UserCategory;
 
 @Repository
 public interface UserCategoryRepository extends JpaRepository<UserCategory, Long> {
-
-
 	@Override
 	@Query("select uc from UserCategory uc "
 		+ "join fetch uc.category "

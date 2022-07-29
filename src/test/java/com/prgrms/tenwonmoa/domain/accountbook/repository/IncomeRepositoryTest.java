@@ -88,5 +88,4 @@ class IncomeRepositoryTest extends RepositoryFixture {
 			.collect(Collectors.toList());
 		assertThat(userCategories).containsExactly(null, null, null);
 	}
-
 }

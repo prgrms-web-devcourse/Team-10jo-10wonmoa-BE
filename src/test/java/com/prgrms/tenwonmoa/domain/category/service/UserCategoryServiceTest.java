@@ -14,6 +14,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.prgrms.tenwonmoa.domain.accountbook.Expenditure;
 import com.prgrms.tenwonmoa.domain.accountbook.Income;
@@ -99,6 +100,42 @@ class UserCategoryServiceTest {
 		//then
 		Category category = userCategoryService.getById(userCategoryId).getCategory();
 		assertThat(category.getName()).isEqualTo("업데이트된 카테고리 이름");
+	}
+
+	@Test
+	@Transactional
+	void 유저카테고리_이름_수정시_지출_수입도_이름수정_성공() {
+		//given
+		String categoryType = "EXPENDITURE";
+		String categoryName = "예시지출카테고리";
+		Long userCategoryId = userCategoryService.register(user, categoryType, categoryName);
+		UserCategory userCategory = userCategoryService.getById(userCategoryId);
+
+		Expenditure savedExpenditure = expenditureRepository.save(
+			new Expenditure(LocalDateTime.now(), 10000L,
+				"내용", categoryName, user, userCategory)
+		);
+
+		Income savedIncome = incomeRepository.save(
+			new Income(LocalDateTime.now(), 10000L,
+				"내용", categoryName, user, userCategory)
+		);
+
+		//when
+		userCategoryService.updateName(user, userCategoryId, "업데이트 카테고리");
+
+		//then
+		UserCategory updatedUserCategory = userCategoryService.getById(userCategoryId);
+		Category updatedCategory = updatedUserCategory.getCategory();
+		assertThat(updatedCategory.getName()).isEqualTo("업데이트 카테고리");
+
+		Expenditure updatedExpenditure = expenditureRepository.findById(
+			savedExpenditure.getId()).orElseThrow();
+		assertThat(updatedExpenditure.getCategoryName()).isEqualTo("업데이트 카테고리");
+
+		Income updatedIncome = incomeRepository.findById(
+			savedIncome.getId()).orElseThrow();
+		assertThat(updatedIncome.getCategoryName()).isEqualTo("업데이트 카테고리");
 	}
 
 	@Test

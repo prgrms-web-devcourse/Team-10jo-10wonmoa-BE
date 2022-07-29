@@ -20,7 +20,7 @@ public class FindUserCategoryService {
 
 	private final UserCategoryRepository repository;
 
-	public FindCategoryResponse getUserCategories(Long userId, String categoryType) {
+	public FindCategoryResponse findUserCategories(Long userId, String categoryType) {
 		CategoryType type = CategoryType.valueOf(categoryType.toUpperCase(Locale.ROOT));
 
 		List<UserCategory> userCategories = repository.findByUserIdAndCategoryType(userId, type);

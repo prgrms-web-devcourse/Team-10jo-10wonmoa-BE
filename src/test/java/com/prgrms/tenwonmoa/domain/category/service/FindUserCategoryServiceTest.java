@@ -56,10 +56,10 @@ class FindUserCategoryServiceTest {
 
 		//when
 		FindCategoryResponse expenditureCategories =
-			findUserCategoryService.getUserCategories(user.getId(), "EXPENDITURE");
+			findUserCategoryService.findUserCategories(user.getId(), "EXPENDITURE");
 
 		FindCategoryResponse incomeCategories =
-			findUserCategoryService.getUserCategories(user.getId(), "INCOME");
+			findUserCategoryService.findUserCategories(user.getId(), "INCOME");
 
 		//then
 		assertThat(expenditureCategories.getCategories())
@@ -87,7 +87,7 @@ class FindUserCategoryServiceTest {
 		//when
 		//then
 		assertThatIllegalArgumentException().isThrownBy(
-			() -> findUserCategoryService.getUserCategories(user.getId(), "NOT_VALID")
+			() -> findUserCategoryService.findUserCategories(user.getId(), "NOT_VALID")
 		);
 	}
 }

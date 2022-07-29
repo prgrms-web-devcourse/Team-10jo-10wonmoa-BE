@@ -31,7 +31,7 @@ public class UserCategoryService {
 	private final IncomeService incomeService;
 
 	public Long register(User user, String catgoryType, String name) {
-		Category savedCategory = categoryService.register(catgoryType, name);
+		Category savedCategory = categoryService.create(catgoryType, name);
 
 		UserCategory userCategory = userCategoryRepository.save(new UserCategory(user, savedCategory));
 		return userCategory.getId();

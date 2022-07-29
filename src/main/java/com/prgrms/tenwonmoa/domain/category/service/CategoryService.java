@@ -21,20 +21,20 @@ public class CategoryService {
 
 	private final CategoryRepository categoryRepository;
 
-	Category register(String categoryType, String name) {
+	Category create(String categoryType, String name) {
 		CategoryType type = CategoryType.valueOf(categoryType.toUpperCase(Locale.ROOT));
 		return categoryRepository.save(new Category(name, type));
 	}
 
 	@Transactional(readOnly = true)
-	Category getById(Long id) {
+	Category findById(Long id) {
 		return categoryRepository.findById(id).orElseThrow(
 			() -> new NoSuchElementException(CATEGORY_NOT_FOUND.getMessage()));
 		// 해당 예외는 공격인 것임. 없는 카테고리에 대한 조회는 정상적인 환경에서는 나올 수 가없음
 	}
 
 	public void delete(Long categoryId) {
-		Category category = getById(categoryId);
+		Category category = findById(categoryId);
 
 		categoryRepository.delete(category);
 	}

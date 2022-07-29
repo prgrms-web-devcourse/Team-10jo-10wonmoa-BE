@@ -13,6 +13,7 @@ import java.util.NoSuchElementException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -24,6 +25,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.prgrms.tenwonmoa.common.documentdto.CreateIncomeRequestDoc;
 import com.prgrms.tenwonmoa.common.documentdto.ErrorResponseDoc;
 import com.prgrms.tenwonmoa.common.documentdto.FindIncomeResponseDoc;
+import com.prgrms.tenwonmoa.config.JwtConfigure;
 import com.prgrms.tenwonmoa.domain.accountbook.dto.CreateIncomeRequest;
 import com.prgrms.tenwonmoa.domain.accountbook.dto.FindIncomeResponse;
 import com.prgrms.tenwonmoa.domain.accountbook.service.IncomeService;
@@ -33,6 +35,7 @@ import com.prgrms.tenwonmoa.domain.accountbook.service.IncomeTotalService;
 @AutoConfigureRestDocs
 @MockBean(JpaMetamodelMappingContext.class)
 @DisplayName("수입 컨트롤러 테스트")
+@EnableConfigurationProperties(JwtConfigure.class)
 class IncomeControllerTest {
 	private static final String LOCATION_PREFIX = "/api/v1/incomes/";
 

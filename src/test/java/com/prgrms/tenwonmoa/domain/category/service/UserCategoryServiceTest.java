@@ -6,6 +6,7 @@ import static org.assertj.core.api.Assertions.*;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -122,11 +123,24 @@ class UserCategoryServiceTest {
 		Long userCategoryId = userCategoryService.register(user, categoryType, categoryName);
 
 		//when
-		userCategoryService.delete(userCategoryId);
+		userCategoryService.delete(user, userCategoryId);
 
 		//then
 		assertThatExceptionOfType(NoSuchElementException.class)
 			.isThrownBy(() -> userCategoryService.getById(userCategoryId));
+	}
+
+	@Test
+	void 유저가_권한이_없어_카테고리_삭제_실패() {
+		//given
+		String categoryType = "EXPENDITURE";
+		String categoryName = "예시지출카테고리";
+		Long userCategoryId = userCategoryService.register(user, categoryType, categoryName);
+
+		//when
+		//then
+		assertThatIllegalStateException().isThrownBy(
+			() -> userCategoryService.delete(otherUser, userCategoryId));
 	}
 
 	@Test
@@ -137,15 +151,25 @@ class UserCategoryServiceTest {
 		Long userCategoryId = userCategoryService.register(user, categoryType, categoryName);
 		UserCategory userCategory = userCategoryService.getById(userCategoryId);
 
-		expenditureRepository.save(new Expenditure(LocalDate.now(), 10000L, "내용", "식비", user, userCategory));
-		incomeRepository.save(new Income(LocalDate.now(), 10000L, "내용", "식비", user, userCategory));
+		Expenditure savedExpenditure = expenditureRepository.save(
+			new Expenditure(LocalDate.now(), 10000L, "내용", "식비", user, userCategory));
+		Income savedIncome = incomeRepository.save(new Income(LocalDate.now(), 10000L, "내용", "식비", user, userCategory));
 
 		//when
-		userCategoryService.delete(userCategoryId);
+		userCategoryService.delete(user, userCategoryId);
 
 		//then
 		assertThatExceptionOfType(NoSuchElementException.class)
 			.isThrownBy(() -> userCategoryService.getById(userCategoryId));
+
+		Optional<Expenditure> expenditureOptional = expenditureRepository.findById(savedExpenditure.getId());
+		Optional<Income> incomeOptional = incomeRepository.findById(savedIncome.getId());
+
+		assertThat(expenditureOptional).isPresent();
+		assertThat(expenditureOptional.get().getUserCategory()).isNull();
+
+		assertThat(incomeOptional).isPresent();
+		assertThat(incomeOptional.get().getUserCategory()).isNull();
 
 	}
 
@@ -154,6 +178,6 @@ class UserCategoryServiceTest {
 		//when
 		//then
 		assertThatExceptionOfType(NoSuchElementException.class)
-			.isThrownBy(() -> userCategoryService.delete(1L));
+			.isThrownBy(() -> userCategoryService.delete(user, 1L));
 	}
 }

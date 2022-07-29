@@ -69,5 +69,8 @@ public class UserCategoryService {
 		validateUser(authenticatedUser, user);
 
 		userCategoryRepository.delete(userCategory);
+
+		Category category = userCategory.getCategory();
+		categoryService.deleteCategory(category.getId());
 	}
 }

@@ -7,6 +7,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.prgrms.tenwonmoa.domain.user.User;
 import com.prgrms.tenwonmoa.domain.user.dto.CreateUserRequest;
+import com.prgrms.tenwonmoa.domain.user.dto.LoginUserResponse;
+import com.prgrms.tenwonmoa.domain.user.jwt.TokenProvider;
 import com.prgrms.tenwonmoa.domain.user.repository.UserRepository;
 import com.prgrms.tenwonmoa.exception.AlreadyExistException;
 import com.prgrms.tenwonmoa.exception.message.Message;
@@ -19,6 +21,7 @@ import lombok.RequiredArgsConstructor;
 public class UserService {
 
 	private final UserRepository userRepository;
+	private final TokenProvider tokenProvider;
 
 	public User findById(Long userId) {
 		return userRepository.findById(userId)
@@ -35,5 +38,24 @@ public class UserService {
 		return savedUser.getId();
 	}
 
+	public LoginUserResponse login(String email, String password) {
+		User user = userRepository.findByEmail(email)
+			.orElseThrow(() -> new IllegalArgumentException(Message.INVALID_EMAIL_OR_PASSWORD.getMessage()));
+
+		if (!checkPassword(user.getPassword(), password)) {
+			throw new IllegalArgumentException(Message.INVALID_EMAIL_OR_PASSWORD.getMessage());
+		}
+
+		String accessToken = tokenProvider.generateToken(user.getId(), email);
+		// todo: refreshToken 추가 및 accessToken 과 함께 반환
+		String refreshToken = "";
+
+		return new LoginUserResponse(accessToken, refreshToken);
+	}
+
+	private boolean checkPassword(String originalPassword, String requestPassword) {
+		// todo: PasswordEncoder 를 통한 비밀번호 암호화
+		return originalPassword.equals(requestPassword);
+	}
 
 }

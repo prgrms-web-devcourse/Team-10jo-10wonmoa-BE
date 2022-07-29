@@ -28,20 +28,23 @@ public final class Fixture {
 	}
 
 	public static User createUser() {
-		String userName = makeUserName();
-		return new User(userName + "@gmail.com", "123456789", userName);
+		// String userName = makeUserName();
+		return new User("testuser@gmail.com", "123456789", "tester");
+	}
+
+	public static User createAnotherUser() {
+		return new User("testuser2@gmail.com", "123456789", "tester2");
 	}
 
 	public static Category createCategory() {
 		return new Category("categoryName", CategoryType.INCOME);
 	}
 
-	public static UserCategory createUserCategory() {
-		return new UserCategory(createUser(), createCategory());
+	public static UserCategory createUserCategory(User user, Category category) {
+		return new UserCategory(user, category);
 	}
 
-	public static Income createIncome() {
-		UserCategory userCategory = createUserCategory();
+	public static Income createIncome(UserCategory userCategory) {
 		return new Income(LocalDate.now(),
 			1000L,
 			"content",

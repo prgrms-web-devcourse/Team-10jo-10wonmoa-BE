@@ -74,6 +74,10 @@ public class Income extends BaseEntity {
 		return this.userCategory.getCategory().getName();
 	}
 
+	public void deleteUserCategory() {
+		this.userCategory = null;
+	}
+
 	private void validateAmount(Long amount) {
 		checkArgument(amount != null, NOT_NULL_AMOUNT.getMessage());
 		checkArgument(amount >= AMOUNT_MIN && amount <= AMOUNT_MAX, INVALID_AMOUNT_ERR_MSG.getMessage());

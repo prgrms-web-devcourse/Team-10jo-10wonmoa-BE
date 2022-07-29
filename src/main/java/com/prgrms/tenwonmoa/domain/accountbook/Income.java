@@ -103,6 +103,18 @@ public class Income extends BaseEntity {
 		checkArgument(registerDate != null, NOT_NULL_REGISTER_DATE.getMessage());
 	}
 
+	public String getCategoryName() {
+		if (Objects.isNull(this.userCategory)) {
+			return this.categoryName;
+		}
+
+		return this.userCategory.getCategory().getName();
+	}
+
+	public void deleteUserCategory() {
+		this.userCategory = null;
+	}
+
 	private void validateAmount(Long amount) {
 		checkArgument(amount != null, NOT_NULL_AMOUNT.getMessage());
 		checkArgument(amount >= AMOUNT_MIN && amount <= AMOUNT_MAX, INVALID_AMOUNT_ERR_MSG.getMessage());
@@ -112,5 +124,4 @@ public class Income extends BaseEntity {
 		checkArgument(hasText(categoryName));
 		checkArgument(categoryName.length() <= Category.MAX_NAME_LENGTH);
 	}
-
 }

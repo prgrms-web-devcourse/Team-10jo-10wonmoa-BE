@@ -118,7 +118,7 @@ class UserCategoryServiceTest {
 		);
 
 		Income savedIncome = incomeRepository.save(
-			new Income(LocalDate.now(), 10000L,
+			new Income(LocalDateTime.now(), 10000L,
 				"내용", categoryName, user, userCategory)
 		);
 

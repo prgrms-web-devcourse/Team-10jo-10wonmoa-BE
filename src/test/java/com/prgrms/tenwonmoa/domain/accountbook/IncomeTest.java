@@ -126,7 +126,7 @@ class IncomeTest {
 	public void 유저카테고리를_지운다() {
 		//given
 		Income income = new Income(
-			LocalDate.now(), 1000L, null, category.getName(), user, userCategory);
+			LocalDateTime.now(), 1000L, null, category.getName(), user, userCategory);
 
 		//when
 		income.deleteUserCategory();
@@ -141,7 +141,7 @@ class IncomeTest {
 		String categoryName = "커스텀카테고리이름";
 		String userCategoryName = userCategory.getCategory().getName();
 		Income income = new Income(
-			LocalDate.now(), 1000L, null, categoryName, user, userCategory);
+			LocalDateTime.now(), 1000L, null, categoryName, user, userCategory);
 
 		//when
 		income.deleteUserCategory();
@@ -159,7 +159,7 @@ class IncomeTest {
 		String categoryName = "다른카테고리";
 		String userCategoryName = userCategory.getCategory().getName();
 		Income income = new Income(
-			LocalDate.now(), 1000L, null, categoryName, user, userCategory);
+			LocalDateTime.now(), 1000L, null, categoryName, user, userCategory);
 
 		//when
 		String resultCategoryName = income.getCategoryName();

@@ -23,7 +23,10 @@ import org.springframework.test.web.servlet.MockMvc;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.prgrms.tenwonmoa.common.documentdto.CreateIncomeRequestDoc;
 import com.prgrms.tenwonmoa.common.documentdto.ErrorResponseDoc;
+import com.prgrms.tenwonmoa.common.documentdto.FindIncomeResponseDoc;
 import com.prgrms.tenwonmoa.domain.accountbook.dto.CreateIncomeRequest;
+import com.prgrms.tenwonmoa.domain.accountbook.dto.FindIncomeResponse;
+import com.prgrms.tenwonmoa.domain.accountbook.service.IncomeService;
 import com.prgrms.tenwonmoa.domain.accountbook.service.IncomeTotalService;
 
 @WebMvcTest(controllers = IncomeController.class)
@@ -31,6 +34,22 @@ import com.prgrms.tenwonmoa.domain.accountbook.service.IncomeTotalService;
 @MockBean(JpaMetamodelMappingContext.class)
 @DisplayName("수입 컨트롤러 테스트")
 class IncomeControllerTest {
+	private static final String LOCATION_PREFIX = "/api/v1/incomes/";
+
+	private final CreateIncomeRequest createIncomeRequest = new CreateIncomeRequest(
+		LocalDate.now(),
+		1000L,
+		"content",
+		1L
+	);
+
+	private final FindIncomeResponse findIncomeResponse = new FindIncomeResponse(
+		1L,
+		LocalDate.now(),
+		1000L,
+		"content",
+		"용돈"
+	);
 	@Autowired
 	private MockMvc mockMvc;
 
@@ -40,14 +59,8 @@ class IncomeControllerTest {
 	@MockBean
 	private IncomeTotalService incomeTotalService;
 
-	private static final String INCOME_CREATE_URI = "/api/v1/incomes/";
-
-	private CreateIncomeRequest request = new CreateIncomeRequest(
-		LocalDate.now(),
-		1000L,
-		"content",
-		1L
-	);
+	@MockBean
+	private IncomeService incomeService;
 
 	@Test
 	void 수입_등록_성공() throws Exception {
@@ -55,13 +68,13 @@ class IncomeControllerTest {
 		given(incomeTotalService.createIncome(any(Long.class), any(CreateIncomeRequest.class)))
 			.willReturn(createdId);
 
-		mockMvc.perform(post("/api/v1/incomes")
-			.contentType(MediaType.APPLICATION_JSON)
-			.content(objectMapper.writeValueAsString(request))
-		)
+		mockMvc.perform(post(LOCATION_PREFIX)
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(createIncomeRequest))
+			)
 			.andExpect(status().isCreated())
 			.andExpect(content().string(String.valueOf(createdId)))
-			.andExpect(redirectedUrl(INCOME_CREATE_URI + createdId))
+			.andExpect(redirectedUrl(LOCATION_PREFIX + createdId))
 			.andDo(document("income-create",
 				requestFields(
 					CreateIncomeRequestDoc.fieldDescriptors()
@@ -74,12 +87,42 @@ class IncomeControllerTest {
 		given(incomeTotalService.createIncome(any(Long.class), any(CreateIncomeRequest.class)))
 			.willThrow(new NoSuchElementException(USER_CATEGORY_NOT_FOUND.getMessage()));
 
-		mockMvc.perform(post("/api/v1/incomes")
-			.contentType(MediaType.APPLICATION_JSON)
-			.content(objectMapper.writeValueAsString(request))
-		)
+		mockMvc.perform(post(LOCATION_PREFIX)
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(createIncomeRequest))
+			)
 			.andExpect(status().isBadRequest())
 			.andDo(document("income-create-fail", responseFields(
+				ErrorResponseDoc.fieldDescriptors()
+			)));
+	}
+
+	@Test
+	void 수입_상세조회_성공() throws Exception {
+		given(incomeService.findIncome(any(Long.class), any(Long.class)))
+			.willReturn(findIncomeResponse);
+
+		mockMvc.perform(get(LOCATION_PREFIX + "/{incomeId}", findIncomeResponse.getId())
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(createIncomeRequest))
+			)
+			.andExpect(status().isOk())
+			.andDo(document("income-find-by-id", responseFields(
+				FindIncomeResponseDoc.fieldDescriptors()
+			)));
+	}
+
+	@Test
+	void 수입_상세조회_실패() throws Exception {
+		given(incomeService.findIncome(any(Long.class), any(Long.class)))
+			.willThrow(new NoSuchElementException(INCOME_NOT_FOUND.getMessage()));
+
+		mockMvc.perform(get(LOCATION_PREFIX + "/{incomeId}", findIncomeResponse.getId())
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(createIncomeRequest))
+			)
+			.andExpect(status().isBadRequest())
+			.andDo(document("income-find-by-id-fail", responseFields(
 				ErrorResponseDoc.fieldDescriptors()
 			)));
 	}

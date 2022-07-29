@@ -27,6 +27,7 @@ public enum Message {
 	// 수입
 	INVALID_CONTENT_ERR_MSG(MessageFormat.format("내용은 {0}글자 까지만 가능합니다.", CONTENT_MAX)),
 	INVALID_AMOUNT_ERR_MSG(MessageFormat.format("입력 가능 범위는 {0}~{1}입니다.", AMOUNT_MIN, AMOUNT_MAX)),
+	INCOME_NOT_FOUND("수입 정보가 존재하지 않습니다."),
 
 	// 유저
 	NOT_NULL_EMAIL("이메일은 필수입니다."),

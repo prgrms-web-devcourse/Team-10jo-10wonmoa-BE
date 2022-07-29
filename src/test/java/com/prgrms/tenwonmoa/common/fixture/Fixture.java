@@ -1,6 +1,7 @@
 package com.prgrms.tenwonmoa.common.fixture;
 
 import java.time.LocalDate;
+import java.util.Random;
 
 import com.prgrms.tenwonmoa.domain.accountbook.Income;
 import com.prgrms.tenwonmoa.domain.category.Category;
@@ -12,8 +13,23 @@ public final class Fixture {
 	private Fixture() {
 	}
 
+	private static String makeUserName() {
+		int leftLimit = 'a';
+		int rightLimit = 'z';
+		int targetStringLength = 10;
+		Random random = new Random();
+		StringBuilder buffer = new StringBuilder(targetStringLength);
+		for (int i = 0; i < targetStringLength; i++) {
+			int randomLimitedInt = leftLimit + (int)
+				(random.nextFloat() * (rightLimit - leftLimit + 1));
+			buffer.append((char)randomLimitedInt);
+		}
+		return buffer.toString();
+	}
+
 	public static User createUser() {
-		return new User("test@gmail.com", "123456789", "testuser");
+		String userName = makeUserName();
+		return new User(userName + "@gmail.com", "123456789", userName);
 	}
 
 	public static Category createCategory() {

@@ -24,7 +24,7 @@ public class CreateDefaultUserCategoryService {
 			CategoryType categoryType = entry.getKey();
 			List<String> categoryNames = entry.getValue();
 			for (String categoryName : categoryNames) {
-				userCategoryService.register(user, categoryType.name(), categoryName);
+				userCategoryService.createUserCategory(user, categoryType.name(), categoryName);
 			}
 		}
 	}

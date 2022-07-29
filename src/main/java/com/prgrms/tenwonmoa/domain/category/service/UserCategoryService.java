@@ -30,15 +30,15 @@ public class UserCategoryService {
 
 	private final IncomeService incomeService;
 
-	public Long register(User user, String catgoryType, String name) {
-		Category savedCategory = categoryService.create(catgoryType, name);
+	public Long createUserCategory(User user, String catgoryType, String name) {
+		Category savedCategory = categoryService.createCategory(catgoryType, name);
 
 		UserCategory userCategory = userCategoryRepository.save(new UserCategory(user, savedCategory));
 		return userCategory.getId();
 	}
 
 	public String updateName(User authenticatedUser, Long userCategoryId, String desiredName) {
-		UserCategory userCategory = getById(userCategoryId);
+		UserCategory userCategory = findById(userCategoryId);
 
 		User user = userCategory.getUser();
 		validateUser(authenticatedUser, user);
@@ -55,16 +55,16 @@ public class UserCategoryService {
 	}
 
 	@Transactional(readOnly = true)
-	public UserCategory getById(Long userCategoryId) {
+	public UserCategory findById(Long userCategoryId) {
 		return userCategoryRepository.findById(userCategoryId)
 			.orElseThrow(() -> new NoSuchElementException(Message.USER_CATEGORY_NOT_FOUND.getMessage()));
 	}
 
-	public void delete(User authenticatedUser, Long userCategoryId) {
+	public void deleteUserCategory(User authenticatedUser, Long userCategoryId) {
 		incomeService.setUserCategoryNull(userCategoryId);
 		expenditureService.setUserCategoryNull(userCategoryId);
 
-		UserCategory userCategory = getById(userCategoryId);
+		UserCategory userCategory = findById(userCategoryId);
 		User user = userCategory.getUser();
 		validateUser(authenticatedUser, user);
 

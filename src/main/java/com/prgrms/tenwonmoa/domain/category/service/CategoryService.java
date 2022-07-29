@@ -21,7 +21,7 @@ public class CategoryService {
 
 	private final CategoryRepository categoryRepository;
 
-	Category create(String categoryType, String name) {
+	Category createCategory(String categoryType, String name) {
 		CategoryType type = CategoryType.valueOf(categoryType.toUpperCase(Locale.ROOT));
 		return categoryRepository.save(new Category(name, type));
 	}
@@ -33,7 +33,7 @@ public class CategoryService {
 		// 해당 예외는 공격인 것임. 없는 카테고리에 대한 조회는 정상적인 환경에서는 나올 수 가없음
 	}
 
-	public void delete(Long categoryId) {
+	public void deleteCategory(Long categoryId) {
 		Category category = findById(categoryId);
 
 		categoryRepository.delete(category);

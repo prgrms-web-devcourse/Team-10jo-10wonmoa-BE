@@ -48,11 +48,11 @@ class FindUserCategoryServiceTest {
 	@Test
 	void 유저카테고리_조회_성공() {
 		//given
-		Long id1 = userCategoryService.register(user, "EXPENDITURE", "식비");
-		Long id2 = userCategoryService.register(user, "EXPENDITURE", "교통비");
-		Long id3 = userCategoryService.register(user, "EXPENDITURE", "문화생활");
-		Long id4 = userCategoryService.register(user, "INCOME", "월급");
-		Long id5 = userCategoryService.register(user, "INCOME", "투자");
+		Long id1 = userCategoryService.createUserCategory(user, "EXPENDITURE", "식비");
+		Long id2 = userCategoryService.createUserCategory(user, "EXPENDITURE", "교통비");
+		Long id3 = userCategoryService.createUserCategory(user, "EXPENDITURE", "문화생활");
+		Long id4 = userCategoryService.createUserCategory(user, "INCOME", "월급");
+		Long id5 = userCategoryService.createUserCategory(user, "INCOME", "투자");
 
 		//when
 		FindCategoryResponse expenditureCategories =
@@ -81,8 +81,8 @@ class FindUserCategoryServiceTest {
 	@Test
 	void 잘못된_카테고리_타입_입력시_조회실패() {
 		//given
-		userCategoryService.register(user, "EXPENDITURE", "식비");
-		userCategoryService.register(user, "INCOME", "월급");
+		userCategoryService.createUserCategory(user, "EXPENDITURE", "식비");
+		userCategoryService.createUserCategory(user, "INCOME", "월급");
 
 		//when
 		//then

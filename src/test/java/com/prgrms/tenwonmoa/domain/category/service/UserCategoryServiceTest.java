@@ -4,6 +4,7 @@ import static com.prgrms.tenwonmoa.common.fixture.Fixture.*;
 import static org.assertj.core.api.Assertions.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -153,7 +154,8 @@ class UserCategoryServiceTest {
 
 		Expenditure savedExpenditure = expenditureRepository.save(
 			new Expenditure(LocalDate.now(), 10000L, "내용", "식비", user, userCategory));
-		Income savedIncome = incomeRepository.save(new Income(LocalDate.now(), 10000L, "내용", "식비", user, userCategory));
+		Income savedIncome = incomeRepository.save(
+			new Income(LocalDateTime.now(), 10000L, "내용", "식비", user, userCategory));
 
 		//when
 		userCategoryService.delete(user, userCategoryId);

@@ -5,7 +5,7 @@ import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.NoSuchElementException;
 
 import org.junit.jupiter.api.DisplayName;
@@ -40,7 +40,7 @@ class IncomeTotalServiceTest {
 	private final UserCategory userCategory = income.getUserCategory();
 	private final User user = income.getUser();
 
-	private final CreateIncomeRequest request = new CreateIncomeRequest(LocalDate.now(),
+	private final CreateIncomeRequest request = new CreateIncomeRequest(LocalDateTime.now(),
 		1000L,
 		"content",
 		1L);

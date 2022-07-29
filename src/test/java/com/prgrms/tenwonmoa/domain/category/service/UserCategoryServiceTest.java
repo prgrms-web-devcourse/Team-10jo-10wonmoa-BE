@@ -112,7 +112,7 @@ class UserCategoryServiceTest {
 		UserCategory userCategory = userCategoryService.getById(userCategoryId);
 
 		Expenditure savedExpenditure = expenditureRepository.save(
-			new Expenditure(LocalDate.now(), 10000L,
+			new Expenditure(LocalDateTime.now(), 10000L,
 				"내용", categoryName, user, userCategory)
 		);
 

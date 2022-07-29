@@ -77,6 +77,10 @@ public class ExpenditureService {
 		expenditureRepository.updateUserCategoryAsNull(userCategoryId);
 	}
 
+	public void updateUserCategoryName(Long userCategoryId, String name) {
+		expenditureRepository.updateCategoryName(userCategoryId, name);
+	}
+
 	private void validateUser(User currentUser, User expenditureUser) {
 		checkState(currentUser == expenditureUser, Message.EXPENDITURE_NO_AUTHENTICATION.getMessage());
 	}

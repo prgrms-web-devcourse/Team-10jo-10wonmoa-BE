@@ -63,6 +63,10 @@ class ExpenditureRepositoryTest extends RepositoryTest {
 		assertThat(categories).containsExactly(null, null, null);
 	}
 
+	@Test
+	void 등록된_지출의_유저카테고리_이름_변경() {
+	}
+
 	@Nested
 	@DisplayName("지출에 대한 일별 쿼리 중")
 	class ExpenditureDayQuery {

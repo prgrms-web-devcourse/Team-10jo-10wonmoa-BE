@@ -96,4 +96,7 @@ class IncomeRepositoryTest extends RepositoryFixture {
 		assertThat(userCategories).containsExactly(null, null, null);
 	}
 
+	@Test
+	void 등록된_수입의_유저카테고리_이름_변경() {
+	}
 }

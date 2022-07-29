@@ -5,7 +5,7 @@ endif::[]
 
 == 수입
 
-### 수입등록
+=== 수입등록
 
 .Request
 include::{snippets}/income-create/http-request.adoc[]
@@ -16,5 +16,16 @@ include::{snippets}/income-create/http-response.adoc[]
 
 .Exception
 include::{snippets}/income-create-fail/http-response.adoc[]
+
+=== 수입 상세조회
+
+.Request
+include::{snippets}/income-find-by-id/http-request.adoc[]
+
+.Response
+include::{snippets}/income-find-by-id/http-response.adoc[]
+
+.Exception
+include::{snippets}/income-find-by-id-fail/http-response.adoc[]
 
 

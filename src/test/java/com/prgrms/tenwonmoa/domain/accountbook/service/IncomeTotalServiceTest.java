@@ -37,7 +37,7 @@ class IncomeTotalServiceTest {
 	private IncomeTotalService accountBookService;
 
 	private final Income income = createIncome();
-	private final UserCategory userCategory = income.getUsercategory();
+	private final UserCategory userCategory = income.getUserCategory();
 	private final User user = income.getUser();
 
 	private final CreateIncomeRequest request = new CreateIncomeRequest(LocalDate.now(),
@@ -48,7 +48,7 @@ class IncomeTotalServiceTest {
 	@Test
 	void 수입_생성_성공() {
 		given(userService.findById(any())).willReturn(user);
-		given(userCategoryService.findById(any())).willReturn(userCategory);
+		given(userCategoryService.getById(any())).willReturn(userCategory);
 		given(incomeService.save(income)).willReturn(1L);
 
 		Long savedId = accountBookService.createIncome(user.getId(), request);
@@ -69,7 +69,7 @@ class IncomeTotalServiceTest {
 	@Test
 	void 수입_생성실패_유저카테고리_없는경우() {
 		given(userService.findById(any())).willReturn(user);
-		given(userCategoryService.findById(any())).willThrow(
+		given(userCategoryService.getById(any())).willThrow(
 			new NoSuchElementException(Message.USER_CATEGORY_NOT_FOUND.getMessage()));
 		assertThatThrownBy(() -> accountBookService.createIncome(user.getId(), request))
 			.isInstanceOf(NoSuchElementException.class)

@@ -1,6 +1,6 @@
 package com.prgrms.tenwonmoa.domain.accountbook.dto;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
@@ -16,7 +16,7 @@ import lombok.Getter;
 public class UpdateExpenditureRequest {
 
 	@NotNull
-	private final LocalDate registerDate;
+	private final LocalDateTime registerDate;
 
 	@Min(0L)
 	@Max(1000000000000L)
@@ -27,7 +27,7 @@ public class UpdateExpenditureRequest {
 	@NotNull
 	private final Long userCategoryId;
 
-	public UpdateExpenditureRequest(LocalDate registerDate, Long amount, String content, Long userCategoryId) {
+	public UpdateExpenditureRequest(LocalDateTime registerDate, Long amount, String content, Long userCategoryId) {
 		this.registerDate = registerDate;
 		this.amount = amount;
 		this.content = content;

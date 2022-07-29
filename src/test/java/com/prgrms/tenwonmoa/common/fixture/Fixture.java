@@ -3,6 +3,7 @@ package com.prgrms.tenwonmoa.common.fixture;
 import java.time.LocalDateTime;
 import java.util.Random;
 
+import com.prgrms.tenwonmoa.domain.accountbook.Expenditure;
 import com.prgrms.tenwonmoa.domain.accountbook.Income;
 import com.prgrms.tenwonmoa.domain.category.Category;
 import com.prgrms.tenwonmoa.domain.category.CategoryType;
@@ -50,6 +51,15 @@ public final class Fixture {
 
 	public static Income createIncome(UserCategory userCategory) {
 		return new Income(LocalDateTime.now(),
+			1000L,
+			"content",
+			userCategory.getCategory().getName(),
+			userCategory.getUser(),
+			userCategory);
+	}
+
+	public static Expenditure createExpenditure(UserCategory userCategory) {
+		return new Expenditure(LocalDateTime.now(),
 			1000L,
 			"content",
 			userCategory.getCategory().getName(),

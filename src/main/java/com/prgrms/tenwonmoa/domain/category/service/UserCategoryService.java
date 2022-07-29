@@ -60,11 +60,14 @@ public class UserCategoryService {
 			.orElseThrow(() -> new NoSuchElementException(Message.USER_CATEGORY_NOT_FOUND.getMessage()));
 	}
 
-	public void delete(Long userCategoryId) {
+	public void delete(User authenticatedUser, Long userCategoryId) {
 		incomeService.setUserCategoryNull(userCategoryId);
 		expenditureService.setUserCategoryNull(userCategoryId);
 
 		UserCategory userCategory = getById(userCategoryId);
+		User user = userCategory.getUser();
+		validateUser(authenticatedUser, user);
+
 		userCategoryRepository.delete(userCategory);
 	}
 }

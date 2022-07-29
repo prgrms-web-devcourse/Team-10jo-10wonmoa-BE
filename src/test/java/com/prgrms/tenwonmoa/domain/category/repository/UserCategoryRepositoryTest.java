@@ -4,7 +4,6 @@ import static com.prgrms.tenwonmoa.common.fixture.Fixture.*;
 import static org.assertj.core.api.Assertions.*;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -36,20 +35,6 @@ class UserCategoryRepositoryTest extends RepositoryTest {
 		incomeCategory = save(createIncomeCategory());
 		expenditureCategory = save(createExpenditureCategory());
 		user = save(createUser());
-	}
-
-	@Test
-	void 아이디로_유저카테고리_조회() {
-		// given
-		UserCategory savedUserCategory = userCategoryRepository.save(createUserCategory(user, incomeCategory));
-
-		// when
-		Optional<UserCategory> userCategoryOptional = userCategoryRepository.findById(savedUserCategory.getId());
-
-		// then
-		assertThat(userCategoryOptional).isPresent();
-		UserCategory userCategory = userCategoryOptional.get();
-		assertThat(savedUserCategory).isEqualTo(userCategory);
 	}
 
 	@Test

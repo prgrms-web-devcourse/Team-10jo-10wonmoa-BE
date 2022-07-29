@@ -3,13 +3,12 @@ package com.prgrms.tenwonmoa.domain.accountbook.repository;
 import static com.prgrms.tenwonmoa.common.fixture.Fixture.*;
 import static org.assertj.core.api.Assertions.*;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -42,13 +41,13 @@ class ExpenditureRepositoryTest extends RepositoryTest {
 	void 해당하는_유저카테고리_아이디를_가진_지출의_유저카테고리를_null_로_업데이트() {
 		//given
 		Expenditure expenditure = new Expenditure(
-			LocalDate.now(), 10000L, "내용", category.getName(), user, userCategory);
+			LocalDateTime.now(), 10000L, "내용", category.getName(), user, userCategory);
 
 		Expenditure expenditure2 = new Expenditure(
-			LocalDate.now(), 10000L, "내용", category.getName(), user, userCategory);
+			LocalDateTime.now(), 10000L, "내용", category.getName(), user, userCategory);
 
 		Expenditure expenditure3 = new Expenditure(
-			LocalDate.now(), 10000L, "내용", category.getName(), user, userCategory);
+			LocalDateTime.now(), 10000L, "내용", category.getName(), user, userCategory);
 
 		expenditureRepository.saveAll(List.of(expenditure, expenditure2, expenditure3));
 
@@ -63,25 +62,11 @@ class ExpenditureRepositoryTest extends RepositoryTest {
 		assertThat(categories).containsExactly(null, null, null);
 	}
 
-	@Nested
-	@DisplayName("지출에 대한 일별 쿼리 중")
-	class ExpenditureDayQuery {
-
-		@Test
-		public void 사용자에대해_지정한_날짜에대한_결과를_리스트로_반환한다() {
-			createExpenditures(10);
-
-			List<Expenditure> expenditures = expenditureRepository.findByRegisterDate(user.getId(), LocalDate.now());
-			assertThat(expenditures.size()).isEqualTo(10);
-		}
-
-	}
-
 	private void createExpenditures(int count) {
 		for (int i = 0; i < count; i++) {
 			expenditureRepository.save(
 				new Expenditure(
-					LocalDate.now(),
+					LocalDateTime.now(),
 					10000L + i,
 					"내용" + i,
 					category.getName(),

@@ -3,7 +3,7 @@ package com.prgrms.tenwonmoa.domain.category.service;
 import static com.prgrms.tenwonmoa.common.fixture.Fixture.*;
 import static org.assertj.core.api.Assertions.*;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -52,7 +52,7 @@ class UserCategoryServiceTest {
 	@BeforeEach
 	void setup() {
 		user = userRepository.save(createUser());
-		otherUser = userRepository.save(new User("otherUser@gmail.com", "123456789", "otherUser"));
+		otherUser = userRepository.save(createAnotherUser());
 	}
 
 	@AfterEach
@@ -152,8 +152,10 @@ class UserCategoryServiceTest {
 		UserCategory userCategory = userCategoryService.getById(userCategoryId);
 
 		Expenditure savedExpenditure = expenditureRepository.save(
-			new Expenditure(LocalDate.now(), 10000L, "내용", "식비", user, userCategory));
-		Income savedIncome = incomeRepository.save(new Income(LocalDate.now(), 10000L, "내용", "식비", user, userCategory));
+			new Expenditure(LocalDateTime.now(), 10000L, "내용", "식비", user, userCategory));
+		Income savedIncome = incomeRepository.save(
+			new Income(LocalDateTime.now(), 10000L, "내용", "식비", user, userCategory));
+		new Expenditure(LocalDateTime.now(), 10000L, "내용", "식비", user, userCategory);
 
 		//when
 		userCategoryService.delete(user, userCategoryId);

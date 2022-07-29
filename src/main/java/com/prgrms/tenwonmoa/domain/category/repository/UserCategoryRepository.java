@@ -1,5 +1,6 @@
 package com.prgrms.tenwonmoa.domain.category.repository;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -15,5 +16,7 @@ public interface UserCategoryRepository extends JpaRepository<UserCategory, Long
 		+ "join fetch uc.category "
 		+ "join fetch uc.user where uc.id = :userCategoryId")
 	Optional<UserCategory> findById(Long userCategoryId);
+
+	List<UserCategory> findByUserId(Long userId);
 
 }

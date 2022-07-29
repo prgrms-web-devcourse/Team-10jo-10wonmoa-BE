@@ -36,4 +36,26 @@ class UserCategoryTest {
 	void 카테고리가_null_유저_카테고리_생성_실패(Category category) {
 		assertThatIllegalArgumentException().isThrownBy(() -> new UserCategory(user, category));
 	}
+
+	@Test
+	void 유저카테고리_이름_조회_성공() {
+		//given
+		Category category = new Category("식비", CategoryType.EXPENDITURE);
+		UserCategory userCategory = new UserCategory(user, category);
+
+		//when
+		//then
+		assertThat(userCategory.getCategoryName()).isEqualTo("식비");
+	}
+
+	@Test
+	void 유저카테고리_카테고리_타입_조회_성공() {
+		//given
+		Category category = new Category("식비", CategoryType.EXPENDITURE);
+		UserCategory userCategory = new UserCategory(user, category);
+
+		//when
+		//then
+		assertThat(userCategory.getCategoryType()).isEqualTo(CategoryType.EXPENDITURE);
+	}
 }

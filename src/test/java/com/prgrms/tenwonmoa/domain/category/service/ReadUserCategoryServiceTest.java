@@ -10,8 +10,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import com.prgrms.tenwonmoa.domain.category.dto.service.ReadCategoryResult;
-import com.prgrms.tenwonmoa.domain.category.dto.service.ReadCategoryResult.SingleCategoryResult;
+import com.prgrms.tenwonmoa.domain.category.dto.ReadCategoryResult;
+import com.prgrms.tenwonmoa.domain.category.dto.ReadCategoryResult.SingleCategoryResult;
 import com.prgrms.tenwonmoa.domain.category.repository.UserCategoryRepository;
 import com.prgrms.tenwonmoa.domain.user.User;
 import com.prgrms.tenwonmoa.domain.user.repository.UserRepository;
@@ -48,11 +48,11 @@ class ReadUserCategoryServiceTest {
 	@Test
 	void 유저카테고리_조회_성공() {
 		//given
-		userCategoryService.register(user, "EXPENDITURE", "식비");
-		userCategoryService.register(user, "EXPENDITURE", "교통비");
-		userCategoryService.register(user, "EXPENDITURE", "문화생활");
-		userCategoryService.register(user, "INCOME", "월급");
-		userCategoryService.register(user, "INCOME", "투자");
+		Long id1 = userCategoryService.register(user, "EXPENDITURE", "식비");
+		Long id2 = userCategoryService.register(user, "EXPENDITURE", "교통비");
+		Long id3 = userCategoryService.register(user, "EXPENDITURE", "문화생활");
+		Long id4 = userCategoryService.register(user, "INCOME", "월급");
+		Long id5 = userCategoryService.register(user, "INCOME", "투자");
 
 		//when
 		ReadCategoryResult expenditureCategories =
@@ -63,12 +63,19 @@ class ReadUserCategoryServiceTest {
 
 		//then
 		assertThat(expenditureCategories.getCategories())
-			.extracting(SingleCategoryResult::getName)
-			.containsExactlyInAnyOrder("식비", "교통비", "문화생활");
+			.extracting(SingleCategoryResult::getId, SingleCategoryResult::getName)
+			.containsExactlyInAnyOrder(
+				tuple(id1, "식비"),
+				tuple(id2, "교통비"),
+				tuple(id3, "문화생활")
+			);
 
 		assertThat(incomeCategories.getCategories())
-			.extracting(SingleCategoryResult::getName)
-			.containsExactlyInAnyOrder("월급", "투자");
+			.extracting(SingleCategoryResult::getId, SingleCategoryResult::getName)
+			.containsExactlyInAnyOrder(
+				tuple(id4, "월급"),
+				tuple(id5, "투자")
+			);
 	}
 
 	@Test

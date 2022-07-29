@@ -37,4 +37,12 @@ public class UserCategory extends BaseEntity {
 		this.user = user;
 		this.category = category;
 	}
+
+	public String getCategoryName() {
+		return this.category.getName();
+	}
+
+	public CategoryType getCategoryType() {
+		return this.category.getCategoryType();
+	}
 }

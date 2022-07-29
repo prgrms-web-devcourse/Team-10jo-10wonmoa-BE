@@ -1,9 +1,9 @@
-package com.prgrms.tenwonmoa.domain.category.dto.service;
+package com.prgrms.tenwonmoa.domain.category.dto;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-import com.prgrms.tenwonmoa.domain.category.Category;
+import com.prgrms.tenwonmoa.domain.category.UserCategory;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -15,10 +15,11 @@ public final class ReadCategoryResult {
 
 	private final List<SingleCategoryResult> categories;
 
-	public static ReadCategoryResult of(List<Category> categories) {
+	public static ReadCategoryResult of(List<UserCategory> categories) {
 		List<SingleCategoryResult> categoryResults = categories.stream()
-			.map(category -> new SingleCategoryResult(
-				category.getId(), category.getName(), category.getCategoryType().name()))
+			.map(userCategory -> new SingleCategoryResult(
+				userCategory.getId(), userCategory.getCategoryName(),
+				userCategory.getCategoryType().name()))
 			.collect(Collectors.toList());
 
 		return new ReadCategoryResult(categoryResults);

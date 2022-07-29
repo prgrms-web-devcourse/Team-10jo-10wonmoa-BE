@@ -10,18 +10,18 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import com.prgrms.tenwonmoa.domain.category.dto.ReadCategoryResponse;
-import com.prgrms.tenwonmoa.domain.category.dto.ReadCategoryResponse.SingleCategoryResponse;
+import com.prgrms.tenwonmoa.domain.category.dto.FindCategoryResponse;
+import com.prgrms.tenwonmoa.domain.category.dto.FindCategoryResponse.SingleCategoryResponse;
 import com.prgrms.tenwonmoa.domain.category.repository.UserCategoryRepository;
 import com.prgrms.tenwonmoa.domain.user.User;
 import com.prgrms.tenwonmoa.domain.user.repository.UserRepository;
 
 @SpringBootTest
 @DisplayName("카테고리 조회 서비스 테스트")
-class ReadUserCategoryServiceTest {
+class FindUserCategoryServiceTest {
 
 	@Autowired
-	private ReadUserCategoryService readUserCategoryService;
+	private FindUserCategoryService findUserCategoryService;
 
 	@Autowired
 	private UserCategoryService userCategoryService;
@@ -55,11 +55,11 @@ class ReadUserCategoryServiceTest {
 		Long id5 = userCategoryService.register(user, "INCOME", "투자");
 
 		//when
-		ReadCategoryResponse expenditureCategories =
-			readUserCategoryService.getUserCategories(user.getId(), "EXPENDITURE");
+		FindCategoryResponse expenditureCategories =
+			findUserCategoryService.getUserCategories(user.getId(), "EXPENDITURE");
 
-		ReadCategoryResponse incomeCategories =
-			readUserCategoryService.getUserCategories(user.getId(), "INCOME");
+		FindCategoryResponse incomeCategories =
+			findUserCategoryService.getUserCategories(user.getId(), "INCOME");
 
 		//then
 		assertThat(expenditureCategories.getCategories())
@@ -87,7 +87,7 @@ class ReadUserCategoryServiceTest {
 		//when
 		//then
 		assertThatIllegalArgumentException().isThrownBy(
-			() -> readUserCategoryService.getUserCategories(user.getId(), "NOT_VALID")
+			() -> findUserCategoryService.getUserCategories(user.getId(), "NOT_VALID")
 		);
 	}
 }

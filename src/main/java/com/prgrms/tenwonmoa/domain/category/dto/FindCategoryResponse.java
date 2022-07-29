@@ -11,18 +11,18 @@ import lombok.RequiredArgsConstructor;
 
 @AllArgsConstructor
 @Getter
-public final class ReadCategoryResponse {
+public final class FindCategoryResponse {
 
 	private final List<SingleCategoryResponse> categories;
 
-	public static ReadCategoryResponse of(List<UserCategory> categories) {
+	public static FindCategoryResponse of(List<UserCategory> categories) {
 		List<SingleCategoryResponse> categoryResults = categories.stream()
 			.map(userCategory -> new SingleCategoryResponse(
 				userCategory.getId(), userCategory.getCategoryName(),
 				userCategory.getCategoryType().name()))
 			.collect(Collectors.toList());
 
-		return new ReadCategoryResponse(categoryResults);
+		return new FindCategoryResponse(categoryResults);
 	}
 
 	@RequiredArgsConstructor

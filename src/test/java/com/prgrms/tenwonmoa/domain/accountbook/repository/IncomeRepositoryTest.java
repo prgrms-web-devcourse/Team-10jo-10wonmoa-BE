@@ -88,4 +88,29 @@ class IncomeRepositoryTest extends RepositoryFixture {
 			.collect(Collectors.toList());
 		assertThat(userCategories).containsExactly(null, null, null);
 	}
+
+	@Test
+	void 아이디로_수입_조회() {
+		//given
+		Income income = save(createIncome(userCategory));
+
+		//when
+		Optional<Income> incomeOptional = incomeRepository.findById(income.getId());
+
+		//then
+		assertThat(incomeOptional).isPresent();
+	}
+
+	@Test
+	void 유저카테고리가_null일때도_수입_조회() {
+		//given
+		Income income = save(createIncome(userCategory));
+		income.deleteUserCategory();
+
+		//when
+		Optional<Income> incomeOptional = incomeRepository.findById(income.getId());
+
+		//then
+		assertThat(incomeOptional).isPresent();
+	}
 }

@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.*;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -61,6 +62,31 @@ class ExpenditureRepositoryTest extends RepositoryTest {
 			.map(Expenditure::getUserCategory)
 			.collect(Collectors.toList());
 		assertThat(categories).containsExactly(null, null, null);
+	}
+
+	@Test
+	void 아이디로_지출_조회() {
+		//given
+		Expenditure expenditure = save(createExpenditure(userCategory));
+
+		//when
+		Optional<Expenditure> expenditureOptional = expenditureRepository.findById(expenditure.getId());
+
+		//then
+		assertThat(expenditureOptional).isPresent();
+	}
+
+	@Test
+	void 유저카테고리가_null일때도_수입_조회() {
+		//given
+		Expenditure expenditure = save(createExpenditure(userCategory));
+		expenditure.deleteUserCategory();
+
+		//when
+		Optional<Expenditure> expenditureOptional = expenditureRepository.findById(expenditure.getId());
+
+		//then
+		assertThat(expenditureOptional).isPresent();
 	}
 
 	@Nested

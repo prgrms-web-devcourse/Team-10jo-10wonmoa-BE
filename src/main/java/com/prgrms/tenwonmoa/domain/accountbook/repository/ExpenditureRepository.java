@@ -15,8 +15,9 @@ public interface ExpenditureRepository extends JpaRepository<Expenditure, Long>,
 		+ "where e.userCategory.id = :userCategoryId")
 	void updateUserCategoryAsNull(Long userCategoryId);
 
+	@Override
 	@Query("select e from Expenditure e "
-		+ "join fetch e.userCategory "
-		+ "where e.id=:expenditureId")
+		+ "left join fetch e.userCategory "
+		+ "where e.id = :expenditureId")
 	Optional<Expenditure> findById(Long expenditureId);
 }

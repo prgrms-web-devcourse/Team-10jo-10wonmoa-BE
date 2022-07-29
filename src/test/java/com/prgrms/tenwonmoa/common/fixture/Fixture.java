@@ -27,8 +27,12 @@ public final class Fixture {
 		return buffer.toString();
 	}
 
+	public static User createRandomUser() {
+		String userName = makeUserName();
+		return new User(userName + "@gmail.com", "123456789", userName);
+	}
+
 	public static User createUser() {
-		// String userName = makeUserName();
 		return new User("testuser@gmail.com", "123456789", "tester");
 	}
 

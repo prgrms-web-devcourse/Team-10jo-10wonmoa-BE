@@ -29,7 +29,7 @@ class IncomeServiceTest {
 	@InjectMocks
 	private IncomeService incomeService;
 
-	private final Income income = createIncome();
+	private final Income income = createIncome(createUserCategory(createUser(), createIncomeCategory()));
 
 	@Test
 	void 수입저장_성공() {

@@ -1,9 +1,9 @@
 package com.prgrms.tenwonmoa.domain.accountbook.repository;
 
+import static com.prgrms.tenwonmoa.common.fixture.Fixture.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -25,23 +25,23 @@ class IncomeRepositoryTest extends RepositoryFixture {
 	@Autowired
 	private IncomeRepository incomeRepository;
 
-	private User user;
-
-	private Category category;
-
 	private UserCategory userCategory;
+
+	private UserCategory otherUserCategory;
 
 	@BeforeEach
 	void setup() {
-		user = saveUser();
-		category = saveCategory();
-		userCategory = save(new UserCategory(user, category));
+		User user = save(createUser());
+		User otherUser = save(createAnotherUser());
+		Category category = save(createIncomeCategory());
+		userCategory = save(createUserCategory(user, category));
+		otherUserCategory = save(createUserCategory(otherUser, category));
 	}
 
 	@Test
 	void 유저아이디와_수입아이디로_조회_성공() {
 		// given
-		Income income = saveIncome();
+		Income income = save(createIncome(userCategory));
 		User user = income.getUser();
 
 		// when
@@ -59,8 +59,8 @@ class IncomeRepositoryTest extends RepositoryFixture {
 	@Test
 	void 로그인한아이디가_다른계정의_수입을_조회할수없다() {
 		// given
-		Income loginIncome = saveIncome();
-		Income otherIncome = saveIncome();
+		Income loginIncome = save(createIncome(userCategory));
+		Income otherIncome = save(createIncome(otherUserCategory));
 
 		User loginUser = loginIncome.getUser();
 
@@ -74,16 +74,9 @@ class IncomeRepositoryTest extends RepositoryFixture {
 	@Test
 	void 해당하는_유저카테고리_아이디를_가진_수입의_유저카테고리를_null_로_업데이트() {
 		//given
-		Income income = new Income(
-			LocalDate.now(), 10000L, "내용", category.getName(), user, userCategory);
-
-		Income income2 = new Income(
-			LocalDate.now(), 10000L, "내용", category.getName(), user, userCategory);
-
-		Income income3 = new Income(
-			LocalDate.now(), 10000L, "내용", category.getName(), user, userCategory);
-
-		incomeRepository.saveAll(List.of(income, income2, income3));
+		save(createIncome(userCategory));
+		save(createIncome(userCategory));
+		save(createIncome(userCategory));
 
 		//when
 		incomeRepository.updateUserCategoryAsNull(userCategory.getId());
@@ -95,5 +88,4 @@ class IncomeRepositoryTest extends RepositoryFixture {
 			.collect(Collectors.toList());
 		assertThat(userCategories).containsExactly(null, null, null);
 	}
-
 }

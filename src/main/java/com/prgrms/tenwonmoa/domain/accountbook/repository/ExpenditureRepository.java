@@ -6,10 +6,10 @@ import org.springframework.data.jpa.repository.Query;
 
 import com.prgrms.tenwonmoa.domain.accountbook.Expenditure;
 
-public interface ExpenditureRepository extends JpaRepository<Expenditure, Long>, ExpenditureCustomRepository {
+public interface ExpenditureRepository extends JpaRepository<Expenditure, Long> {
 
 	@Modifying(clearAutomatically = true)
-	@Query("update Expenditure e set e.userCategory = null where e.userCategory.id = :userCategoryId")
+	@Query("update Expenditure e set e.userCategory = null "
+		+ "where e.userCategory.id = :userCategoryId")
 	void updateUserCategoryAsNull(Long userCategoryId);
-
 }

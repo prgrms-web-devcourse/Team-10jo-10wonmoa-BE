@@ -14,7 +14,7 @@ import com.prgrms.tenwonmoa.domain.user.User;
 import lombok.Getter;
 
 @Getter
-public class CreateIncomeRequest {
+public class UpdateIncomeRequest {
 	@NotNull
 	private final LocalDateTime registerDate;
 
@@ -28,7 +28,7 @@ public class CreateIncomeRequest {
 	@NotNull
 	private final Long userCategoryId;
 
-	public CreateIncomeRequest(LocalDateTime registerDate, Long amount, String content, Long userCategoryId) {
+	public UpdateIncomeRequest(LocalDateTime registerDate, Long amount, String content, Long userCategoryId) {
 		this.registerDate = registerDate;
 		this.amount = amount;
 		this.content = content;

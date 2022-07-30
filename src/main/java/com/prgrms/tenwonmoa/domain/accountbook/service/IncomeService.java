@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.prgrms.tenwonmoa.domain.accountbook.Income;
 import com.prgrms.tenwonmoa.domain.accountbook.dto.FindIncomeResponse;
 import com.prgrms.tenwonmoa.domain.accountbook.repository.IncomeRepository;
+import com.prgrms.tenwonmoa.domain.user.User;
 
 import lombok.RequiredArgsConstructor;
 
@@ -25,19 +26,20 @@ public class IncomeService {
 		return incomeRepository.save(income).getId();
 	}
 
-	public FindIncomeResponse findIncome(Long incomeId, Long userId) {
-		Income findIncome = incomeRepository.findByIdAndUserId(incomeId, userId)
-			.orElseThrow(() -> new NoSuchElementException(INCOME_NOT_FOUND.getMessage()));
+	public FindIncomeResponse findIncome(Long incomeId, User authUser) {
+		Income findIncome = findById(incomeId);
+		authUser.validateLogin(findIncome.getUser());
+
 		return FindIncomeResponse.of(findIncome);
 	}
 
-	public Income findIdAndUserId(Long incomeId, Long userId) {
-		return incomeRepository.findByIdAndUserId(incomeId, userId)
+	public Income findById(Long incomeId) {
+		return incomeRepository.findById(incomeId)
 			.orElseThrow(() -> new NoSuchElementException(INCOME_NOT_FOUND.getMessage()));
 	}
 
-	public void deleteIncome(Long incomeId, Long userId) {
-		incomeRepository.deleteByIdAndUserId(incomeId, userId);
+	public void deleteById(Long incomeId) {
+		incomeRepository.deleteById(incomeId);
 	}
 
 	public void setUserCategoryNull(Long userCategoryId) {

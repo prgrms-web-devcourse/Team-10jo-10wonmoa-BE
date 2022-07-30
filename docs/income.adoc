@@ -47,3 +47,8 @@ include::{snippets}/income-delete/http-request.adoc[]
 
 .Response
 include::{snippets}/income-delete/http-response.adoc[]
+
+=== 수입 권한없음
+
+.Response
+include::{snippets}/income-forbidden/http-response.adoc[]

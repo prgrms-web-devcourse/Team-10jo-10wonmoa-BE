@@ -19,6 +19,8 @@ import com.prgrms.tenwonmoa.domain.accountbook.dto.FindIncomeResponse;
 import com.prgrms.tenwonmoa.domain.accountbook.dto.UpdateIncomeRequest;
 import com.prgrms.tenwonmoa.domain.accountbook.service.IncomeService;
 import com.prgrms.tenwonmoa.domain.accountbook.service.IncomeTotalService;
+import com.prgrms.tenwonmoa.domain.user.User;
+import com.prgrms.tenwonmoa.domain.user.service.UserService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -31,11 +33,17 @@ public class IncomeController {
 
 	private final IncomeTotalService incomeTotalService;
 	private final IncomeService incomeService;
+	private final UserService userService;
+
+	// TODO 로그인이 완성되면 AuthenticationManager를 통해가져오도록 변경한다. 그전까지 임시로 사용
+	private User authenticateUserTemp() {
+		Long userId = 1L;
+		return userService.findById(userId);
+	}
 
 	@PostMapping
 	public ResponseEntity<Long> createIncome(@RequestBody @Valid CreateIncomeRequest request) {
-		Long userId = 1L; // TODO user 정보를 시큐리티 컨텍스트에서 찾도록 변경한다.
-		Long createdId = incomeTotalService.createIncome(userId, request);
+		Long createdId = incomeTotalService.createIncome(authenticateUserTemp(), request);
 
 		String redirectUri = LOCATION_PREFIX + createdId;
 		return ResponseEntity.created(URI.create(redirectUri)).body(createdId);
@@ -43,23 +51,20 @@ public class IncomeController {
 
 	@GetMapping("/{incomeId}")
 	public FindIncomeResponse findIncome(@PathVariable Long incomeId) {
-		Long userId = 1L; // TODO user 정보를 시큐리티 컨텍스트에서 찾도록 변경한다.
-		return incomeService.findIncome(incomeId, userId);
+		return incomeService.findIncome(incomeId, authenticateUserTemp());
 	}
 
 	@PutMapping("/{incomeId}")
 	public ResponseEntity<Void> updateIncome(@PathVariable Long incomeId,
 		@RequestBody @Valid UpdateIncomeRequest updateIncomeRequest
 	) {
-		Long userId = 1L; // TODO user 정보를 시큐리티 컨텍스트에서 찾도록 변경한다.
-		incomeTotalService.updateIncome(userId, incomeId, updateIncomeRequest);
+		incomeTotalService.updateIncome(authenticateUserTemp(), incomeId, updateIncomeRequest);
 		return ResponseEntity.noContent().build();
 	}
 
 	@DeleteMapping("/{incomeId}")
 	public ResponseEntity<Void> deleteIncome(@PathVariable Long incomeId) {
-		Long userId = 1L; // TODO user 정보를 시큐리티 컨텍스트에서 찾도록 변경한다.
-		incomeService.deleteIncome(incomeId, userId);
+		incomeTotalService.deleteIncome(incomeId, authenticateUserTemp());
 		return ResponseEntity.noContent().build();
 	}
 }

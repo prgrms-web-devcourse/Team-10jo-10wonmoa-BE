@@ -31,6 +31,11 @@ public class IncomeService {
 		return FindIncomeResponse.of(findIncome);
 	}
 
+	public Income findIdAndUserId(Long incomeId, Long userId) {
+		return incomeRepository.findByIdAndUserId(incomeId, userId)
+			.orElseThrow(() -> new NoSuchElementException(INCOME_NOT_FOUND.getMessage()));
+	}
+
 	public void setUserCategoryNull(Long userCategoryId) {
 		incomeRepository.updateUserCategoryAsNull(userCategoryId);
 	}

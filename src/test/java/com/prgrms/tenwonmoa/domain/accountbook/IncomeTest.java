@@ -1,5 +1,6 @@
 package com.prgrms.tenwonmoa.domain.accountbook;
 
+import static com.prgrms.tenwonmoa.common.fixture.Fixture.*;
 import static com.prgrms.tenwonmoa.domain.accountbook.AccountBookConst.*;
 import static com.prgrms.tenwonmoa.exception.message.Message.*;
 import static org.assertj.core.api.Assertions.*;
@@ -12,6 +13,7 @@ import org.junit.jupiter.api.Test;
 
 import net.bytebuddy.utility.RandomString;
 
+import com.prgrms.tenwonmoa.domain.accountbook.dto.UpdateIncomeRequest;
 import com.prgrms.tenwonmoa.domain.category.Category;
 import com.prgrms.tenwonmoa.domain.category.CategoryType;
 import com.prgrms.tenwonmoa.domain.category.UserCategory;
@@ -22,6 +24,12 @@ class IncomeTest {
 	private final Category category = new Category("현금", CategoryType.INCOME);
 	private final User user = new User("user@email.com", "password", "user1");
 	private final UserCategory userCategory = new UserCategory(user, category);
+	private final UserCategory otherUserCategory = createUserCategory(user,
+		new Category("otherCategory", CategoryType.INCOME));
+	private final UpdateIncomeRequest updateIncomeRequest = new UpdateIncomeRequest(LocalDateTime.now(),
+		2000L,
+		"updateContent",
+		2L);
 
 	@Test
 	void 수입_생성_성공() {
@@ -119,6 +127,22 @@ class IncomeTest {
 					userCategory)
 			)
 				.isInstanceOf(IllegalArgumentException.class)
+		);
+	}
+
+	@Test
+	void 수입_변경_테스트() {
+		// given
+		Income income = new Income(LocalDateTime.now(), 1000L, null, category.getName(), user, userCategory);
+		// when
+		income.update(otherUserCategory, updateIncomeRequest);
+		// then
+		assertAll(
+			() -> assertThat(income.getCategoryName()).isEqualTo(otherUserCategory.getCategory().getName()),
+			() -> assertThat(income.getAmount()).isEqualTo(updateIncomeRequest.getAmount()),
+			() -> assertThat(income.getRegisterDate()).isEqualTo(updateIncomeRequest.getRegisterDate()),
+			() -> assertThat(income.getContent()).isEqualTo(updateIncomeRequest.getContent()),
+			() -> assertThat(income.getUserCategory()).isEqualTo(otherUserCategory)
 		);
 	}
 

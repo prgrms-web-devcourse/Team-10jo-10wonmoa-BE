@@ -11,11 +11,13 @@ import javax.persistence.Table;
 
 import com.prgrms.tenwonmoa.domain.common.BaseEntity;
 
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
 @NoArgsConstructor(access = PROTECTED)
 @Table(name = "user")
+@Getter
 public class User extends BaseEntity {
 
 	@Column(name = "email", nullable = false, unique = true)

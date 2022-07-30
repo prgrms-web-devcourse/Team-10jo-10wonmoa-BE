@@ -18,6 +18,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import com.prgrms.tenwonmoa.domain.category.service.CreateDefaultUserCategoryService;
 import com.prgrms.tenwonmoa.domain.user.User;
 import com.prgrms.tenwonmoa.domain.user.dto.CreateUserRequest;
+import com.prgrms.tenwonmoa.domain.user.jwt.TokenProvider;
 import com.prgrms.tenwonmoa.domain.user.repository.UserRepository;
 import com.prgrms.tenwonmoa.exception.AlreadyExistException;
 import com.prgrms.tenwonmoa.exception.message.Message;
@@ -30,6 +31,9 @@ class UserServiceTest {
 
 	@Mock
 	private CreateDefaultUserCategoryService createDefaultUserCategoryService;
+
+	@Mock
+	private TokenProvider tokenProvider;
 
 	@InjectMocks
 	private UserService userService;
@@ -83,6 +87,43 @@ class UserServiceTest {
 		assertThatThrownBy(() -> userService.createUser(createUserRequest))
 			.isInstanceOf(AlreadyExistException.class)
 			.hasMessage(Message.ALREADY_EXISTS_USER.getMessage());
+	}
+
+	@Test
+	void 로그인_성공() {
+		given(userRepository.findByEmail(any(String.class))).willReturn(Optional.of(user));
+		Long userId = user.getId();
+		String email = user.getEmail();
+		String password = user.getPassword();
+
+		userService.login(email, password);
+
+		verify(tokenProvider).generateToken(userId, email);
+	}
+
+	@Test
+	void 잘못된_이메일_일_때_로그인_실패() {
+		given(userRepository.findByEmail(any(String.class)))
+			.willThrow(new IllegalArgumentException(Message.INVALID_EMAIL_OR_PASSWORD.getMessage()));
+
+		String email = user.getEmail();
+		String password = user.getPassword();
+
+		assertThatThrownBy(() -> userService.login(email, password))
+			.isInstanceOf(IllegalArgumentException.class)
+			.hasMessage(Message.INVALID_EMAIL_OR_PASSWORD.getMessage());
+	}
+
+	@Test
+	void 잘못된_비밀번호_일_때_로그인_실패() {
+		given(userRepository.findByEmail(any(String.class))).willReturn(Optional.of(user));
+
+		String email = user.getEmail();
+		String password = "invalidPassword";
+
+		assertThatThrownBy(() -> userService.login(email, password))
+			.isInstanceOf(IllegalArgumentException.class)
+			.hasMessage(Message.INVALID_EMAIL_OR_PASSWORD.getMessage());
 	}
 
 }

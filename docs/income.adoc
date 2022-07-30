@@ -28,4 +28,14 @@ include::{snippets}/income-find-by-id/http-response.adoc[]
 .Exception
 include::{snippets}/income-find-by-id-fail/http-response.adoc[]
 
+=== 수입 수정
+
+.Request
+include::{snippets}/income-update/http-request.adoc[]
+
+.Response
+include::{snippets}/income-update/http-response.adoc[]
+
+.Exception
+include::{snippets}/income-update-fail/http-response.adoc[]
 

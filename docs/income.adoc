@@ -39,3 +39,11 @@ include::{snippets}/income-update/http-response.adoc[]
 .Exception
 include::{snippets}/income-update-fail/http-response.adoc[]
 
+
+=== 수입 삭제
+
+.Request
+include::{snippets}/income-delete/http-request.adoc[]
+
+.Response
+include::{snippets}/income-delete/http-response.adoc[]

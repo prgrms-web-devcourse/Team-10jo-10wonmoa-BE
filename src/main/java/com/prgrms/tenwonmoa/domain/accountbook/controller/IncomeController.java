@@ -5,6 +5,7 @@ import java.net.URI;
 import javax.validation.Valid;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -52,6 +53,13 @@ public class IncomeController {
 	) {
 		Long userId = 1L; // TODO user 정보를 시큐리티 컨텍스트에서 찾도록 변경한다.
 		incomeTotalService.updateIncome(userId, incomeId, updateIncomeRequest);
+		return ResponseEntity.noContent().build();
+	}
+
+	@DeleteMapping("/{incomeId}")
+	public ResponseEntity<Void> deleteIncome(@PathVariable Long incomeId) {
+		Long userId = 1L; // TODO user 정보를 시큐리티 컨텍스트에서 찾도록 변경한다.
+		incomeService.deleteIncome(incomeId, userId);
 		return ResponseEntity.noContent().build();
 	}
 }

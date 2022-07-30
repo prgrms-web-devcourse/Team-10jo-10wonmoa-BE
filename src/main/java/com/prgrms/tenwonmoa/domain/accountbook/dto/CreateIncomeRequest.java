@@ -19,7 +19,7 @@ public class CreateIncomeRequest {
 	private final LocalDateTime registerDate;
 
 	@Min(1L)
-	@Max(1000000000000L)
+	@Max(1_000_000_000_000L)
 	private final Long amount;
 
 	@Size(max = 50)

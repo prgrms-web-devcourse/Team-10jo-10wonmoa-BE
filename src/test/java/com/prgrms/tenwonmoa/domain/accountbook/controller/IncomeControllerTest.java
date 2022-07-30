@@ -5,6 +5,7 @@ import static org.mockito.BDDMockito.*;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import java.time.LocalDateTime;
@@ -24,8 +25,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.prgrms.tenwonmoa.common.documentdto.CreateIncomeRequestDoc;
 import com.prgrms.tenwonmoa.common.documentdto.ErrorResponseDoc;
 import com.prgrms.tenwonmoa.common.documentdto.FindIncomeResponseDoc;
+import com.prgrms.tenwonmoa.common.documentdto.UpdateIncomeRequestDoc;
 import com.prgrms.tenwonmoa.domain.accountbook.dto.CreateIncomeRequest;
 import com.prgrms.tenwonmoa.domain.accountbook.dto.FindIncomeResponse;
+import com.prgrms.tenwonmoa.domain.accountbook.dto.UpdateIncomeRequest;
 import com.prgrms.tenwonmoa.domain.accountbook.service.IncomeService;
 import com.prgrms.tenwonmoa.domain.accountbook.service.IncomeTotalService;
 
@@ -50,6 +53,12 @@ class IncomeControllerTest {
 		"content",
 		"용돈"
 	);
+
+	private UpdateIncomeRequest updateIncomeRequest = new UpdateIncomeRequest(LocalDateTime.now(),
+		2000L,
+		"updateContent",
+		2L);
+
 	@Autowired
 	private MockMvc mockMvc;
 
@@ -123,6 +132,36 @@ class IncomeControllerTest {
 		)
 			.andExpect(status().isBadRequest())
 			.andDo(document("income-find-by-id-fail", responseFields(
+				ErrorResponseDoc.fieldDescriptors()
+			)));
+	}
+
+	@Test
+	void 수입_수정_성공() throws Exception {
+		Long incomeId = 1L;
+		mockMvc.perform(put(LOCATION_PREFIX + "/{incomeId}", incomeId)
+			.contentType(MediaType.APPLICATION_JSON)
+			.content(objectMapper.writeValueAsString(updateIncomeRequest))
+		)
+			.andExpect(status().isNoContent())
+			.andDo(document("income-update", requestFields(
+				UpdateIncomeRequestDoc.fieldDescriptors()
+			)));
+	}
+
+	@Test
+	void 수입_수정_실패() throws Exception {
+		willThrow(new NoSuchElementException(INCOME_NOT_FOUND.getMessage()))
+			.given(incomeTotalService)
+			.updateIncome(any(Long.class), any(Long.class), any(UpdateIncomeRequest.class));
+
+		Long incomeId = 1L;
+		mockMvc.perform(put(LOCATION_PREFIX + "/{incomeId}", incomeId)
+			.contentType(MediaType.APPLICATION_JSON)
+			.content(objectMapper.writeValueAsString(updateIncomeRequest))
+		)
+			.andExpect(status().isBadRequest())
+			.andDo(document("income-update-fail", responseFields(
 				ErrorResponseDoc.fieldDescriptors()
 			)));
 	}

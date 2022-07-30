@@ -88,4 +88,16 @@ class IncomeRepositoryTest extends RepositoryFixture {
 			.collect(Collectors.toList());
 		assertThat(userCategories).containsExactly(null, null, null);
 	}
+
+	@Test
+	void 수입정보_삭제_성공() {
+		Income income = saveIncome();
+		Long incomeId = income.getId();
+		Long userId = income.getUser().getId();
+
+		incomeRepository.deleteByIdAndUserId(incomeId, userId);
+
+		Optional<Income> findIncome = incomeRepository.findByIdAndUserId(incomeId, userId);
+		assertThat(findIncome).isEmpty();
+	}
 }

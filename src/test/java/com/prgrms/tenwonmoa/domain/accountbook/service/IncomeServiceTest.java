@@ -31,6 +31,9 @@ class IncomeServiceTest {
 
 	private final Income income = createIncome(createUserCategory(createUser(), createIncomeCategory()));
 
+	private final Long incomeId = 1L;
+	private final Long userId = 1L;
+
 	@Test
 	void 수입저장_성공() {
 		given(incomeRepository.save(income)).willReturn(income);
@@ -44,9 +47,6 @@ class IncomeServiceTest {
 
 	@Test
 	void 아이디로_수입조회_성공() {
-		Long incomeId = 1L;
-		Long userId = 1L;
-
 		given(incomeRepository.findByIdAndUserId(any(Long.class), any(Long.class))).willReturn(Optional.of(income));
 
 		FindIncomeResponse findIncomeResponse = incomeService.findIncome(incomeId, userId);
@@ -68,5 +68,14 @@ class IncomeServiceTest {
 		assertThatThrownBy(() -> incomeRepository.findByIdAndUserId(1L, 1L))
 			.isInstanceOf(NoSuchElementException.class)
 			.hasMessage(Message.INCOME_NOT_FOUND.getMessage());
+	}
+
+	@Test
+	void 수입_삭제_성공() {
+		doNothing().when(incomeRepository).deleteByIdAndUserId(any(Long.class), any(Long.class));
+
+		incomeService.deleteIncome(1L, 1L);
+
+		verify(incomeRepository).deleteByIdAndUserId(incomeId, userId);
 	}
 }

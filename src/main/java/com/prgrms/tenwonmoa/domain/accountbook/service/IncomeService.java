@@ -36,6 +36,10 @@ public class IncomeService {
 			.orElseThrow(() -> new NoSuchElementException(INCOME_NOT_FOUND.getMessage()));
 	}
 
+	public void deleteIncome(Long incomeId, Long userId) {
+		incomeRepository.deleteByIdAndUserId(incomeId, userId);
+	}
+
 	public void setUserCategoryNull(Long userCategoryId) {
 		incomeRepository.updateUserCategoryAsNull(userCategoryId);
 	}

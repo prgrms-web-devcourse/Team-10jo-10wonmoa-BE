@@ -74,7 +74,7 @@ public class GlobalExceptionHandler {
 	@ExceptionHandler({UserForbiddenException.class})
 	public ResponseEntity<ErrorResponse> handleForbidden(Exception exception) {
 		log.error(exception.getMessage(), exception);
-		ErrorResponse errorResponse = new ErrorResponse(List.of(exception.getMessage()), BAD_REQUEST.value());
+		ErrorResponse errorResponse = new ErrorResponse(List.of(exception.getMessage()), FORBIDDEN.value());
 		return ResponseEntity
 			.status(FORBIDDEN.value())
 			.body(errorResponse);

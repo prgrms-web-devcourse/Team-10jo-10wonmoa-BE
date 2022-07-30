@@ -15,6 +15,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import com.prgrms.tenwonmoa.domain.category.service.CreateDefaultUserCategoryService;
 import com.prgrms.tenwonmoa.domain.user.User;
 import com.prgrms.tenwonmoa.domain.user.dto.CreateUserRequest;
 import com.prgrms.tenwonmoa.domain.user.jwt.TokenProvider;
@@ -27,6 +28,9 @@ import com.prgrms.tenwonmoa.exception.message.Message;
 class UserServiceTest {
 	@Mock
 	private UserRepository userRepository;
+
+	@Mock
+	private CreateDefaultUserCategoryService createDefaultUserCategoryService;
 
 	@Mock
 	private TokenProvider tokenProvider;
@@ -68,6 +72,7 @@ class UserServiceTest {
 		userService.createUser(createUserRequest);
 
 		verify(userRepository).save(user);
+		verify(createDefaultUserCategoryService).createDefaultUserCategory(user);
 	}
 
 	@Test

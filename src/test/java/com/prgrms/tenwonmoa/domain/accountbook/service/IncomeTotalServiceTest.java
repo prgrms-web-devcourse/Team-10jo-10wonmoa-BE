@@ -46,7 +46,7 @@ class IncomeTotalServiceTest {
 		"content",
 		1L);
 
-	private UpdateIncomeRequest updateIncomeRequest = new UpdateIncomeRequest(LocalDateTime.now(),
+	private final UpdateIncomeRequest updateIncomeRequest = new UpdateIncomeRequest(LocalDateTime.now(),
 		2000L,
 		"updateContent",
 		2L);
@@ -54,7 +54,7 @@ class IncomeTotalServiceTest {
 	@Test
 	void 수입_생성_성공() {
 		given(userService.findById(any())).willReturn(user);
-		given(userCategoryService.getById(any())).willReturn(userCategory);
+		given(userCategoryService.findById(any())).willReturn(userCategory);
 		given(incomeService.save(income)).willReturn(1L);
 
 		Long savedId = incomeTotalService.createIncome(user.getId(), request);
@@ -75,7 +75,7 @@ class IncomeTotalServiceTest {
 	@Test
 	void 수입_생성실패_유저카테고리_없는경우() {
 		given(userService.findById(any())).willReturn(user);
-		given(userCategoryService.getById(any())).willThrow(
+		given(userCategoryService.findById(any())).willThrow(
 			new NoSuchElementException(USER_CATEGORY_NOT_FOUND.getMessage()));
 		assertThatThrownBy(() -> incomeTotalService.createIncome(user.getId(), request))
 			.isInstanceOf(NoSuchElementException.class)
@@ -85,7 +85,7 @@ class IncomeTotalServiceTest {
 	@Test
 	void 수입_수정_성공() {
 		given(incomeService.findIdAndUserId(any(), any())).willReturn(income);
-		given(userCategoryService.getById(any())).willReturn(userCategory);
+		given(userCategoryService.findById(any())).willReturn(userCategory);
 
 		incomeTotalService.updateIncome(user.getId(),
 			income.getId(),
@@ -94,7 +94,7 @@ class IncomeTotalServiceTest {
 
 		assertAll(
 			() -> verify(incomeService).findIdAndUserId(any(), any()),
-			() -> verify(userCategoryService).getById(any())
+			() -> verify(userCategoryService).findById(any())
 		);
 	}
 
@@ -112,7 +112,7 @@ class IncomeTotalServiceTest {
 	@Test
 	void 수입_수정_실패_유저카테고리_없는경우() {
 		given(incomeService.findIdAndUserId(any(), any())).willReturn(income);
-		given(userCategoryService.getById(any())).willThrow(
+		given(userCategoryService.findById(any())).willThrow(
 			new NoSuchElementException(USER_CATEGORY_NOT_FOUND.getMessage()));
 		assertThatThrownBy(() -> incomeTotalService.updateIncome(user.getId(),
 			income.getId(),

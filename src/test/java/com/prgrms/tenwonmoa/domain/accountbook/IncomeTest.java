@@ -26,7 +26,7 @@ class IncomeTest {
 	private final UserCategory userCategory = new UserCategory(user, category);
 	private final UserCategory otherUserCategory = createUserCategory(user,
 		new Category("otherCategory", CategoryType.INCOME));
-	private UpdateIncomeRequest updateIncomeRequest = new UpdateIncomeRequest(LocalDateTime.now(),
+	private final UpdateIncomeRequest updateIncomeRequest = new UpdateIncomeRequest(LocalDateTime.now(),
 		2000L,
 		"updateContent",
 		2L);

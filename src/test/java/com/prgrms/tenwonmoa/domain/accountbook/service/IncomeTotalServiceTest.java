@@ -37,7 +37,7 @@ class IncomeTotalServiceTest {
 	@InjectMocks
 	private IncomeTotalService incomeTotalService;
 
-	private final Income income = createIncome(createUserCategory(createUser(), createCategory()));
+	private final Income income = createIncome(createUserCategory(createUser(), createIncomeCategory()));
 	private final UserCategory userCategory = income.getUserCategory();
 	private final User user = income.getUser();
 

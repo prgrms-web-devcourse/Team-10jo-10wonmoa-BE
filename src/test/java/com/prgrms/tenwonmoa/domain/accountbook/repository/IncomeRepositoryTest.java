@@ -33,7 +33,7 @@ class IncomeRepositoryTest extends RepositoryFixture {
 	void setup() {
 		User user = save(createUser());
 		User otherUser = save(createAnotherUser());
-		Category category = save(createCategory());
+		Category category = save(createIncomeCategory());
 		userCategory = save(createUserCategory(user, category));
 		otherUserCategory = save(createUserCategory(otherUser, category));
 	}
@@ -88,5 +88,4 @@ class IncomeRepositoryTest extends RepositoryFixture {
 			.collect(Collectors.toList());
 		assertThat(userCategories).containsExactly(null, null, null);
 	}
-
 }

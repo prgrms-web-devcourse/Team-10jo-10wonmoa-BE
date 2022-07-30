@@ -33,7 +33,7 @@ class ExpenditureRepositoryTest extends RepositoryTest {
 	@BeforeEach
 	void setup() {
 		user = save(createUser());
-		category = save(createCategory());
+		category = save(createIncomeCategory());
 		userCategory = save(new UserCategory(user, category));
 	}
 

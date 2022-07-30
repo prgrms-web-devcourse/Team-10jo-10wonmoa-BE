@@ -14,6 +14,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.prgrms.tenwonmoa.domain.accountbook.Expenditure;
 import com.prgrms.tenwonmoa.domain.accountbook.Income;
@@ -70,10 +71,10 @@ class UserCategoryServiceTest {
 		String categoryName = "예시지출카테고리";
 
 		//when
-		Long userCategoryId = userCategoryService.register(user, categoryType, categoryName);
+		Long userCategoryId = userCategoryService.createUserCategory(user, categoryType, categoryName);
 
 		//then
-		UserCategory savedUserCategory = userCategoryService.getById(userCategoryId);
+		UserCategory savedUserCategory = userCategoryService.findById(userCategoryId);
 		Category savedCategory = savedUserCategory.getCategory();
 		assertThat(savedCategory)
 			.extracting(Category::getName, Category::getCategoryType)
@@ -83,7 +84,7 @@ class UserCategoryServiceTest {
 	@Test
 	void 아이디로_유저카테고리조회_실패() {
 		assertThatExceptionOfType(NoSuchElementException.class)
-			.isThrownBy(() -> userCategoryService.getById(1L));
+			.isThrownBy(() -> userCategoryService.findById(1L));
 	}
 
 	@Test
@@ -91,14 +92,50 @@ class UserCategoryServiceTest {
 		//given
 		String categoryType = "EXPENDITURE";
 		String categoryName = "예시지출카테고리";
-		Long userCategoryId = userCategoryService.register(user, categoryType, categoryName);
+		Long userCategoryId = userCategoryService.createUserCategory(user, categoryType, categoryName);
 
 		//when
 		userCategoryService.updateName(user, userCategoryId, "업데이트된 카테고리 이름");
 
 		//then
-		Category category = userCategoryService.getById(userCategoryId).getCategory();
+		Category category = userCategoryService.findById(userCategoryId).getCategory();
 		assertThat(category.getName()).isEqualTo("업데이트된 카테고리 이름");
+	}
+
+	@Test
+	@Transactional
+	void 유저카테고리_이름_수정시_지출_수입도_이름수정_성공() {
+		//given
+		String categoryType = "EXPENDITURE";
+		String categoryName = "예시지출카테고리";
+		Long userCategoryId = userCategoryService.createUserCategory(user, categoryType, categoryName);
+		UserCategory userCategory = userCategoryService.findById(userCategoryId);
+
+		Expenditure savedExpenditure = expenditureRepository.save(
+			new Expenditure(LocalDateTime.now(), 10000L,
+				"내용", categoryName, user, userCategory)
+		);
+
+		Income savedIncome = incomeRepository.save(
+			new Income(LocalDateTime.now(), 10000L,
+				"내용", categoryName, user, userCategory)
+		);
+
+		//when
+		userCategoryService.updateName(user, userCategoryId, "업데이트 카테고리");
+
+		//then
+		UserCategory updatedUserCategory = userCategoryService.findById(userCategoryId);
+		Category updatedCategory = updatedUserCategory.getCategory();
+		assertThat(updatedCategory.getName()).isEqualTo("업데이트 카테고리");
+
+		Expenditure updatedExpenditure = expenditureRepository.findById(
+			savedExpenditure.getId()).orElseThrow();
+		assertThat(updatedExpenditure.getCategoryName()).isEqualTo("업데이트 카테고리");
+
+		Income updatedIncome = incomeRepository.findById(
+			savedIncome.getId()).orElseThrow();
+		assertThat(updatedIncome.getCategoryName()).isEqualTo("업데이트 카테고리");
 	}
 
 	@Test
@@ -106,7 +143,7 @@ class UserCategoryServiceTest {
 		//given
 		String categoryType = "EXPENDITURE";
 		String categoryName = "예시지출카테고리";
-		Long userCategoryId = userCategoryService.register(user, categoryType, categoryName);
+		Long userCategoryId = userCategoryService.createUserCategory(user, categoryType, categoryName);
 
 		//when
 		//then
@@ -120,14 +157,14 @@ class UserCategoryServiceTest {
 		//given
 		String categoryType = "EXPENDITURE";
 		String categoryName = "예시지출카테고리";
-		Long userCategoryId = userCategoryService.register(user, categoryType, categoryName);
+		Long userCategoryId = userCategoryService.createUserCategory(user, categoryType, categoryName);
 
 		//when
-		userCategoryService.delete(user, userCategoryId);
+		userCategoryService.deleteUserCategory(user, userCategoryId);
 
 		//then
 		assertThatExceptionOfType(NoSuchElementException.class)
-			.isThrownBy(() -> userCategoryService.getById(userCategoryId));
+			.isThrownBy(() -> userCategoryService.findById(userCategoryId));
 	}
 
 	@Test
@@ -135,12 +172,12 @@ class UserCategoryServiceTest {
 		//given
 		String categoryType = "EXPENDITURE";
 		String categoryName = "예시지출카테고리";
-		Long userCategoryId = userCategoryService.register(user, categoryType, categoryName);
+		Long userCategoryId = userCategoryService.createUserCategory(user, categoryType, categoryName);
 
 		//when
 		//then
 		assertThatIllegalStateException().isThrownBy(
-			() -> userCategoryService.delete(otherUser, userCategoryId));
+			() -> userCategoryService.deleteUserCategory(otherUser, userCategoryId));
 	}
 
 	@Test
@@ -148,8 +185,8 @@ class UserCategoryServiceTest {
 		//given
 		String categoryType = "EXPENDITURE";
 		String categoryName = "예시지출카테고리";
-		Long userCategoryId = userCategoryService.register(user, categoryType, categoryName);
-		UserCategory userCategory = userCategoryService.getById(userCategoryId);
+		Long userCategoryId = userCategoryService.createUserCategory(user, categoryType, categoryName);
+		UserCategory userCategory = userCategoryService.findById(userCategoryId);
 
 		Expenditure savedExpenditure = expenditureRepository.save(
 			new Expenditure(LocalDateTime.now(), 10000L, "내용", "식비", user, userCategory));
@@ -158,11 +195,11 @@ class UserCategoryServiceTest {
 		new Expenditure(LocalDateTime.now(), 10000L, "내용", "식비", user, userCategory);
 
 		//when
-		userCategoryService.delete(user, userCategoryId);
+		userCategoryService.deleteUserCategory(user, userCategoryId);
 
 		//then
 		assertThatExceptionOfType(NoSuchElementException.class)
-			.isThrownBy(() -> userCategoryService.getById(userCategoryId));
+			.isThrownBy(() -> userCategoryService.findById(userCategoryId));
 
 		Optional<Expenditure> expenditureOptional = expenditureRepository.findById(savedExpenditure.getId());
 		Optional<Income> incomeOptional = incomeRepository.findById(savedIncome.getId());
@@ -180,6 +217,6 @@ class UserCategoryServiceTest {
 		//when
 		//then
 		assertThatExceptionOfType(NoSuchElementException.class)
-			.isThrownBy(() -> userCategoryService.delete(user, 1L));
+			.isThrownBy(() -> userCategoryService.deleteUserCategory(user, 1L));
 	}
 }

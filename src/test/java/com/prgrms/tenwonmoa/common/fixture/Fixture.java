@@ -41,8 +41,12 @@ public final class Fixture {
 		return new User("testuser2@gmail.com", "123456789", "tester2");
 	}
 
-	public static Category createCategory() {
+	public static Category createIncomeCategory() {
 		return new Category("categoryName", CategoryType.INCOME);
+	}
+
+	public static Category createExpenditureCategory() {
+		return new Category("categoryName", CategoryType.EXPENDITURE);
 	}
 
 	public static UserCategory createUserCategory(User user, Category category) {
@@ -66,4 +70,5 @@ public final class Fixture {
 			userCategory.getUser(),
 			userCategory);
 	}
+
 }

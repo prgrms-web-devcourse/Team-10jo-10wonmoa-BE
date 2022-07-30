@@ -37,7 +37,7 @@ class CategoryServiceTest {
 		String categoryName = "예시지출카테고리";
 
 		//when
-		Category category = service.register(categoryType, categoryName);
+		Category category = service.createCategory(categoryType, categoryName);
 
 		//then
 		assertThat(category).extracting(
@@ -51,14 +51,14 @@ class CategoryServiceTest {
 		//given
 		String categoryType = "EXPENDITURE";
 		String categoryName = "예시지출카테고리";
-		Category category = service.register(categoryType, categoryName);
+		Category category = service.createCategory(categoryType, categoryName);
 
 		//when
-		service.delete(category.getId());
+		service.deleteCategory(category.getId());
 
 		//then
 		assertThatExceptionOfType(NoSuchElementException.class).isThrownBy(
-			() -> service.getById(category.getId())
+			() -> service.findById(category.getId())
 		);
 	}
 
@@ -68,7 +68,7 @@ class CategoryServiceTest {
 		//when
 		//then
 		assertThatExceptionOfType(NoSuchElementException.class).isThrownBy(
-			() -> service.delete(0L)
+			() -> service.deleteCategory(0L)
 		);
 	}
 

@@ -13,8 +13,8 @@ import com.prgrms.tenwonmoa.domain.user.User;
 import lombok.RequiredArgsConstructor;
 
 @Service
-@RequiredArgsConstructor
 @Transactional
+@RequiredArgsConstructor
 public class CreateDefaultUserCategoryService {
 
 	private final UserCategoryService userCategoryService;

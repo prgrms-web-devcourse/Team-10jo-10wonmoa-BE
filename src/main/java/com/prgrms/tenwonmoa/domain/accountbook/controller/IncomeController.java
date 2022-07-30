@@ -8,12 +8,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.prgrms.tenwonmoa.domain.accountbook.dto.CreateIncomeRequest;
 import com.prgrms.tenwonmoa.domain.accountbook.dto.FindIncomeResponse;
+import com.prgrms.tenwonmoa.domain.accountbook.dto.UpdateIncomeRequest;
 import com.prgrms.tenwonmoa.domain.accountbook.service.IncomeService;
 import com.prgrms.tenwonmoa.domain.accountbook.service.IncomeTotalService;
 
@@ -31,7 +33,7 @@ public class IncomeController {
 
 	@PostMapping
 	public ResponseEntity<Long> createIncome(@RequestBody @Valid CreateIncomeRequest request) {
-		Long userId = 1L; // TODO user 정보를 시큐리티 컨텍스에서 찾도록 변경한다.
+		Long userId = 1L; // TODO user 정보를 시큐리티 컨텍스트에서 찾도록 변경한다.
 		Long createdId = incomeTotalService.createIncome(userId, request);
 
 		String redirectUri = LOCATION_PREFIX + createdId;
@@ -40,7 +42,16 @@ public class IncomeController {
 
 	@GetMapping("/{incomeId}")
 	public FindIncomeResponse findIncome(@PathVariable Long incomeId) {
-		Long userId = 1L; // TODO user 정보를 시큐리티 컨텍스에서 찾도록 변경한다.
+		Long userId = 1L; // TODO user 정보를 시큐리티 컨텍스트에서 찾도록 변경한다.
 		return incomeService.findIncome(incomeId, userId);
+	}
+
+	@PutMapping("/{incomeId}")
+	public ResponseEntity<Void> updateIncome(@PathVariable Long incomeId,
+		@RequestBody @Valid UpdateIncomeRequest updateIncomeRequest
+	) {
+		Long userId = 1L; // TODO user 정보를 시큐리티 컨텍스트에서 찾도록 변경한다.
+		incomeTotalService.updateIncome(userId, incomeId, updateIncomeRequest);
+		return ResponseEntity.noContent().build();
 	}
 }

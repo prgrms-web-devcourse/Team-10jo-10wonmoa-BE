@@ -37,7 +37,10 @@ public enum Message {
 	NOT_NULL_USERNAME("이름은 필수입니다."),
 	INVALID_USERNAME_LENGTH("이름은 2~20 글자 사이입니다."),
 	INVALID_USERNAME_PATTERN("이름은 특수문자를 포함하지 않습니다."),
-	ALREADY_EXISTS_USER("이미 존재하는 유저입니다.");
+	ALREADY_EXISTS_USER("이미 존재하는 유저입니다."),
+
+	// 로그인
+	INVALID_EMAIL_OR_PASSWORD("이메일 또는 비밀번호가 잘못되었습니다.");
 
 	private final String message;
 

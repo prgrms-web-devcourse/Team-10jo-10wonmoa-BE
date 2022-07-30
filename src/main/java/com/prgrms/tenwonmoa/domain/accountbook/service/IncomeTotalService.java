@@ -5,6 +5,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.prgrms.tenwonmoa.domain.accountbook.Income;
 import com.prgrms.tenwonmoa.domain.accountbook.dto.CreateIncomeRequest;
+import com.prgrms.tenwonmoa.domain.accountbook.dto.UpdateIncomeRequest;
 import com.prgrms.tenwonmoa.domain.category.UserCategory;
 import com.prgrms.tenwonmoa.domain.category.service.UserCategoryService;
 import com.prgrms.tenwonmoa.domain.user.User;
@@ -27,5 +28,13 @@ public class IncomeTotalService {
 		Income income = createIncomeRequest.toEntity(user, userCategory, userCategory.getCategory().getName());
 
 		return incomeService.save(income);
+	}
+
+	@Transactional
+	public void updateIncome(Long userId, Long incomeId, UpdateIncomeRequest updateIncomeRequest) {
+		Income income = incomeService.findIdAndUserId(incomeId, userId);
+		UserCategory userCategory = userCategoryService.findById(updateIncomeRequest.getUserCategoryId());
+
+		income.update(userCategory, updateIncomeRequest);
 	}
 }

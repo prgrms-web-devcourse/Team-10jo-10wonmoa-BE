@@ -9,6 +9,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -18,12 +19,14 @@ import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.prgrms.tenwonmoa.config.JwtConfigure;
 import com.prgrms.tenwonmoa.domain.user.dto.CreateUserRequest;
 import com.prgrms.tenwonmoa.domain.user.service.UserService;
 
 @WebMvcTest(UserController.class)
 @AutoConfigureRestDocs
 @MockBean(JpaMetamodelMappingContext.class)
+@EnableConfigurationProperties(JwtConfigure.class)
 class UserControllerTest {
 
 	@MockBean

@@ -1,5 +1,7 @@
 package com.prgrms.tenwonmoa.domain.accountbook.dto;
 
+import com.querydsl.core.annotations.QueryProjection;
+
 import lombok.Getter;
 
 @Getter
@@ -15,6 +17,7 @@ public class DayDetail {
 
 	private final String categoryName;
 
+	@QueryProjection
 	public DayDetail(Long id, String type, Long amount, String content, String categoryName) {
 		this.id = id;
 		this.type = type;

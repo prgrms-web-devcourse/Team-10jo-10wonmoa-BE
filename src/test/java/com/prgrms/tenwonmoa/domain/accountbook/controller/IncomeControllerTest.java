@@ -27,9 +27,9 @@ import com.prgrms.tenwonmoa.common.documentdto.ErrorResponseDoc;
 import com.prgrms.tenwonmoa.common.documentdto.FindIncomeResponseDoc;
 import com.prgrms.tenwonmoa.common.documentdto.UpdateIncomeRequestDoc;
 import com.prgrms.tenwonmoa.config.JwtConfigure;
-import com.prgrms.tenwonmoa.domain.accountbook.dto.CreateIncomeRequest;
-import com.prgrms.tenwonmoa.domain.accountbook.dto.FindIncomeResponse;
-import com.prgrms.tenwonmoa.domain.accountbook.dto.UpdateIncomeRequest;
+import com.prgrms.tenwonmoa.domain.accountbook.dto.income.CreateIncomeRequest;
+import com.prgrms.tenwonmoa.domain.accountbook.dto.income.FindIncomeResponse;
+import com.prgrms.tenwonmoa.domain.accountbook.dto.income.UpdateIncomeRequest;
 import com.prgrms.tenwonmoa.domain.accountbook.service.IncomeService;
 import com.prgrms.tenwonmoa.domain.accountbook.service.IncomeTotalService;
 

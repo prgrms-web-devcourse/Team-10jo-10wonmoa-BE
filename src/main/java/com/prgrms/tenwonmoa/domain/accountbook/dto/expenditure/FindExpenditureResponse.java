@@ -1,4 +1,4 @@
-package com.prgrms.tenwonmoa.domain.accountbook.dto;
+package com.prgrms.tenwonmoa.domain.accountbook.dto.expenditure;
 
 import java.time.LocalDateTime;
 

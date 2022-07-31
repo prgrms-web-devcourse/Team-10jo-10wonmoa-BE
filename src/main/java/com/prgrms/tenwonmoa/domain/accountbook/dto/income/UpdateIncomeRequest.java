@@ -1,4 +1,4 @@
-package com.prgrms.tenwonmoa.domain.accountbook.dto;
+package com.prgrms.tenwonmoa.domain.accountbook.dto.income;
 
 import java.time.LocalDateTime;
 
@@ -7,17 +7,19 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-import com.prgrms.tenwonmoa.domain.accountbook.Expenditure;
+import com.prgrms.tenwonmoa.domain.accountbook.Income;
 import com.prgrms.tenwonmoa.domain.category.UserCategory;
 import com.prgrms.tenwonmoa.domain.user.User;
 
-public class CreateExpenditureRequest {
+import lombok.Getter;
 
+@Getter
+public class UpdateIncomeRequest {
 	@NotNull
 	private final LocalDateTime registerDate;
 
-	@Min(0L)
-	@Max(1000000000000L)
+	@Min(1L)
+	@Max(1_000_000_000_000L)
 	private final Long amount;
 
 	@Size(max = 50)
@@ -26,15 +28,15 @@ public class CreateExpenditureRequest {
 	@NotNull
 	private final Long userCategoryId;
 
-	public CreateExpenditureRequest(LocalDateTime registerDate, Long amount, String content, Long userCategoryId) {
+	public UpdateIncomeRequest(LocalDateTime registerDate, Long amount, String content, Long userCategoryId) {
 		this.registerDate = registerDate;
 		this.amount = amount;
 		this.content = content;
 		this.userCategoryId = userCategoryId;
 	}
 
-	public Expenditure toEntity(User user, UserCategory userCategory, String categoryName) {
-		return new Expenditure(
+	public Income toEntity(User user, UserCategory userCategory, String categoryName) {
+		return new Income(
 			this.registerDate,
 			this.amount,
 			this.content,
@@ -42,9 +44,5 @@ public class CreateExpenditureRequest {
 			user,
 			userCategory
 		);
-	}
-
-	public Long getUserCategoryId() {
-		return userCategoryId;
 	}
 }

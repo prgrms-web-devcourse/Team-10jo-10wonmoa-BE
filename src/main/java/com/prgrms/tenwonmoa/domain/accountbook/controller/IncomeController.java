@@ -13,9 +13,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.prgrms.tenwonmoa.domain.accountbook.dto.CreateIncomeRequest;
-import com.prgrms.tenwonmoa.domain.accountbook.dto.FindIncomeResponse;
-import com.prgrms.tenwonmoa.domain.accountbook.dto.UpdateIncomeRequest;
+import com.prgrms.tenwonmoa.domain.accountbook.dto.income.CreateIncomeRequest;
+import com.prgrms.tenwonmoa.domain.accountbook.dto.income.FindIncomeResponse;
+import com.prgrms.tenwonmoa.domain.accountbook.dto.income.UpdateIncomeRequest;
 import com.prgrms.tenwonmoa.domain.accountbook.service.IncomeService;
 import com.prgrms.tenwonmoa.domain.accountbook.service.IncomeTotalService;
 

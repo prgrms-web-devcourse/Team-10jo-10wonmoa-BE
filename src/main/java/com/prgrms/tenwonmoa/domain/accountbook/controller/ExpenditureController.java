@@ -15,10 +15,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.prgrms.tenwonmoa.domain.accountbook.dto.CreateExpenditureRequest;
-import com.prgrms.tenwonmoa.domain.accountbook.dto.CreateExpenditureResponse;
-import com.prgrms.tenwonmoa.domain.accountbook.dto.FindExpenditureResponse;
-import com.prgrms.tenwonmoa.domain.accountbook.dto.UpdateExpenditureRequest;
+import com.prgrms.tenwonmoa.domain.accountbook.dto.expenditure.CreateExpenditureRequest;
+import com.prgrms.tenwonmoa.domain.accountbook.dto.expenditure.CreateExpenditureResponse;
+import com.prgrms.tenwonmoa.domain.accountbook.dto.expenditure.FindExpenditureResponse;
+import com.prgrms.tenwonmoa.domain.accountbook.dto.expenditure.UpdateExpenditureRequest;
 import com.prgrms.tenwonmoa.domain.accountbook.service.ExpenditureService;
 
 import lombok.RequiredArgsConstructor;

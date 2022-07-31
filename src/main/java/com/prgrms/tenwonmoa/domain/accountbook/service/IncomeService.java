@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.prgrms.tenwonmoa.domain.accountbook.Income;
-import com.prgrms.tenwonmoa.domain.accountbook.dto.FindIncomeResponse;
+import com.prgrms.tenwonmoa.domain.accountbook.dto.income.FindIncomeResponse;
 import com.prgrms.tenwonmoa.domain.accountbook.repository.IncomeRepository;
 
 import lombok.RequiredArgsConstructor;

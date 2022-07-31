@@ -5,7 +5,7 @@ import java.time.LocalDate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.prgrms.tenwonmoa.domain.accountbook.dto.FindAccountDayResponse;
+import com.prgrms.tenwonmoa.domain.accountbook.dto.FindDayAccountResponse;
 import com.prgrms.tenwonmoa.domain.accountbook.dto.FindMonthSumResponse;
 import com.prgrms.tenwonmoa.domain.accountbook.repository.AccountBookQueryRepository;
 import com.prgrms.tenwonmoa.domain.common.page.PageCustomImpl;
@@ -20,7 +20,7 @@ public class AccountBookQueryService {
 
 	private final AccountBookQueryRepository accountBookQueryRepository;
 
-	public PageCustomImpl<FindAccountDayResponse> findDailyAccount(Long userId, PageCustomRequest pageRequest,
+	public PageCustomImpl<FindDayAccountResponse> findDailyAccount(Long userId, PageCustomRequest pageRequest,
 		LocalDate date) {
 		return accountBookQueryRepository.findDailyAccount(userId, pageRequest, date);
 	}

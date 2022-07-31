@@ -9,4 +9,8 @@ public class ChunksCustom<T> {
 	public ChunksCustom(List<T> results) {
 		this.results = results;
 	}
+
+	public List<T> getResults() {
+		return results;
+	}
 }

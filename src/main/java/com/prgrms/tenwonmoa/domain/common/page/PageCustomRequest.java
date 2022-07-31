@@ -13,7 +13,7 @@ public class PageCustomRequest {
 
 	public PageCustomRequest(int page, int size) {
 
-		checkArgument(page < 1, "page는 1이상이어야 합니다.");
+		checkArgument(page >= 1, "page는 1이상이어야 합니다.");
 
 		this.page = page;
 		this.size = size;
@@ -24,6 +24,10 @@ public class PageCustomRequest {
 		if (size == 0) {
 			this.size = 10;
 		}
+	}
+
+	public long getOffset() {
+		return (long)(page - 1) * (long)size;
 	}
 
 }

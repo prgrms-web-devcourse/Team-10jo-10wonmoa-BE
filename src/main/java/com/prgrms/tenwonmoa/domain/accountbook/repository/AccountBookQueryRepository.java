@@ -4,12 +4,19 @@ import static com.prgrms.tenwonmoa.domain.accountbook.QExpenditure.*;
 import static com.prgrms.tenwonmoa.domain.accountbook.QIncome.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Repository;
 
-import com.prgrms.tenwonmoa.domain.accountbook.dto.FindAccountDayResponse;
+import com.prgrms.tenwonmoa.domain.accountbook.dto.DayDetail;
+import com.prgrms.tenwonmoa.domain.accountbook.dto.FindDayAccountResponse;
 import com.prgrms.tenwonmoa.domain.accountbook.dto.FindMonthSumResponse;
+import com.prgrms.tenwonmoa.domain.accountbook.dto.QDayDetail;
 import com.prgrms.tenwonmoa.domain.common.page.PageCustomImpl;
 import com.prgrms.tenwonmoa.domain.common.page.PageCustomRequest;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -22,30 +29,31 @@ public class AccountBookQueryRepository {
 
 	private final JPAQueryFactory queryFactory;
 
-	public PageCustomImpl<FindAccountDayResponse> findDailyAccount(Long userId, PageCustomRequest pageRequest,
+	public PageCustomImpl<FindDayAccountResponse> findDailyAccount(Long userId, PageCustomRequest pageRequest,
 		LocalDate date) {
 
-		// 어떻게 할 수 있을까...
-		// 페이징 날짜 10개를 보내줘야해.
-		// 날짜가 없으면 건너 뛰어도 돼...
-		// expenditure와 income을 불러오는 기준이 너무 애매하다...
+		List<LocalDate> dates = getPageDate(pageRequest, userId, date);
 
-		// 둘다 날짜가 있다.
-		// 둘 중 하나가 날짜가 있다
-		// 둘 다 날짜가 없다 -> 데이터 안보내주면 돼
-		// 이제 이 두 개 데이터를 어떻게 할 것이냐가 문젠데...
-		List<FindAccountDayResponse> dayAccounts;
+		List<FindDayAccountResponse> responses = new ArrayList<>();
 
-		return new PageCustomImpl<FindAccountDayResponse>(pageRequest.getPage(), pageRequest.getPage() + 1, null);
+		dates.iterator().forEachRemaining(
+			d -> responses.add(new FindDayAccountResponse(d, getDayIncomeAmount(d), getDayExpenditureAmount(d),
+				getDayDetails(userId, d)))
+		);
+
+		Collections.sort(responses,
+			(o1, o2) -> o1.getRegisterDate().getDayOfMonth() - o1.getRegisterDate().getDayOfMonth());
+
+		return new PageCustomImpl<>(pageRequest.getPage(), pageRequest, responses);
 	}
 
-	public FindMonthSumResponse findMonthSum(Long userId, LocalDate monthTime) {
+	public FindMonthSumResponse findMonthSum(Long userId, LocalDate month) {
 
 		Long monthIncome = queryFactory.select(income.amount.sum())
 			.from(income)
 			.groupBy(income.registerDate.yearMonth())
-			.where(income.registerDate.year().eq(monthTime.getYear()),
-				income.registerDate.month().eq(monthTime.getMonthValue()),
+			.where(income.registerDate.year().eq(month.getYear()),
+				income.registerDate.month().eq(month.getMonthValue()),
 				income.user.id.eq(userId)
 			)
 			.fetchOne();
@@ -53,8 +61,8 @@ public class AccountBookQueryRepository {
 		Long monthExpenditure = queryFactory.select(expenditure.amount.sum())
 			.from(expenditure)
 			.groupBy(expenditure.registerDate.yearMonth())
-			.where(expenditure.registerDate.year().eq(monthTime.getYear()),
-				expenditure.registerDate.month().eq(monthTime.getMonthValue()),
+			.where(expenditure.registerDate.year().eq(month.getYear()),
+				expenditure.registerDate.month().eq(month.getMonthValue()),
 				expenditure.user.id.eq(userId)
 			)
 			.fetchOne();
@@ -65,5 +73,119 @@ public class AccountBookQueryRepository {
 		Long total = monthIncome - monthExpenditure;
 
 		return new FindMonthSumResponse(monthIncome, monthExpenditure, total);
+	}
+
+	private List<DayDetail> getDayDetails(Long userId, LocalDate localDate) {
+		int year = localDate.getYear();
+		int month = localDate.getMonthValue();
+		int day = localDate.getDayOfMonth();
+
+		List<DayDetail> dayDetails = queryFactory.select(new QDayDetail(
+				expenditure.id,
+				expenditure.userCategory.category.categoryType.stringValue(),
+				expenditure.amount,
+				expenditure.content,
+				expenditure.categoryName
+			))
+			.from(expenditure)
+			.where(
+				expenditure.user.id.eq(userId),
+				expenditure.registerDate.year().eq(year),
+				expenditure.registerDate.month().eq(month),
+				expenditure.registerDate.dayOfMonth().eq(day)
+			)
+			.fetch();
+
+		dayDetails.addAll(
+			queryFactory.select(new QDayDetail(
+					income.id,
+					income.userCategory.category.categoryType.stringValue(),
+					income.amount,
+					income.content,
+					income.categoryName
+				))
+				.from(income)
+				.where(
+					income.user.id.eq(userId),
+					income.registerDate.year().eq(year),
+					income.registerDate.month().eq(month),
+					income.registerDate.dayOfMonth().eq(day)
+				)
+				.fetch()
+		);
+
+		dayDetails.sort(Comparator.comparing(DayDetail::getType));
+
+		return dayDetails;
+	}
+
+	private List<LocalDate> getPageDate(PageCustomRequest pageCustomRequest, Long userId, LocalDate date) {
+
+		long offset = pageCustomRequest.getOffset();
+		int size = pageCustomRequest.getSize();
+		int year = date.getYear();
+		int month = date.getMonthValue();
+
+		List<LocalDateTime> expenditureTimes = queryFactory.select(expenditure.registerDate)
+			.from(expenditure)
+			.where(
+				expenditure.user.id.eq(userId),
+				expenditure.registerDate.year().eq(year),
+				expenditure.registerDate.month().eq(month)
+			)
+			.fetch();
+
+		List<LocalDateTime> incomeTimes = queryFactory.select(income.registerDate)
+			.from(income)
+			.where(
+				income.user.id.eq(userId),
+				income.registerDate.year().eq(year),
+				income.registerDate.month().eq(month)
+			)
+			.fetch();
+
+		List<LocalDate> expenditureDate = expenditureTimes.stream()
+			.map(LocalDateTime::toLocalDate)
+			.collect(Collectors.toList());
+
+		List<LocalDate> incomeDate = incomeTimes.stream()
+			.map(LocalDateTime::toLocalDate)
+			.collect(Collectors.toList());
+
+		expenditureDate.addAll(incomeDate);
+
+		List<LocalDate> dates = expenditureDate.stream()
+			.distinct()
+			.collect(Collectors.toList());
+
+		Collections.sort(dates, (d1, d2) -> d1.isAfter(d2) ? -1 : 1);
+
+		int end = (int)offset + size > dates.size() ? dates.size() : (int)offset + size;
+
+		return dates.subList(((int)offset), end);
+	}
+
+	private Long getDayIncomeAmount(LocalDate date) {
+		Long amount = queryFactory.select(income.amount.sum())
+			.from(income)
+			.groupBy(income.registerDate.dayOfMonth())
+			.where(income.registerDate.year().eq(date.getYear()),
+				income.registerDate.month().eq(date.getMonthValue()),
+				income.registerDate.dayOfMonth().eq(date.getDayOfMonth()))
+			.fetchOne();
+
+		return amount == null ? 0L : amount;
+	}
+
+	private Long getDayExpenditureAmount(LocalDate date) {
+		Long amount = queryFactory.select(expenditure.amount.sum())
+			.from(expenditure)
+			.groupBy(expenditure.registerDate.dayOfMonth())
+			.where(expenditure.registerDate.year().eq(date.getYear()),
+				expenditure.registerDate.month().eq(date.getMonthValue()),
+				expenditure.registerDate.dayOfMonth().eq(date.getDayOfMonth()))
+			.fetchOne();
+
+		return amount == null ? 0L : amount;
 	}
 }

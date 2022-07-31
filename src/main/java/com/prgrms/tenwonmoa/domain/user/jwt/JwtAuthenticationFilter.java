@@ -25,7 +25,7 @@ import lombok.extern.slf4j.Slf4j;
 @Component
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
-
+	private static final String BEARER_PREFIX = "Bearer ";
 	private final TokenProvider tokenProvider;
 	private final JwtConfigure jwtConfigure;
 
@@ -47,18 +47,24 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 		String token = parseToken(request);
 
 		if (StringUtils.hasText(token)) {
-			// userId 가져오기
-			Long userId = tokenProvider.validateAndGetUserId(token);
-			log.info("Authenticated user Id: {}", userId);
+			try {
+				// userId 가져오기
+				Long userId = tokenProvider.validateAndGetUserId(token);
+				log.info("Authenticated user Id: {}", userId);
 
-			// 인증 완료, SecurityContextHolder 에 인증된 사용자라고 등록
-			AbstractAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
-				userId,
-				null,
-				AuthorityUtils.NO_AUTHORITIES
-			);
-			authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-			SecurityContextHolder.getContext().setAuthentication(authentication);
+				// 인증 완료, SecurityContextHolder 에 인증된 사용자라고 등록
+				AbstractAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
+					userId,
+					null,
+					AuthorityUtils.NO_AUTHORITIES
+				);
+				authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+				SecurityContextHolder.getContext().setAuthentication(authentication);
+			} catch (Exception e) {
+				log.warn("Jwt processing 실패: {}", e.getMessage());
+			}
+		} else {
+			// todo: token 이 없으면 기능 API 호출이 불가, controller 로 가지 않도록 필터에서 처리
 		}
 
 		filterChain.doFilter(request, response);
@@ -69,8 +75,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 		String bearerToken = request.getHeader(jwtConfigure.getHeader());
 		log.info("Bearer Token: {}", bearerToken);
 
-		if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
-			return bearerToken.substring(7);
+		if (StringUtils.hasText(bearerToken) && bearerToken.startsWith(BEARER_PREFIX)) {
+			return bearerToken.substring(BEARER_PREFIX.length());
 		}
 		return null;
 	}

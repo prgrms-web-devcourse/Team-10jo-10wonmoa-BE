@@ -32,7 +32,7 @@ import com.prgrms.tenwonmoa.domain.user.service.UserService;
 class UserControllerTest {
 
 	@MockBean
-	private JwtAuthenticationFilter jwtAuthenticationFilter;
+	private JwtAuthenticationFilter jwtAuthenticationFilter;	// 테스트 실행을 위해 필요
 
 	@MockBean
 	private UserService userService;

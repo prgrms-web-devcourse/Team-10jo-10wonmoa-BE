@@ -70,7 +70,7 @@ class IncomeControllerTest {
 	private ObjectMapper objectMapper;
 
 	@MockBean
-	private JwtAuthenticationFilter jwtAuthenticationFilter;	//
+	private JwtAuthenticationFilter jwtAuthenticationFilter;    // 테스트 실행을 위해 필요
 
 	@MockBean
 	private IncomeTotalService incomeTotalService;

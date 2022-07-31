@@ -34,8 +34,8 @@ public class TokenProvider {
 	}
 
 	private Jwt.Claims verifyAndGetClaims(String token) {
-		DecodedJWT decodedJWT = jwt.getJwtVerifier().verify(token);
-		return new Jwt.Claims(decodedJWT);
+		DecodedJWT decodedJwt = jwt.getJwtVerifier().verify(token);
+		return new Jwt.Claims(decodedJwt);
 	}
 
 }

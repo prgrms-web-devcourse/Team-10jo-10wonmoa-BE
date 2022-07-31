@@ -2,7 +2,7 @@ package com.prgrms.tenwonmoa.domain.accountbook;
 
 import static org.assertj.core.api.Assertions.*;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -17,17 +17,19 @@ import com.prgrms.tenwonmoa.domain.user.User;
 @DisplayName("지출(Expenditure) domain 테스트")
 class ExpenditureTest {
 
-	private final LocalDate date = LocalDate.now();
+	private final LocalDateTime date = LocalDateTime.now();
 
 	private final Long amount = 10000L;
 
 	private final String content = "돈까스";
 
-	private final String categoryName = "식비";
+	private final String categoryName = "문화";
 
 	private final User user = new User("jungki111@gmail.com", "password1234!", "개발자");
 
-	private final UserCategory userCategory = new UserCategory(user, new Category("식비", CategoryType.EXPENDITURE));
+	private final Category category = new Category("식비", CategoryType.EXPENDITURE);
+
+	private final UserCategory userCategory = new UserCategory(user, category);
 
 	@Nested
 	@DisplayName("Expenditure 생성 중에서")
@@ -171,7 +173,7 @@ class ExpenditureTest {
 		);
 
 		private final UpdateExpenditureRequest request = new UpdateExpenditureRequest(
-			LocalDate.now(),
+			LocalDateTime.now(),
 			20000L,
 			"그런게 있어",
 			2L
@@ -190,6 +192,39 @@ class ExpenditureTest {
 				.isEqualTo(otherUserCategory.getCategory().getName());
 		}
 
+	}
+
+	@Nested
+	@DisplayName("지출의 userCategory를 지우거나, category 이름을 제대로 불러오는지")
+	class DeleteExpenditureAndGetCategoryName {
+
+		private final Expenditure expenditure = new Expenditure(
+			date,
+			amount,
+			content,
+			categoryName,
+			user,
+			userCategory
+		);
+
+		@Test
+		public void 유저카테고리를_지운다() {
+			expenditure.deleteUserCategory();
+
+			assertThat(expenditure.getUserCategory()).isNull();
+		}
+
+		@Test
+		public void 유저카테고리를_지웠을때_카테고리이름을_불러온다() {
+			expenditure.deleteUserCategory();
+
+			assertThat(expenditure.getCategoryName()).isEqualTo(categoryName);
+		}
+
+		@Test
+		public void 유저카테고리를_지우지_않았을때_저장된_카테고리의_이름을_불러온다() {
+			assertThat(expenditure.getCategoryName()).isEqualTo(category.getName());
+		}
 	}
 
 }

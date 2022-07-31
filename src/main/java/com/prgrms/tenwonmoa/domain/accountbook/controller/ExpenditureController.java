@@ -3,7 +3,11 @@ package com.prgrms.tenwonmoa.domain.accountbook.controller;
 import java.net.URI;
 import java.net.URISyntaxException;
 
+import javax.validation.Valid;
+
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -13,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.prgrms.tenwonmoa.domain.accountbook.dto.CreateExpenditureRequest;
 import com.prgrms.tenwonmoa.domain.accountbook.dto.CreateExpenditureResponse;
+import com.prgrms.tenwonmoa.domain.accountbook.dto.FindExpenditureResponse;
 import com.prgrms.tenwonmoa.domain.accountbook.dto.UpdateExpenditureRequest;
 import com.prgrms.tenwonmoa.domain.accountbook.service.ExpenditureService;
 
@@ -28,7 +33,7 @@ public class ExpenditureController {
 
 	@PostMapping
 	public ResponseEntity<CreateExpenditureResponse> createExpenditure(
-		@RequestBody CreateExpenditureRequest createExpenditureRequest) throws URISyntaxException {
+		@Valid @RequestBody CreateExpenditureRequest createExpenditureRequest) throws URISyntaxException {
 		Long userId = 1L; // 추후 Auth로 받을 예정
 		CreateExpenditureResponse response = expenditureService.createExpenditure(userId, createExpenditureRequest);
 
@@ -39,14 +44,28 @@ public class ExpenditureController {
 	@PutMapping("/{expenditureId}")
 	public ResponseEntity<Void> updateExpenditure(
 		@PathVariable Long expenditureId,
-		@RequestBody UpdateExpenditureRequest updateExpenditureRequest) throws URISyntaxException {
+		@Valid @RequestBody UpdateExpenditureRequest updateExpenditureRequest
+	) {
 		Long userId = 1L; // 추후 Auth로 받을 예정
 		expenditureService.updateExpenditure(userId, expenditureId, updateExpenditureRequest);
 
-		/**
-		 * TODO : 이부분 uri 어디로 지정해줘야할 지 프로트랑 의논 필요
-		 * */
-		URI uri = new URI(LOCATION_PREFIX + expenditureId);
-		return ResponseEntity.created(uri).build();
+		return ResponseEntity.ok().build();
+	}
+
+	@GetMapping("/{expenditureId}")
+	public ResponseEntity<FindExpenditureResponse> findExpenditure(@PathVariable Long expenditureId) {
+		Long userId = 1L; // 추후 Auth로 받을 예정
+
+		FindExpenditureResponse response = expenditureService.findExpenditure(userId, expenditureId);
+
+		return ResponseEntity.ok(response);
+	}
+
+	@DeleteMapping("/{expenditureId}")
+	public ResponseEntity<Void> deleteExpenditure(@PathVariable Long expenditureId) {
+		Long userId = 1L; // 추후 Auth로 받을 예정
+		expenditureService.deleteExpenditure(userId, expenditureId);
+
+		return ResponseEntity.noContent().build();
 	}
 }

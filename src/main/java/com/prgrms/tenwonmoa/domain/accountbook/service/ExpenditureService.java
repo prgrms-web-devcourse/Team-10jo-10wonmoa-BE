@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.prgrms.tenwonmoa.domain.accountbook.Expenditure;
 import com.prgrms.tenwonmoa.domain.accountbook.dto.CreateExpenditureRequest;
 import com.prgrms.tenwonmoa.domain.accountbook.dto.CreateExpenditureResponse;
+import com.prgrms.tenwonmoa.domain.accountbook.dto.FindExpenditureResponse;
 import com.prgrms.tenwonmoa.domain.accountbook.dto.UpdateExpenditureRequest;
 import com.prgrms.tenwonmoa.domain.accountbook.repository.ExpenditureRepository;
 import com.prgrms.tenwonmoa.domain.category.Category;
@@ -54,8 +55,30 @@ public class ExpenditureService {
 		expenditure.update(userCategory, updateExpenditureRequest);
 	}
 
+	public FindExpenditureResponse findExpenditure(Long userId, Long expenditureId) {
+		User user = getUser(userId);
+		Expenditure expenditure = getExpenditure(expenditureId);
+
+		validateUser(user, expenditure.getUser());
+
+		return FindExpenditureResponse.of(expenditure);
+	}
+
+	public void deleteExpenditure(Long userId, Long expenditureId) {
+		User user = getUser(userId);
+		Expenditure expenditure = getExpenditure(expenditureId);
+
+		validateUser(user, expenditure.getUser());
+
+		expenditureRepository.delete(expenditure);
+	}
+
+	public void setUserCategoryNull(Long userCategoryId) {
+		expenditureRepository.updateUserCategoryAsNull(userCategoryId);
+	}
+
 	private void validateUser(User currentUser, User expenditureUser) {
-		checkArgument(currentUser == expenditureUser, Message.EXPENDITURE_NO_AUTHENTICATION.getMessage());
+		checkState(currentUser == expenditureUser, Message.EXPENDITURE_NO_AUTHENTICATION.getMessage());
 	}
 
 	private User getUser(Long userId) {

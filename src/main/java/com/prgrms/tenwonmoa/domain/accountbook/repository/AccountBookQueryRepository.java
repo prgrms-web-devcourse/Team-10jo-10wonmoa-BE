@@ -4,7 +4,6 @@ import static com.prgrms.tenwonmoa.domain.accountbook.QExpenditure.*;
 import static com.prgrms.tenwonmoa.domain.accountbook.QIncome.*;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.stereotype.Repository;
@@ -24,7 +23,7 @@ public class AccountBookQueryRepository {
 	private final JPAQueryFactory queryFactory;
 
 	public PageCustomImpl<FindAccountDayResponse> findDailyAccount(Long userId, PageCustomRequest pageRequest,
-		LocalDateTime registeredMonth) {
+		LocalDate date) {
 
 		// 어떻게 할 수 있을까...
 		// 페이징 날짜 10개를 보내줘야해.

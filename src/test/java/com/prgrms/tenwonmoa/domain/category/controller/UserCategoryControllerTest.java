@@ -4,6 +4,7 @@ import static com.prgrms.tenwonmoa.common.fixture.Fixture.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.*;
 import static org.springframework.restdocs.request.RequestDocumentation.*;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.*;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -12,8 +13,11 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.FilterType;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
 import org.springframework.restdocs.RestDocumentationContextProvider;
@@ -21,17 +25,27 @@ import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.restdocs.mockmvc.RestDocumentationResultHandler;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.filter.CharacterEncodingFilter;
 
 import com.prgrms.tenwonmoa.common.RestDocsConfig;
+import com.prgrms.tenwonmoa.config.JwtConfigure;
+import com.prgrms.tenwonmoa.config.WebSecurityConfig;
 import com.prgrms.tenwonmoa.domain.category.service.UserCategoryService;
 import com.prgrms.tenwonmoa.domain.user.User;
+import com.prgrms.tenwonmoa.domain.user.jwt.JwtAuthenticationFilter;
 import com.prgrms.tenwonmoa.domain.user.service.UserService;
 
-@WebMvcTest(controllers = UserCategoryController.class)
+@WebMvcTest(controllers = UserCategoryController.class,
+	excludeFilters = {
+		@ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = WebSecurityConfig.class),
+		@ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = JwtConfigure.class),
+		@ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = JwtAuthenticationFilter.class)
+	}
+)
 @MockBean(JpaMetamodelMappingContext.class)
 @ExtendWith(RestDocumentationExtension.class)
 @Import(RestDocsConfig.class)
@@ -60,16 +74,19 @@ class UserCategoryControllerTest {
 			.alwaysDo(restDocs)
 			.addFilters(new CharacterEncodingFilter("UTF-8", true)) // 한글 깨짐 방지
 			.build();
+
 	}
 
 	@Test
+	@WithMockUser
 	void 카테고리_삭제() throws Exception {
 		Long userCategoryId = 1L;
 
 		given(userService.findById(anyLong())).willReturn(user);
 
 		mockMvc.perform(
-				RestDocumentationRequestBuilders.delete(ENDPOINT_URL_PREFIX + "{userCategoryId}", userCategoryId))
+				RestDocumentationRequestBuilders.delete(ENDPOINT_URL_PREFIX + "{userCategoryId}", userCategoryId)
+					.with(csrf()))
 			.andExpect(status().isNoContent())
 			.andDo(
 				restDocs.document(

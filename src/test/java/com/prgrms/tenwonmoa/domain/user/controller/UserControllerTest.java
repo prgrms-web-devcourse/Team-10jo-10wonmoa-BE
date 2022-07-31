@@ -7,10 +7,11 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
@@ -19,15 +20,19 @@ import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.prgrms.tenwonmoa.config.JwtConfigure;
 import com.prgrms.tenwonmoa.domain.user.dto.CreateUserRequest;
+import com.prgrms.tenwonmoa.domain.user.jwt.JwtAuthenticationFilter;
 import com.prgrms.tenwonmoa.domain.user.service.UserService;
 
 @WebMvcTest(UserController.class)
+@AutoConfigureMockMvc(addFilters = false)
 @AutoConfigureRestDocs
 @MockBean(JpaMetamodelMappingContext.class)
-@EnableConfigurationProperties(JwtConfigure.class)
+@DisplayName("유저 컨트롤러 테스트")
 class UserControllerTest {
+
+	@MockBean
+	private JwtAuthenticationFilter jwtAuthenticationFilter;	// 테스트 실행을 위해 필요
 
 	@MockBean
 	private UserService userService;

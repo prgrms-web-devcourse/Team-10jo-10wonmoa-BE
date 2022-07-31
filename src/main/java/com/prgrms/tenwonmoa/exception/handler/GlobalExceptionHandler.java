@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import com.prgrms.tenwonmoa.exception.AlreadyExistException;
+import com.prgrms.tenwonmoa.exception.UnauthorizedUserException;
 import com.prgrms.tenwonmoa.exception.response.ErrorResponse;
 
 import lombok.extern.slf4j.Slf4j;
@@ -67,6 +68,15 @@ public class GlobalExceptionHandler {
 
 		return ResponseEntity
 			.status(BAD_REQUEST)
+			.body(errorResponse);
+	}
+
+	@ExceptionHandler({UnauthorizedUserException.class})
+	public ResponseEntity<ErrorResponse> handleForbidden(Exception exception) {
+		log.error(exception.getMessage(), exception);
+		ErrorResponse errorResponse = new ErrorResponse(List.of(exception.getMessage()), FORBIDDEN.value());
+		return ResponseEntity
+			.status(FORBIDDEN.value())
 			.body(errorResponse);
 	}
 

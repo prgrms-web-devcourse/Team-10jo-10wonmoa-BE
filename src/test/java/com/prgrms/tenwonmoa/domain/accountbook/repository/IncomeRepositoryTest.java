@@ -2,7 +2,6 @@ package com.prgrms.tenwonmoa.domain.accountbook.repository;
 
 import static com.prgrms.tenwonmoa.common.fixture.Fixture.*;
 import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.List;
 import java.util.Optional;
@@ -27,48 +26,11 @@ class IncomeRepositoryTest extends RepositoryFixture {
 
 	private UserCategory userCategory;
 
-	private UserCategory otherUserCategory;
-
 	@BeforeEach
 	void setup() {
 		User user = save(createUser());
-		User otherUser = save(createAnotherUser());
 		Category category = save(createIncomeCategory());
 		userCategory = save(createUserCategory(user, category));
-		otherUserCategory = save(createUserCategory(otherUser, category));
-	}
-
-	@Test
-	void 유저아이디와_수입아이디로_조회_성공() {
-		// given
-		Income income = save(createIncome(userCategory));
-		User user = income.getUser();
-
-		// when
-		Optional<Income> findIncome = incomeRepository.findByIdAndUserId(income.getId(), user.getId());
-
-		// then
-		assertThat(findIncome).isPresent();
-		Income getIncome = findIncome.get();
-		assertAll(
-			() -> assertThat(getIncome.getId()).isEqualTo(income.getId()),
-			() -> assertThat(getIncome.getUser().getId()).isEqualTo(user.getId())
-		);
-	}
-
-	@Test
-	void 로그인한아이디가_다른계정의_수입을_조회할수없다() {
-		// given
-		Income loginIncome = save(createIncome(userCategory));
-		Income otherIncome = save(createIncome(otherUserCategory));
-
-		User loginUser = loginIncome.getUser();
-
-		// when
-		Optional<Income> findIncome = incomeRepository.findByIdAndUserId(otherIncome.getId(), loginUser.getId());
-
-		// then
-		assertThat(findIncome).isEmpty();
 	}
 
 	@Test
@@ -87,5 +49,16 @@ class IncomeRepositoryTest extends RepositoryFixture {
 			.map(Income::getUserCategory)
 			.collect(Collectors.toList());
 		assertThat(userCategories).containsExactly(null, null, null);
+	}
+
+	@Test
+	void 수입정보_삭제_성공() {
+		Income income = saveIncome();
+		Long incomeId = income.getId();
+
+		incomeRepository.deleteById(incomeId);
+
+		Optional<Income> findIncome = incomeRepository.findById(incomeId);
+		assertThat(findIncome).isEmpty();
 	}
 }

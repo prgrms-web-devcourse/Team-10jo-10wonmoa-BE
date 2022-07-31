@@ -12,16 +12,16 @@ import com.prgrms.tenwonmoa.domain.user.User;
 
 public class RepositoryFixture extends RepositoryTest {
 
-	public User saveUser() {
-		return save(createUser());
+	public User saveRandomUser() {
+		return save(createRandomUser());
 	}
 
-	public Category saveCategory() {
+	public Category saveIncomeCategory() {
 		return save(createIncomeCategory());
 	}
 
 	public UserCategory saveUserCategory() {
-		return save(new UserCategory(saveUser(), saveCategory()));
+		return save(new UserCategory(saveRandomUser(), saveIncomeCategory()));
 	}
 
 	public Income saveIncome() {

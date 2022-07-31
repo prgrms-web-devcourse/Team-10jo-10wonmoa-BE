@@ -27,4 +27,13 @@ public class TokenProvider {
 		return builder.sign(jwt.getAlgorithm());
 	}
 
+	public Long validateAndGetUserId(String token) {
+		Jwt.Claims claims = validate(token);
+		return claims.getUserId();
+	}
+
+	private Jwt.Claims validate(String token) {
+		return jwt.verify(token);
+	}
+
 }

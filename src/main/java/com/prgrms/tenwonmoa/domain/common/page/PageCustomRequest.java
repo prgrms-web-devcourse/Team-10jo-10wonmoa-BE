@@ -1,7 +1,10 @@
-package com.prgrms.tenwonmoa.domain.accountbook.dto;
+package com.prgrms.tenwonmoa.domain.common.page;
 
 import static com.google.common.base.Preconditions.*;
 
+import lombok.Getter;
+
+@Getter
 public class PageCustomRequest {
 
 	private final int page;

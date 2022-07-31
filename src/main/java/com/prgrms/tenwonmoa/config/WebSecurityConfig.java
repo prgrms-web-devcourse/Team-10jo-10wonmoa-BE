@@ -15,15 +15,14 @@ import lombok.RequiredArgsConstructor;
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
-
 	private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http
-			.authorizeRequests()    // todo: controller 어느 정도 추가되면 antMatcher 재설정
-				.antMatchers("/**").permitAll()
-				.anyRequest().permitAll()
+			.authorizeRequests()
+				.antMatchers( "/api/v1/users", "/api/v1/users/login").permitAll()
+				.anyRequest().authenticated()
 				.and()
 			.csrf()        // disable 하지 않으면 unauthorized
 				.disable()

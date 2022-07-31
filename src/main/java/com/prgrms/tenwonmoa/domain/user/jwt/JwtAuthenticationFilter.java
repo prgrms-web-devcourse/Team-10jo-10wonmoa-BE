@@ -63,8 +63,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 			} catch (Exception e) {
 				log.warn("Jwt processing 실패: {}", e.getMessage());
 			}
-		} else {
-			// todo: token 이 없으면 기능 API 호출이 불가, controller 로 가지 않도록 필터에서 처리
 		}
 
 		filterChain.doFilter(request, response);

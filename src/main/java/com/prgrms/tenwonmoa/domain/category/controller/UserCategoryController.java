@@ -2,6 +2,10 @@ package com.prgrms.tenwonmoa.domain.category.controller;
 
 import java.util.Map;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotEmpty;
+
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.prgrms.tenwonmoa.domain.category.dto.CreateCategoryRequest;
+import com.prgrms.tenwonmoa.domain.category.dto.FindCategoryResponse;
 import com.prgrms.tenwonmoa.domain.category.service.FindUserCategoryService;
 import com.prgrms.tenwonmoa.domain.category.service.UserCategoryService;
 import com.prgrms.tenwonmoa.domain.user.service.UserService;
@@ -32,23 +37,35 @@ public class UserCategoryController {
 	private final UserService userService;
 
 	@GetMapping
-	public ResponseEntity findUserCategories(@RequestParam String kind) {
-		return null;
+	public ResponseEntity<FindCategoryResponse> findUserCategories(@RequestParam @NotEmpty String kind) {
+		Long userId = 1L;
+
+		return ResponseEntity.ok(findUserCategoryService.findUserCategories(userId, kind));
 	}
 
 	@PostMapping
-	public ResponseEntity createUserCategory(@RequestBody CreateCategoryRequest request) {
-		return null;
+	public ResponseEntity<Map<String, Long>> createUserCategory(@RequestBody @Valid CreateCategoryRequest request) {
+		Long userId = 1L;
+
+		Long userCategoryId = userCategoryService.createUserCategory(
+			userService.findById(userId), request.getCategoryType(), request.getName());
+		return ResponseEntity.status(HttpStatus.CREATED).body(Map.of("id", userCategoryId));
 	}
 
 	@PatchMapping("/{userCategoryId}")
-	public ResponseEntity updateUserCategory(Map<String, String> updateRequest) {
-		return null;
+	public ResponseEntity<Map<String, String>> updateUserCategory(@PathVariable Long userCategoryId,
+		@RequestBody Map<String, Object> updateRequest) {
+
+		Long userId = 1L;
+
+		String updatedName = userCategoryService.updateName(userService.findById(userId), userCategoryId,
+			(String)updateRequest.get("name"));
+		return ResponseEntity.ok(Map.of("name", updatedName));
 	}
 
 	@DeleteMapping("/{userCategoryId}")
 	public ResponseEntity<Void> deleteUserCategory(@PathVariable Long userCategoryId) {
-		Long userId = 1L; // 추후 AuthenticationPrincipal 적용예정
+		Long userId = 1L;
 
 		userCategoryService.deleteUserCategory(userService.findById(userId), userCategoryId);
 		return ResponseEntity.noContent().build();

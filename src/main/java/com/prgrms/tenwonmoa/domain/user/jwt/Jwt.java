@@ -39,10 +39,7 @@ public final class Jwt {
 			.build();
 	}
 
-	public Claims verify(String token) {
-		return new Claims(jwtVerifier.verify(token));
-	}
-
+	@Getter
 	public static class Claims {
 
 		private Long userId;
@@ -65,15 +62,6 @@ public final class Jwt {
 			this.iat = decodedJwt.getIssuedAt();
 			this.exp = decodedJwt.getExpiresAt();
 		}
-
-		public Long getUserId() {
-			return userId;
-		}
-
-		public String getEmail() {
-			return email;
-		}
-
 	}
 
 }

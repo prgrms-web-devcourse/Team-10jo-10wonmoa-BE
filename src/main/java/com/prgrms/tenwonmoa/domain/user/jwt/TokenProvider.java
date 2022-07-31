@@ -5,6 +5,7 @@ import java.util.Date;
 import org.springframework.stereotype.Component;
 
 import com.auth0.jwt.JWTCreator;
+import com.auth0.jwt.interfaces.DecodedJWT;
 
 import lombok.RequiredArgsConstructor;
 
@@ -28,12 +29,13 @@ public class TokenProvider {
 	}
 
 	public Long validateAndGetUserId(String token) {
-		Jwt.Claims claims = validate(token);
+		Jwt.Claims claims = verifyAndGetClaims(token);
 		return claims.getUserId();
 	}
 
-	private Jwt.Claims validate(String token) {
-		return jwt.verify(token);
+	private Jwt.Claims verifyAndGetClaims(String token) {
+		DecodedJWT decodedJWT = jwt.getJwtVerifier().verify(token);
+		return new Jwt.Claims(decodedJWT);
 	}
 
 }

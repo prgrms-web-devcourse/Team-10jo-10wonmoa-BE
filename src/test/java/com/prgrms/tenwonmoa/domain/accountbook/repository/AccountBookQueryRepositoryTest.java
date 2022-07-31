@@ -29,7 +29,7 @@ class AccountBookQueryRepositoryTest extends RepositoryTest {
 	@BeforeEach
 	void setup() {
 		user = save(createUser());
-		category = save(createCategory());
+		category = save(createExpenditureCategory());
 		userCategory = save(new UserCategory(user, category));
 		expenditure = save(createExpenditure(userCategory));
 	}

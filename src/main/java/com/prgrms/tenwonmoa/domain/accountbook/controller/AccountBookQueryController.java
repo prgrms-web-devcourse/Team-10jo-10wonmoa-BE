@@ -4,15 +4,16 @@ import java.time.LocalDateTime;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.prgrms.tenwonmoa.domain.accountbook.dto.FindAccountDayResponse;
-import com.prgrms.tenwonmoa.domain.accountbook.dto.PageCustomImpl;
-import com.prgrms.tenwonmoa.domain.accountbook.dto.PageCustomRequest;
 import com.prgrms.tenwonmoa.domain.accountbook.service.AccountBookQueryService;
+import com.prgrms.tenwonmoa.domain.common.page.PageCustomImpl;
+import com.prgrms.tenwonmoa.domain.common.page.PageCustomRequest;
 
 import lombok.RequiredArgsConstructor;
 
@@ -26,7 +27,9 @@ public class AccountBookQueryController {
 	@GetMapping("/daily/{month}/")
 	public ResponseEntity<PageCustomImpl<FindAccountDayResponse>> findDailyAccount(
 		@RequestBody PageCustomRequest pageRequest,
-		@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM", timezone = "Asia/Seoul") LocalDateTime month
+		@PathVariable
+		@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM", timezone = "Asia/Seoul")
+			LocalDateTime month
 	) {
 		Long userId = 1L; // 추후 Auth 받은 후 수정 필요
 		PageCustomImpl<FindAccountDayResponse> response = accountBookQueryService.findDailyAccount(userId, pageRequest,

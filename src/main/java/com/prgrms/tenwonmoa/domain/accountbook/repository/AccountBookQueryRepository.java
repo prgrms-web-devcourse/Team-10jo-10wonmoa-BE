@@ -1,11 +1,16 @@
 package com.prgrms.tenwonmoa.domain.accountbook.repository;
 
+import static com.prgrms.tenwonmoa.domain.accountbook.QExpenditure.*;
+import static com.prgrms.tenwonmoa.domain.accountbook.QIncome.*;
+
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.stereotype.Repository;
 
 import com.prgrms.tenwonmoa.domain.accountbook.dto.FindAccountDayResponse;
+import com.prgrms.tenwonmoa.domain.accountbook.dto.FindMonthSumResponse;
 import com.prgrms.tenwonmoa.domain.common.page.PageCustomImpl;
 import com.prgrms.tenwonmoa.domain.common.page.PageCustomRequest;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -35,4 +40,31 @@ public class AccountBookQueryRepository {
 		return new PageCustomImpl<FindAccountDayResponse>(pageRequest.getPage(), pageRequest.getPage() + 1, null);
 	}
 
+	public FindMonthSumResponse findMonthSum(Long userId, LocalDate monthTime) {
+
+		Long monthIncome = queryFactory.select(income.amount.sum())
+			.from(income)
+			.groupBy(income.registerDate.yearMonth())
+			.where(income.registerDate.year().eq(monthTime.getYear()),
+				income.registerDate.month().eq(monthTime.getMonthValue()),
+				income.user.id.eq(userId)
+			)
+			.fetchOne();
+
+		Long monthExpenditure = queryFactory.select(expenditure.amount.sum())
+			.from(expenditure)
+			.groupBy(expenditure.registerDate.yearMonth())
+			.where(expenditure.registerDate.year().eq(monthTime.getYear()),
+				expenditure.registerDate.month().eq(monthTime.getMonthValue()),
+				expenditure.user.id.eq(userId)
+			)
+			.fetchOne();
+
+		monthIncome = monthIncome == null ? 0L : monthIncome;
+		monthExpenditure = monthExpenditure == null ? 0L : monthExpenditure;
+
+		Long total = monthIncome - monthExpenditure;
+
+		return new FindMonthSumResponse(monthIncome, monthExpenditure, total);
+	}
 }

@@ -108,5 +108,4 @@ class UserTest {
 				.hasMessageContaining(INVALID_USERNAME_PATTERN.getMessage())
 		);
 	}
-
 }

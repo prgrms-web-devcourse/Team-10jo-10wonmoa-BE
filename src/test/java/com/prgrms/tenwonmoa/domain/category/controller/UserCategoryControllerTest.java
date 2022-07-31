@@ -5,6 +5,7 @@ import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.request.RequestDocumentation.*;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.*;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -18,6 +19,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.FilterType;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
 import org.springframework.http.MediaType;
@@ -27,6 +30,7 @@ import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.restdocs.mockmvc.RestDocumentationResultHandler;
 import org.springframework.restdocs.payload.JsonFieldType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
@@ -35,14 +39,23 @@ import org.springframework.web.filter.CharacterEncodingFilter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.prgrms.tenwonmoa.common.RestDocsConfig;
+import com.prgrms.tenwonmoa.config.JwtConfigure;
+import com.prgrms.tenwonmoa.config.WebSecurityConfig;
 import com.prgrms.tenwonmoa.domain.category.dto.FindCategoryResponse;
 import com.prgrms.tenwonmoa.domain.category.dto.FindCategoryResponse.SingleCategoryResponse;
 import com.prgrms.tenwonmoa.domain.category.service.FindUserCategoryService;
 import com.prgrms.tenwonmoa.domain.category.service.UserCategoryService;
 import com.prgrms.tenwonmoa.domain.user.User;
+import com.prgrms.tenwonmoa.domain.user.jwt.JwtAuthenticationFilter;
 import com.prgrms.tenwonmoa.domain.user.service.UserService;
 
-@WebMvcTest(controllers = UserCategoryController.class)
+@WebMvcTest(controllers = UserCategoryController.class,
+	excludeFilters = {
+		@ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = WebSecurityConfig.class),
+		@ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = JwtConfigure.class),
+		@ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = JwtAuthenticationFilter.class)
+	}
+)
 @MockBean(JpaMetamodelMappingContext.class)
 @ExtendWith(RestDocumentationExtension.class)
 @Import(RestDocsConfig.class)
@@ -76,9 +89,11 @@ class UserCategoryControllerTest {
 			.alwaysDo(restDocs)
 			.addFilters(new CharacterEncodingFilter("UTF-8", true)) // 한글 깨짐 방지
 			.build();
+
 	}
 
 	@Test
+	@WithMockUser
 	void 카테고리_조회() throws Exception {
 		String categoryType = "EXPENDITURE";
 		given(findUserCategoryService.findUserCategories(anyLong(), eq(categoryType)))
@@ -102,6 +117,7 @@ class UserCategoryControllerTest {
 	}
 
 	@Test
+	@WithMockUser
 	void 카테고리_등록() throws Exception {
 		Long userCategoryId = 1L;
 		String categoryType = "EXPENDITURE";
@@ -115,7 +131,8 @@ class UserCategoryControllerTest {
 
 		mockMvc.perform(post(ENDPOINT_URL_PREFIX)
 				.contentType(MediaType.APPLICATION_JSON)
-				.content(body.toString()))
+				.content(body.toString())
+				.with(csrf()))
 			.andExpect(status().isCreated())
 			.andDo(
 				restDocs.document(
@@ -131,6 +148,7 @@ class UserCategoryControllerTest {
 	}
 
 	@Test
+	@WithMockUser
 	void 카테고리_수정() throws Exception {
 		Long userCategoryId = 1L;
 		String updateName = "수정된 분류이름";
@@ -142,6 +160,7 @@ class UserCategoryControllerTest {
 		given(userCategoryService.updateName(user, userCategoryId, updateName)).willReturn(updateName);
 
 		mockMvc.perform(patch(ENDPOINT_URL_PREFIX + "/{userCategoryId}", userCategoryId)
+				.with(csrf())
 				.content(body.toString())
 				.contentType(MediaType.APPLICATION_JSON))
 			.andExpect(status().isOk())
@@ -158,13 +177,15 @@ class UserCategoryControllerTest {
 	}
 
 	@Test
+	@WithMockUser
 	void 카테고리_삭제() throws Exception {
 		Long userCategoryId = 1L;
 
 		given(userService.findById(anyLong())).willReturn(user);
 
 		mockMvc.perform(
-				RestDocumentationRequestBuilders.delete(ENDPOINT_URL_PREFIX + "/{userCategoryId}", userCategoryId))
+				RestDocumentationRequestBuilders.delete(ENDPOINT_URL_PREFIX + "/{userCategoryId}", userCategoryId)
+					.with(csrf()))
 			.andExpect(status().isNoContent())
 			.andDo(
 				restDocs.document(

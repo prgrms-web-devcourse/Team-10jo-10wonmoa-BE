@@ -1,10 +1,10 @@
 package com.prgrms.tenwonmoa.exception;
 
-public class UserForbiddenException extends RuntimeException {
+public class UnauthorizedUserException extends RuntimeException {
 
 	private final String message;
 
-	public UserForbiddenException(String message) {
+	public UnauthorizedUserException(String message) {
 		this.message = message;
 	}
 

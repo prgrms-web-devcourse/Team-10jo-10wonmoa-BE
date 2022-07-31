@@ -10,7 +10,7 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 
 import com.prgrms.tenwonmoa.domain.common.BaseEntity;
-import com.prgrms.tenwonmoa.exception.UserForbiddenException;
+import com.prgrms.tenwonmoa.exception.UnauthorizedUserException;
 import com.prgrms.tenwonmoa.exception.message.Message;
 
 import lombok.Getter;
@@ -41,8 +41,8 @@ public class User extends BaseEntity {
 	}
 
 	public void validateLogin(User findUser) {
-		if (!findUser.getId().equals(this.getId())) {
-			throw new UserForbiddenException(Message.USER_NO_AUTHENTICATION.getMessage());
+		if (!this.equals(findUser)) {
+			throw new UnauthorizedUserException(Message.NO_AUTHENTICATION.getMessage());
 		}
 	}
 

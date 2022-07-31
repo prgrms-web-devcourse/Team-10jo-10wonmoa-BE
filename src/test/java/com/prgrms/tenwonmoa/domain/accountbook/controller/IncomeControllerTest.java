@@ -33,7 +33,7 @@ import com.prgrms.tenwonmoa.domain.accountbook.dto.UpdateIncomeRequest;
 import com.prgrms.tenwonmoa.domain.accountbook.service.IncomeService;
 import com.prgrms.tenwonmoa.domain.accountbook.service.IncomeTotalService;
 import com.prgrms.tenwonmoa.domain.user.service.UserService;
-import com.prgrms.tenwonmoa.exception.UserForbiddenException;
+import com.prgrms.tenwonmoa.exception.UnauthorizedUserException;
 
 @WebMvcTest(controllers = IncomeController.class)
 @AutoConfigureRestDocs
@@ -81,7 +81,7 @@ class IncomeControllerTest {
 	@Test
 	void 수입_권한_없음() throws Exception {
 		given(incomeService.findIncome(any(Long.class), any()))
-			.willThrow(new UserForbiddenException(USER_NO_AUTHENTICATION.getMessage()));
+			.willThrow(new UnauthorizedUserException(NO_AUTHENTICATION.getMessage()));
 
 		mockMvc.perform(get(LOCATION_PREFIX + "/{incomeId}", findIncomeResponse.getId())
 			.contentType(MediaType.APPLICATION_JSON)

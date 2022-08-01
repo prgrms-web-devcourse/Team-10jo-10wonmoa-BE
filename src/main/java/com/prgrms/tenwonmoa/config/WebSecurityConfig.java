@@ -21,15 +21,15 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	protected void configure(HttpSecurity http) throws Exception {
 		http
 			.authorizeRequests()
-				.antMatchers( "/api/v1/users", "/api/v1/users/login").permitAll()
-				.anyRequest().authenticated()
-				.and()
+			.antMatchers("/api/v1/users", "/api/v1/users/login").permitAll()
+			.anyRequest().authenticated()
+			.and()
 			.csrf()        // disable 하지 않으면 unauthorized
-				.disable()
+			.disable()
 			.httpBasic()    // 토큰을 사용하므로 basic 인증 disable
-				.disable()
+			.disable()
 			.sessionManagement()    // 토큰을 사용하므로 stateless
-				.sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+			.sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
 		// filter 등록
 		http.addFilterAfter(

@@ -10,6 +10,8 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 
 import com.prgrms.tenwonmoa.domain.common.BaseEntity;
+import com.prgrms.tenwonmoa.exception.UnauthorizedUserException;
+import com.prgrms.tenwonmoa.exception.message.Message;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -36,6 +38,12 @@ public class User extends BaseEntity {
 		this.email = email;
 		this.password = password;
 		this.username = username;
+	}
+
+	public void validateLogin(User findUser) {
+		if (!this.equals(findUser)) {
+			throw new UnauthorizedUserException(Message.NO_AUTHENTICATION.getMessage());
+		}
 	}
 
 	private void validateUsername(String username) {

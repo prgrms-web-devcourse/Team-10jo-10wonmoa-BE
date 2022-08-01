@@ -18,6 +18,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import com.prgrms.tenwonmoa.domain.accountbook.Income;
 import com.prgrms.tenwonmoa.domain.accountbook.dto.income.FindIncomeResponse;
 import com.prgrms.tenwonmoa.domain.accountbook.repository.IncomeRepository;
+import com.prgrms.tenwonmoa.domain.user.User;
 import com.prgrms.tenwonmoa.exception.message.Message;
 
 @DisplayName("수입 서비스 테스트")
@@ -30,6 +31,8 @@ class IncomeServiceTest {
 	private IncomeService incomeService;
 
 	private final Income income = createIncome(createUserCategory(createUser(), createIncomeCategory()));
+
+	private final Long incomeId = 1L;
 
 	@Test
 	void 수입저장_성공() {
@@ -44,28 +47,27 @@ class IncomeServiceTest {
 
 	@Test
 	void 아이디로_수입조회_성공() {
-		Long incomeId = 1L;
-		Long userId = 1L;
+		User mockUser = mock(User.class);
+		doNothing().when(mockUser).validateLogin(income.getUser());
+		given(incomeRepository.findById(any(Long.class))).willReturn(Optional.of(income));
 
-		given(incomeRepository.findByIdAndUserId(any(Long.class), any(Long.class))).willReturn(Optional.of(income));
-
-		FindIncomeResponse findIncomeResponse = incomeService.findIncome(incomeId, userId);
+		FindIncomeResponse findIncomeResponse = incomeService.findIncome(incomeId, mockUser);
 		assertAll(
 			() -> assertThat(findIncomeResponse.getId()).isEqualTo(income.getId()),
 			() -> assertThat(findIncomeResponse.getRegisterDate()).isEqualTo(income.getRegisterDate()),
 			() -> assertThat(findIncomeResponse.getAmount()).isEqualTo(income.getAmount()),
 			() -> assertThat(findIncomeResponse.getContent()).isEqualTo(income.getContent()),
 			() -> assertThat(findIncomeResponse.getCategoryName()).isEqualTo(income.getCategoryName()),
-			() -> verify(incomeRepository).findByIdAndUserId(incomeId, userId)
+			() -> verify(incomeRepository).findById(incomeId)
 		);
 	}
 
 	@Test
 	void 아이디로_조회_수입정보가없으면_실패() {
-		given(incomeRepository.findByIdAndUserId(any(Long.class), any(Long.class))).willThrow(
+		given(incomeRepository.findById(any(Long.class))).willThrow(
 			new NoSuchElementException(Message.INCOME_NOT_FOUND.getMessage()));
 
-		assertThatThrownBy(() -> incomeRepository.findByIdAndUserId(1L, 1L))
+		assertThatThrownBy(() -> incomeRepository.findById(1L))
 			.isInstanceOf(NoSuchElementException.class)
 			.hasMessage(Message.INCOME_NOT_FOUND.getMessage());
 	}

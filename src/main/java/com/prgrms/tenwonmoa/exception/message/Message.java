@@ -9,6 +9,8 @@ import lombok.Getter;
 @Getter
 public enum Message {
 
+	NO_AUTHENTICATION("권한이 없습니다."),
+
 	// 사용자
 	USER_NOT_FOUND("해당 사용자는 존재하지 않습니다."),
 

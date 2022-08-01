@@ -27,9 +27,6 @@ import com.prgrms.tenwonmoa.domain.user.service.UserService;
 @DisplayName("가계부 서비스 테스트")
 @ExtendWith(MockitoExtension.class)
 class IncomeTotalServiceTest {
-
-	@Mock
-	private UserService userService;
 	@Mock
 	private UserCategoryService userCategoryService;
 	@Mock
@@ -40,6 +37,7 @@ class IncomeTotalServiceTest {
 	private final Income income = createIncome(createUserCategory(createUser(), createIncomeCategory()));
 	private final UserCategory userCategory = income.getUserCategory();
 	private final User user = income.getUser();
+	private final User mockUser = mock(User.class);
 
 	private final CreateIncomeRequest request = new CreateIncomeRequest(LocalDateTime.now(),
 		1000L,
@@ -53,11 +51,10 @@ class IncomeTotalServiceTest {
 
 	@Test
 	void 수입_생성_성공() {
-		given(userService.findById(any())).willReturn(user);
 		given(userCategoryService.findById(any())).willReturn(userCategory);
 		given(incomeService.save(income)).willReturn(1L);
 
-		Long savedId = incomeTotalService.createIncome(user.getId(), request);
+		Long savedId = incomeTotalService.createIncome(user, request);
 		assertAll(
 			() -> assertThat(savedId).isEqualTo(1L),
 			() -> verify(incomeService).save(income)
@@ -65,44 +62,34 @@ class IncomeTotalServiceTest {
 	}
 
 	@Test
-	void 수입_생성실패_유저정보_없는경우() {
-		given(userService.findById(any())).willThrow(new NoSuchElementException(USER_NOT_FOUND.getMessage()));
-		assertThatThrownBy(() -> incomeTotalService.createIncome(user.getId(), request))
-			.isInstanceOf(NoSuchElementException.class)
-			.hasMessage(USER_NOT_FOUND.getMessage());
-	}
-
-	@Test
 	void 수입_생성실패_유저카테고리_없는경우() {
-		given(userService.findById(any())).willReturn(user);
 		given(userCategoryService.findById(any())).willThrow(
 			new NoSuchElementException(USER_CATEGORY_NOT_FOUND.getMessage()));
-		assertThatThrownBy(() -> incomeTotalService.createIncome(user.getId(), request))
+		assertThatThrownBy(() -> incomeTotalService.createIncome(user, request))
 			.isInstanceOf(NoSuchElementException.class)
 			.hasMessage(USER_CATEGORY_NOT_FOUND.getMessage());
 	}
 
 	@Test
 	void 수입_수정_성공() {
-		given(incomeService.findIdAndUserId(any(), any())).willReturn(income);
-		given(userCategoryService.findById(any())).willReturn(userCategory);
-
-		incomeTotalService.updateIncome(user.getId(),
+		given(incomeService.findById(any())).willReturn(income);
+		given(userCategoryService.findById(any(Long.class))).willReturn(userCategory);
+		incomeTotalService.updateIncome(mockUser,
 			income.getId(),
 			updateIncomeRequest
 		);
 
 		assertAll(
-			() -> verify(incomeService).findIdAndUserId(any(), any()),
+			() -> verify(incomeService).findById(any()),
 			() -> verify(userCategoryService).findById(any())
 		);
 	}
 
 	@Test
 	void 수입_수정_실패_수입정보_없는경우() {
-		given(incomeService.findIdAndUserId(any(), any())).willThrow(
+		given(incomeService.findById(any())).willThrow(
 			new NoSuchElementException(INCOME_NOT_FOUND.getMessage()));
-		assertThatThrownBy(() -> incomeTotalService.updateIncome(user.getId(),
+		assertThatThrownBy(() -> incomeTotalService.updateIncome(user,
 			income.getId(),
 			updateIncomeRequest))
 			.isInstanceOf(NoSuchElementException.class)
@@ -111,10 +98,10 @@ class IncomeTotalServiceTest {
 
 	@Test
 	void 수입_수정_실패_유저카테고리_없는경우() {
-		given(incomeService.findIdAndUserId(any(), any())).willReturn(income);
+		given(incomeService.findById(any())).willReturn(income);
 		given(userCategoryService.findById(any())).willThrow(
 			new NoSuchElementException(USER_CATEGORY_NOT_FOUND.getMessage()));
-		assertThatThrownBy(() -> incomeTotalService.updateIncome(user.getId(),
+		assertThatThrownBy(() -> incomeTotalService.updateIncome(mockUser,
 			income.getId(),
 			updateIncomeRequest))
 			.isInstanceOf(NoSuchElementException.class)

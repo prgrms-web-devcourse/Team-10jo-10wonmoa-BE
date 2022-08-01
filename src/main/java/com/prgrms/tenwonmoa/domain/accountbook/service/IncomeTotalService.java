@@ -9,32 +9,35 @@ import com.prgrms.tenwonmoa.domain.accountbook.dto.income.UpdateIncomeRequest;
 import com.prgrms.tenwonmoa.domain.category.UserCategory;
 import com.prgrms.tenwonmoa.domain.category.service.UserCategoryService;
 import com.prgrms.tenwonmoa.domain.user.User;
-import com.prgrms.tenwonmoa.domain.user.service.UserService;
 
 import lombok.RequiredArgsConstructor;
 
 @Service
-@Transactional(readOnly = true)
+@Transactional
 @RequiredArgsConstructor
 public class IncomeTotalService {
-	private final UserService userService;
 	private final UserCategoryService userCategoryService;
 	private final IncomeService incomeService;
 
-	@Transactional
-	public Long createIncome(Long userId, CreateIncomeRequest createIncomeRequest) {
-		User user = userService.findById(userId);
+	public Long createIncome(User authUser, CreateIncomeRequest createIncomeRequest) {
 		UserCategory userCategory = userCategoryService.findById(createIncomeRequest.getUserCategoryId());
-		Income income = createIncomeRequest.toEntity(user, userCategory, userCategory.getCategory().getName());
 
+		Income income = createIncomeRequest.toEntity(authUser, userCategory, userCategory.getCategory().getName());
 		return incomeService.save(income);
 	}
 
-	@Transactional
-	public void updateIncome(Long userId, Long incomeId, UpdateIncomeRequest updateIncomeRequest) {
-		Income income = incomeService.findIdAndUserId(incomeId, userId);
+	public void updateIncome(User authUser, Long incomeId, UpdateIncomeRequest updateIncomeRequest) {
+		Income income = incomeService.findById(incomeId);
+		authUser.validateLogin(income.getUser());
 		UserCategory userCategory = userCategoryService.findById(updateIncomeRequest.getUserCategoryId());
 
 		income.update(userCategory, updateIncomeRequest);
+	}
+
+	public void deleteIncome(Long incomeId, User authUser) {
+		Income income = incomeService.findById(incomeId);
+		authUser.validateLogin(income.getUser());
+
+		incomeService.deleteById(incomeId);
 	}
 }

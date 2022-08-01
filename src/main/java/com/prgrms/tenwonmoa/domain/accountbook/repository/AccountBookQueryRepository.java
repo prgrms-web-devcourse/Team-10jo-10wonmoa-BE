@@ -42,7 +42,7 @@ public class AccountBookQueryRepository {
 		);
 
 		Collections.sort(responses,
-			(o1, o2) -> o1.getRegisterDate().getDayOfMonth() - o1.getRegisterDate().getDayOfMonth());
+			(o1, o2) -> o2.getRegisterDate().getDayOfMonth() - o1.getRegisterDate().getDayOfMonth());
 
 		return new PageCustomImpl<>(pageRequest.getPage(), pageRequest, responses);
 	}

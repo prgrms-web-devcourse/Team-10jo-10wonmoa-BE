@@ -16,9 +16,9 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.prgrms.tenwonmoa.domain.accountbook.Expenditure;
-import com.prgrms.tenwonmoa.domain.accountbook.dto.CreateExpenditureRequest;
-import com.prgrms.tenwonmoa.domain.accountbook.dto.CreateExpenditureResponse;
-import com.prgrms.tenwonmoa.domain.accountbook.dto.UpdateExpenditureRequest;
+import com.prgrms.tenwonmoa.domain.accountbook.dto.expenditure.CreateExpenditureRequest;
+import com.prgrms.tenwonmoa.domain.accountbook.dto.expenditure.CreateExpenditureResponse;
+import com.prgrms.tenwonmoa.domain.accountbook.dto.expenditure.UpdateExpenditureRequest;
 import com.prgrms.tenwonmoa.domain.accountbook.repository.ExpenditureRepository;
 import com.prgrms.tenwonmoa.domain.category.Category;
 import com.prgrms.tenwonmoa.domain.category.CategoryType;

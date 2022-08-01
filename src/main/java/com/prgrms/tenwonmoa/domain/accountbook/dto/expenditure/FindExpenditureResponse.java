@@ -1,9 +1,12 @@
-package com.prgrms.tenwonmoa.domain.accountbook.dto;
+package com.prgrms.tenwonmoa.domain.accountbook.dto.expenditure;
 
 import java.time.LocalDateTime;
 
 import com.prgrms.tenwonmoa.domain.accountbook.Expenditure;
 
+import lombok.Getter;
+
+@Getter
 public class FindExpenditureResponse {
 
 	private final Long id;
@@ -16,8 +19,13 @@ public class FindExpenditureResponse {
 
 	private final String categoryName;
 
-	private FindExpenditureResponse(Long id, LocalDateTime registerDate, Long amount, String content,
-		String categoryName) {
+	private FindExpenditureResponse(
+		Long id,
+		LocalDateTime registerDate,
+		Long amount,
+		String content,
+		String categoryName
+	) {
 		this.id = id;
 		this.registerDate = registerDate;
 		this.amount = amount;

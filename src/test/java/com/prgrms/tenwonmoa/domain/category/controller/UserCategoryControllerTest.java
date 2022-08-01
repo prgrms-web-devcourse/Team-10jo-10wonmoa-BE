@@ -30,7 +30,6 @@ import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.restdocs.mockmvc.RestDocumentationResultHandler;
 import org.springframework.restdocs.payload.JsonFieldType;
-import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
@@ -39,6 +38,7 @@ import org.springframework.web.filter.CharacterEncodingFilter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.prgrms.tenwonmoa.common.RestDocsConfig;
+import com.prgrms.tenwonmoa.common.annotation.WithMockCustomUser;
 import com.prgrms.tenwonmoa.config.JwtConfigure;
 import com.prgrms.tenwonmoa.config.WebSecurityConfig;
 import com.prgrms.tenwonmoa.domain.category.dto.FindCategoryResponse;
@@ -93,7 +93,7 @@ class UserCategoryControllerTest {
 	}
 
 	@Test
-	@WithMockUser
+	@WithMockCustomUser
 	void 카테고리_조회() throws Exception {
 		String categoryType = "EXPENDITURE";
 		given(findUserCategoryService.findUserCategories(anyLong(), eq(categoryType)))
@@ -117,7 +117,7 @@ class UserCategoryControllerTest {
 	}
 
 	@Test
-	@WithMockUser
+	@WithMockCustomUser
 	void 카테고리_등록() throws Exception {
 		Long userCategoryId = 1L;
 		String categoryType = "EXPENDITURE";
@@ -148,7 +148,7 @@ class UserCategoryControllerTest {
 	}
 
 	@Test
-	@WithMockUser
+	@WithMockCustomUser
 	void 카테고리_수정() throws Exception {
 		Long userCategoryId = 1L;
 		String updateName = "수정된 분류이름";
@@ -177,7 +177,7 @@ class UserCategoryControllerTest {
 	}
 
 	@Test
-	@WithMockUser
+	@WithMockCustomUser
 	void 카테고리_삭제() throws Exception {
 		Long userCategoryId = 1L;
 

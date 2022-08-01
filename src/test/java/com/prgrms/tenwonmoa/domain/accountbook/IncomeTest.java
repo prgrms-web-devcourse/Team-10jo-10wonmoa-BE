@@ -13,7 +13,7 @@ import org.junit.jupiter.api.Test;
 
 import net.bytebuddy.utility.RandomString;
 
-import com.prgrms.tenwonmoa.domain.accountbook.dto.UpdateIncomeRequest;
+import com.prgrms.tenwonmoa.domain.accountbook.dto.income.UpdateIncomeRequest;
 import com.prgrms.tenwonmoa.domain.category.Category;
 import com.prgrms.tenwonmoa.domain.category.CategoryType;
 import com.prgrms.tenwonmoa.domain.category.UserCategory;

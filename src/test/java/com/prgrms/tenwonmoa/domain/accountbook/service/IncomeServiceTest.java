@@ -16,7 +16,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.prgrms.tenwonmoa.domain.accountbook.Income;
-import com.prgrms.tenwonmoa.domain.accountbook.dto.FindIncomeResponse;
+import com.prgrms.tenwonmoa.domain.accountbook.dto.income.FindIncomeResponse;
 import com.prgrms.tenwonmoa.domain.accountbook.repository.IncomeRepository;
 import com.prgrms.tenwonmoa.domain.user.User;
 import com.prgrms.tenwonmoa.exception.message.Message;

@@ -16,8 +16,13 @@ public class FindExpenditureResponse {
 
 	private final String categoryName;
 
-	private FindExpenditureResponse(Long id, LocalDateTime registerDate, Long amount, String content,
-		String categoryName) {
+	private FindExpenditureResponse(
+		Long id,
+		LocalDateTime registerDate,
+		Long amount,
+		String content,
+		String categoryName
+	) {
 		this.id = id;
 		this.registerDate = registerDate;
 		this.amount = amount;

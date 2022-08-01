@@ -26,7 +26,7 @@ public class AccountBookQueryController {
 
 	private final AccountBookQueryService accountBookQueryService;
 
-	@GetMapping("/daily/{date}/")
+	@GetMapping("/daily/{date}")
 	public ResponseEntity<PageCustomImpl<FindDayAccountResponse>> findDailyAccount(
 		@AuthenticationPrincipal Long userId,
 		@RequestBody PageCustomRequest pageRequest,

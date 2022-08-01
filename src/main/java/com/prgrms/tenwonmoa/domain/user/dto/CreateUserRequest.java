@@ -7,6 +7,8 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
+
 import com.prgrms.tenwonmoa.domain.user.User;
 
 import lombok.Getter;
@@ -33,8 +35,8 @@ public class CreateUserRequest {
 		this.password = password;
 	}
 
-	public User toEntity() {
-		return new User(email, password, username);
+	public User toEntity(PasswordEncoder passwordEncoder) {
+		return new User(email, passwordEncoder.encode(password), username);
 	}
 
 }

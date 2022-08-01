@@ -55,8 +55,6 @@ public class User extends BaseEntity {
 
 	private void validatePassword(String password) {
 		checkNotNull(password, NOT_NULL_PASSWORD.getMessage());
-		checkArgument(password.length() >= MIN_PASSWORD_LENGTH && password.length() <= MAX_PASSWORD_LENGTH,
-			INVALID_PASSWORD_LENGTH.getMessage());
 	}
 
 	private void validateEmail(String email) {

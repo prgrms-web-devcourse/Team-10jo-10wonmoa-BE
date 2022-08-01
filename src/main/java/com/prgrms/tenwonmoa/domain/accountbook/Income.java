@@ -7,7 +7,7 @@ import static javax.persistence.FetchType.*;
 import static lombok.AccessLevel.*;
 import static org.springframework.util.StringUtils.*;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 import javax.persistence.Column;
@@ -17,6 +17,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import com.prgrms.tenwonmoa.domain.accountbook.dto.UpdateIncomeRequest;
 import com.prgrms.tenwonmoa.domain.category.Category;
 import com.prgrms.tenwonmoa.domain.category.UserCategory;
 import com.prgrms.tenwonmoa.domain.common.BaseEntity;
@@ -31,7 +32,7 @@ import lombok.NoArgsConstructor;
 @Table(name = "income")
 public class Income extends BaseEntity {
 	@Column(name = "register_date", nullable = false)
-	private LocalDate registerDate;
+	private LocalDateTime registerDate;
 
 	@Column(name = "amount", nullable = false)
 	private Long amount;
@@ -48,22 +49,70 @@ public class Income extends BaseEntity {
 
 	@OneToOne(fetch = LAZY)
 	@JoinColumn(name = "user_category_id")
-	private UserCategory usercategory;
+	private UserCategory userCategory;
 
-	public Income(LocalDate registerDate, Long amount, String content, String categoryName, User user,
-		UserCategory usercategory) {
-		checkArgument(registerDate != null, NOT_NULL_REGISTER_DATE.getMessage());
+	public Income(LocalDateTime registerDate, Long amount, String content, String categoryName, User user,
+		UserCategory userCategory) {
+		validateRegisterDate(registerDate);
 		validateCategoryName(categoryName);
 		validateAmount(amount);
-		if (Objects.nonNull(content)) {
-			checkArgument(content.length() <= CONTENT_MAX, INVALID_CONTENT_ERR_MSG.getMessage());
-		}
-		this.registerDate = LocalDate.now();
+		validateContent(content);
+		this.registerDate = registerDate;
 		this.amount = amount;
 		this.content = content;
 		this.categoryName = categoryName;
 		this.user = user;
-		this.usercategory = usercategory;
+		this.userCategory = userCategory;
+	}
+
+	public void update(UserCategory userCategory, UpdateIncomeRequest updateIncomeRequest) {
+		this.userCategory = userCategory;
+		changeCategoryName(userCategory.getCategory().getName());
+		changeRegisterDate(updateIncomeRequest.getRegisterDate());
+		changeAmount(updateIncomeRequest.getAmount());
+		changeContent(updateIncomeRequest.getContent());
+	}
+
+	private void changeContent(String content) {
+		validateContent(content);
+		this.content = content;
+	}
+
+	private void changeRegisterDate(LocalDateTime registerDate) {
+		validateRegisterDate(registerDate);
+		this.registerDate = registerDate;
+	}
+
+	private void changeAmount(Long amount) {
+		validateAmount(amount);
+		this.amount = amount;
+	}
+
+	private void changeCategoryName(String categoryName) {
+		validateCategoryName(categoryName);
+		this.categoryName = categoryName;
+	}
+
+	private void validateContent(String content) {
+		if (Objects.nonNull(content)) {
+			checkArgument(content.length() <= CONTENT_MAX, INVALID_CONTENT_ERR_MSG.getMessage());
+		}
+	}
+
+	private void validateRegisterDate(LocalDateTime registerDate) {
+		checkArgument(registerDate != null, NOT_NULL_REGISTER_DATE.getMessage());
+	}
+
+	public String getCategoryName() {
+		if (Objects.isNull(this.userCategory)) {
+			return this.categoryName;
+		}
+
+		return this.userCategory.getCategory().getName();
+	}
+
+	public void deleteUserCategory() {
+		this.userCategory = null;
 	}
 
 	private void validateAmount(Long amount) {

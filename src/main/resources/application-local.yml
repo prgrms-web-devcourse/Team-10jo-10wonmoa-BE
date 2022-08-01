@@ -22,3 +22,9 @@ spring:
         dialects: org.hibernate.dialect.MySQL8Dialect
         format_sql: true
         default_batch_fetch_size: 100
+
+jwt:
+  header: Authorization
+  issuer: tenwonmoa
+  client-secret: EENY5W0eegTf1naQB2eDeyCLl5kRS2b8xa5c4qLdS0hmVjtbvo8tOyhPMcAmtPuQ
+  expiry-seconds: 3600000 # 1시간 = 3,600,000ms

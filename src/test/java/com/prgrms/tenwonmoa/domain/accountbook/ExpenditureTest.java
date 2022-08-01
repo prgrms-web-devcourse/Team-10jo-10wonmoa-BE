@@ -2,7 +2,7 @@ package com.prgrms.tenwonmoa.domain.accountbook;
 
 import static org.assertj.core.api.Assertions.*;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -17,7 +17,7 @@ import com.prgrms.tenwonmoa.domain.user.User;
 @DisplayName("지출(Expenditure) domain 테스트")
 class ExpenditureTest {
 
-	private final LocalDate date = LocalDate.now();
+	private final LocalDateTime date = LocalDateTime.now();
 
 	private final Long amount = 10000L;
 
@@ -173,7 +173,7 @@ class ExpenditureTest {
 		);
 
 		private final UpdateExpenditureRequest request = new UpdateExpenditureRequest(
-			LocalDate.now(),
+			LocalDateTime.now(),
 			20000L,
 			"그런게 있어",
 			2L

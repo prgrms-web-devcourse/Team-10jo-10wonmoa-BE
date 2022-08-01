@@ -21,3 +21,9 @@ spring:
 logging:
   level:
     org.hibernate.type: trace
+
+jwt:
+  header: testToken
+  issuer: testIssuer
+  client-secret: lsuvomkeoiotkbzdjrejfgdsfngusviykzsvjoriyukscpmxiijmpfsdwveljsml
+  expiry-seconds: 100

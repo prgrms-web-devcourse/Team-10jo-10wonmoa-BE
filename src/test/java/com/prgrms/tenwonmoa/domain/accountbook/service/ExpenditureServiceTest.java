@@ -4,7 +4,7 @@ import static java.util.Optional.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.NoSuchElementException;
 
 import org.junit.jupiter.api.DisplayName;
@@ -54,7 +54,7 @@ class ExpenditureServiceTest {
 
 	private final Category category = new Category("식비", CategoryType.EXPENDITURE);
 
-	private final Expenditure expenditure = new Expenditure(LocalDate.now(), 10000L, "피자", category.getName(), user,
+	private final Expenditure expenditure = new Expenditure(LocalDateTime.now(), 10000L, "피자", category.getName(), user,
 		userCategory);
 
 	@Mock
@@ -66,7 +66,7 @@ class ExpenditureServiceTest {
 
 		private final Long userId = 1L;
 
-		private final CreateExpenditureRequest request = new CreateExpenditureRequest(LocalDate.now(), 10000L, "식비",
+		private final CreateExpenditureRequest request = new CreateExpenditureRequest(LocalDateTime.now(), 10000L, "식비",
 			1L);
 
 		@Test
@@ -130,7 +130,7 @@ class ExpenditureServiceTest {
 
 		private final Long userCategoryId = 3L;
 
-		private final UpdateExpenditureRequest request = new UpdateExpenditureRequest(LocalDate.now(), 2000L,
+		private final UpdateExpenditureRequest request = new UpdateExpenditureRequest(LocalDateTime.now(), 2000L,
 			"수정", userCategoryId);
 
 		@Test
@@ -165,7 +165,7 @@ class ExpenditureServiceTest {
 				.willReturn(of(mockExpenditure));
 
 			assertThatThrownBy(() -> expenditureService.updateExpenditure(userId, expenditureId, request))
-				.isInstanceOf(IllegalArgumentException.class)
+				.isInstanceOf(IllegalStateException.class)
 				.hasMessage(Message.EXPENDITURE_NO_AUTHENTICATION.getMessage());
 
 		}
@@ -250,7 +250,7 @@ class ExpenditureServiceTest {
 				.willReturn(of(mockExpenditure));
 
 			assertThatThrownBy(() -> expenditureService.deleteExpenditure(userId, expenditureId))
-				.isInstanceOf(IllegalArgumentException.class)
+				.isInstanceOf(IllegalStateException.class)
 				.hasMessage(Message.EXPENDITURE_NO_AUTHENTICATION.getMessage());
 
 		}
@@ -311,7 +311,7 @@ class ExpenditureServiceTest {
 				.willReturn(of(mockExpenditure));
 
 			assertThatThrownBy(() -> expenditureService.findExpenditure(userId, expenditureId))
-				.isInstanceOf(IllegalArgumentException.class)
+				.isInstanceOf(IllegalStateException.class)
 				.hasMessage(Message.EXPENDITURE_NO_AUTHENTICATION.getMessage());
 		}
 

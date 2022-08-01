@@ -20,6 +20,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http
+			.cors()
+			.and()
 			.authorizeRequests()
 			.antMatchers("/api/v1/users", "/api/v1/users/login").permitAll()
 			.anyRequest().authenticated()

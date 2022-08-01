@@ -36,6 +36,17 @@ public class AccountBookQueryRepository {
 
 		List<FindDayAccountResponse> responses = new ArrayList<>();
 
+		// date 가져오는 쿼리에서 2개
+		// 쿼리 iterating 날리는 중, 여기서 쿼리가 3 * size()만큼 날아가는 문제
+		// 나는 어떻게 개선 할 것인가.
+		// 일단 date를 가져오는 거는 부정할 수  없이 그렇게 할 수 밖에 없을 것같다.
+		// 그러면 date의 첫번째와 마지막 부분의 between으로 가져오고,
+		// dates를 iterator 돌려서 쿼리 날리기
+		//20 + 1 21개로 나오기는 하는데...
+		// 여기서 개선 할 수는 없나;
+		// dates의 시작과 끝부분 해서 grouping하면...
+		// 쿼리 3개로 줄일 수 있지 않을까...
+
 		dates.iterator().forEachRemaining(
 			d -> responses.add(new FindDayAccountResponse(d, getDayIncomeAmount(d), getDayExpenditureAmount(d),
 				getDayDetails(userId, d)))

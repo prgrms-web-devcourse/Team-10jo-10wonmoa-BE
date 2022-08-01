@@ -1,10 +1,8 @@
 package com.prgrms.tenwonmoa.domain.accountbook.controller;
 
-import java.net.URI;
-import java.net.URISyntaxException;
-
 import javax.validation.Valid;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -30,16 +28,14 @@ import lombok.RequiredArgsConstructor;
 public class ExpenditureController {
 
 	private final ExpenditureService expenditureService;
-	private static final String LOCATION_PREFIX = "/api/v1/expenditures/";
 
 	@PostMapping
 	public ResponseEntity<CreateExpenditureResponse> createExpenditure(
 		@Valid @RequestBody CreateExpenditureRequest createExpenditureRequest,
-		@AuthenticationPrincipal Long userId) throws URISyntaxException {
+		@AuthenticationPrincipal Long userId) {
 		CreateExpenditureResponse response = expenditureService.createExpenditure(userId, createExpenditureRequest);
 
-		URI uri = new URI(LOCATION_PREFIX + response.getId());
-		return ResponseEntity.created(uri).body(response);
+		return ResponseEntity.status(HttpStatus.CREATED).body(response);
 	}
 
 	@PutMapping("/{expenditureId}")
@@ -50,12 +46,13 @@ public class ExpenditureController {
 	) {
 		expenditureService.updateExpenditure(userId, expenditureId, updateExpenditureRequest);
 
-		return ResponseEntity.ok().build();
+		return ResponseEntity.noContent().build();
 	}
 
 	@GetMapping("/{expenditureId}")
 	public ResponseEntity<FindExpenditureResponse> findExpenditure(
-		@PathVariable Long expenditureId, @AuthenticationPrincipal Long userId) {
+		@PathVariable Long expenditureId,
+		@AuthenticationPrincipal Long userId) {
 		FindExpenditureResponse response = expenditureService.findExpenditure(userId, expenditureId);
 
 		return ResponseEntity.ok(response);
@@ -63,7 +60,8 @@ public class ExpenditureController {
 
 	@DeleteMapping("/{expenditureId}")
 	public ResponseEntity<Void> deleteExpenditure(
-		@PathVariable Long expenditureId, @AuthenticationPrincipal Long userId) {
+		@PathVariable Long expenditureId,
+		@AuthenticationPrincipal Long userId) {
 		expenditureService.deleteExpenditure(userId, expenditureId);
 
 		return ResponseEntity.noContent().build();

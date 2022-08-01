@@ -5,6 +5,7 @@ import java.net.URI;
 import javax.validation.Valid;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,7 +20,6 @@ import com.prgrms.tenwonmoa.domain.accountbook.dto.FindIncomeResponse;
 import com.prgrms.tenwonmoa.domain.accountbook.dto.UpdateIncomeRequest;
 import com.prgrms.tenwonmoa.domain.accountbook.service.IncomeService;
 import com.prgrms.tenwonmoa.domain.accountbook.service.IncomeTotalService;
-import com.prgrms.tenwonmoa.domain.user.User;
 import com.prgrms.tenwonmoa.domain.user.service.UserService;
 
 import lombok.RequiredArgsConstructor;
@@ -35,36 +35,34 @@ public class IncomeController {
 	private final IncomeService incomeService;
 	private final UserService userService;
 
-	// TODO 로그인이 완성되면 AuthenticationManager를 통해가져오도록 변경한다. 그전까지 임시로 사용
-	private User authenticateUserTemp() {
-		Long userId = 1L;
-		return userService.findById(userId);
-	}
-
 	@PostMapping
-	public ResponseEntity<Long> createIncome(@RequestBody @Valid CreateIncomeRequest request) {
-		Long createdId = incomeTotalService.createIncome(authenticateUserTemp(), request);
+	public ResponseEntity<Long> createIncome(@RequestBody @Valid CreateIncomeRequest request,
+		@AuthenticationPrincipal Long userId) {
+		Long createdId = incomeTotalService.createIncome(userService.findById(userId), request);
 
 		String redirectUri = LOCATION_PREFIX + createdId;
 		return ResponseEntity.created(URI.create(redirectUri)).body(createdId);
 	}
 
 	@GetMapping("/{incomeId}")
-	public FindIncomeResponse findIncome(@PathVariable Long incomeId) {
-		return incomeService.findIncome(incomeId, authenticateUserTemp());
+	public FindIncomeResponse findIncome(@PathVariable Long incomeId,
+		@AuthenticationPrincipal Long userId) {
+		return incomeService.findIncome(incomeId, userService.findById(userId));
 	}
 
 	@PutMapping("/{incomeId}")
 	public ResponseEntity<Void> updateIncome(@PathVariable Long incomeId,
-		@RequestBody @Valid UpdateIncomeRequest updateIncomeRequest
+		@RequestBody @Valid UpdateIncomeRequest updateIncomeRequest,
+		@AuthenticationPrincipal Long userId
 	) {
-		incomeTotalService.updateIncome(authenticateUserTemp(), incomeId, updateIncomeRequest);
+		incomeTotalService.updateIncome(userService.findById(userId), incomeId, updateIncomeRequest);
 		return ResponseEntity.noContent().build();
 	}
 
 	@DeleteMapping("/{incomeId}")
-	public ResponseEntity<Void> deleteIncome(@PathVariable Long incomeId) {
-		incomeTotalService.deleteIncome(incomeId, authenticateUserTemp());
+	public ResponseEntity<Void> deleteIncome(@PathVariable Long incomeId,
+		@AuthenticationPrincipal Long userId) {
+		incomeTotalService.deleteIncome(incomeId, userService.findById(userId));
 		return ResponseEntity.noContent().build();
 	}
 }

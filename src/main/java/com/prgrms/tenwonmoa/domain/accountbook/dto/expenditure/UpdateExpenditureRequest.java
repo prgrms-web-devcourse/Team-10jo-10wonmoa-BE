@@ -19,7 +19,7 @@ public class UpdateExpenditureRequest {
 	private final LocalDateTime registerDate;
 
 	@Min(0L)
-	@Max(1000000000000L)
+	@Max(1_000_000_000_000L)
 	private final Long amount;
 
 	private final String content;

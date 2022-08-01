@@ -22,6 +22,8 @@ spring:
         dialects: org.hibernate.dialect.MySQL8Dialect
         format_sql: true
         default_batch_fetch_size: 100
+  flyway:
+    baseline-on-migrate: true
 
 jwt:
   header: Authorization

@@ -4,6 +4,9 @@ import java.time.LocalDateTime;
 
 import com.prgrms.tenwonmoa.domain.accountbook.Expenditure;
 
+import lombok.Getter;
+
+@Getter
 public class FindExpenditureResponse {
 
 	private final Long id;

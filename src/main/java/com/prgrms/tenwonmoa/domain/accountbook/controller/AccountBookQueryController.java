@@ -3,6 +3,7 @@ package com.prgrms.tenwonmoa.domain.accountbook.controller;
 import java.time.LocalDate;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -27,12 +28,12 @@ public class AccountBookQueryController {
 
 	@GetMapping("/daily/{date}/")
 	public ResponseEntity<PageCustomImpl<FindDayAccountResponse>> findDailyAccount(
+		@AuthenticationPrincipal Long userId,
 		@RequestBody PageCustomRequest pageRequest,
 		@PathVariable
 		@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
 			LocalDate date
 	) {
-		Long userId = 1L; // 추후 Auth 받은 후 수정 필요
 		PageCustomImpl<FindDayAccountResponse> response = accountBookQueryService.findDailyAccount(userId, pageRequest,
 			date);
 		return ResponseEntity.ok().body(response);
@@ -40,13 +41,11 @@ public class AccountBookQueryController {
 
 	@GetMapping("/sum/{date}")
 	public ResponseEntity<FindMonthSumResponse> findMonthSum(
+		@AuthenticationPrincipal Long userId,
 		@PathVariable
 		@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
 			LocalDate date
 	) {
-		// 추후 Auth 받은 후 수정 필요
-		Long userId = 1L;
-
 		FindMonthSumResponse response = accountBookQueryService.findMonthSum(userId, date);
 		return ResponseEntity.ok(response);
 	}

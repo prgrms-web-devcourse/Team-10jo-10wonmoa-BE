@@ -6,6 +6,7 @@ import java.net.URISyntaxException;
 import javax.validation.Valid;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -33,8 +34,8 @@ public class ExpenditureController {
 
 	@PostMapping
 	public ResponseEntity<CreateExpenditureResponse> createExpenditure(
-		@Valid @RequestBody CreateExpenditureRequest createExpenditureRequest) throws URISyntaxException {
-		Long userId = 1L; // 추후 Auth로 받을 예정
+		@Valid @RequestBody CreateExpenditureRequest createExpenditureRequest,
+		@AuthenticationPrincipal Long userId) throws URISyntaxException {
 		CreateExpenditureResponse response = expenditureService.createExpenditure(userId, createExpenditureRequest);
 
 		URI uri = new URI(LOCATION_PREFIX + response.getId());
@@ -44,26 +45,25 @@ public class ExpenditureController {
 	@PutMapping("/{expenditureId}")
 	public ResponseEntity<Void> updateExpenditure(
 		@PathVariable Long expenditureId,
-		@Valid @RequestBody UpdateExpenditureRequest updateExpenditureRequest
+		@Valid @RequestBody UpdateExpenditureRequest updateExpenditureRequest,
+		@AuthenticationPrincipal Long userId
 	) {
-		Long userId = 1L; // 추후 Auth로 받을 예정
 		expenditureService.updateExpenditure(userId, expenditureId, updateExpenditureRequest);
 
 		return ResponseEntity.ok().build();
 	}
 
 	@GetMapping("/{expenditureId}")
-	public ResponseEntity<FindExpenditureResponse> findExpenditure(@PathVariable Long expenditureId) {
-		Long userId = 1L; // 추후 Auth로 받을 예정
-
+	public ResponseEntity<FindExpenditureResponse> findExpenditure(
+		@PathVariable Long expenditureId, @AuthenticationPrincipal Long userId) {
 		FindExpenditureResponse response = expenditureService.findExpenditure(userId, expenditureId);
 
 		return ResponseEntity.ok(response);
 	}
 
 	@DeleteMapping("/{expenditureId}")
-	public ResponseEntity<Void> deleteExpenditure(@PathVariable Long expenditureId) {
-		Long userId = 1L; // 추후 Auth로 받을 예정
+	public ResponseEntity<Void> deleteExpenditure(
+		@PathVariable Long expenditureId, @AuthenticationPrincipal Long userId) {
 		expenditureService.deleteExpenditure(userId, expenditureId);
 
 		return ResponseEntity.noContent().build();

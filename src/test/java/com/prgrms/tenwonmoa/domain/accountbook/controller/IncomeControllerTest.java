@@ -22,6 +22,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.prgrms.tenwonmoa.common.annotation.WithMockCustomUser;
 import com.prgrms.tenwonmoa.common.documentdto.CreateIncomeRequestDoc;
 import com.prgrms.tenwonmoa.common.documentdto.ErrorResponseDoc;
 import com.prgrms.tenwonmoa.common.documentdto.FindIncomeResponseDoc;
@@ -97,6 +98,7 @@ class IncomeControllerTest {
 	}
 
 	@Test
+	@WithMockCustomUser
 	void 수입_등록_성공() throws Exception {
 		Long createdId = 1L;
 		given(incomeTotalService.createIncome(any(), any(CreateIncomeRequest.class)))
@@ -117,6 +119,7 @@ class IncomeControllerTest {
 	}
 
 	@Test
+	@WithMockCustomUser
 	void 수입_등록_실패() throws Exception {
 		given(incomeTotalService.createIncome(any(), any(CreateIncomeRequest.class)))
 			.willThrow(new NoSuchElementException(USER_CATEGORY_NOT_FOUND.getMessage()));
@@ -132,6 +135,7 @@ class IncomeControllerTest {
 	}
 
 	@Test
+	@WithMockCustomUser
 	void 수입_상세조회_성공() throws Exception {
 		given(incomeService.findIncome(any(Long.class), any()))
 			.willReturn(findIncomeResponse);
@@ -147,6 +151,7 @@ class IncomeControllerTest {
 	}
 
 	@Test
+	@WithMockCustomUser
 	void 수입_상세조회_실패() throws Exception {
 		given(incomeService.findIncome(any(Long.class), any()))
 			.willThrow(new NoSuchElementException(INCOME_NOT_FOUND.getMessage()));
@@ -162,6 +167,7 @@ class IncomeControllerTest {
 	}
 
 	@Test
+	@WithMockCustomUser
 	void 수입_수정_성공() throws Exception {
 		Long incomeId = 1L;
 		mockMvc.perform(put(LOCATION_PREFIX + "/{incomeId}", incomeId)
@@ -175,6 +181,7 @@ class IncomeControllerTest {
 	}
 
 	@Test
+	@WithMockCustomUser
 	void 수입_수정_실패() throws Exception {
 		willThrow(new NoSuchElementException(INCOME_NOT_FOUND.getMessage()))
 			.given(incomeTotalService)
@@ -192,6 +199,7 @@ class IncomeControllerTest {
 	}
 
 	@Test
+	@WithMockCustomUser
 	void 수입_삭제_성공() throws Exception {
 		Long incomeId = 1L;
 		mockMvc.perform(delete(LOCATION_PREFIX + "/{incomeId}", incomeId)

@@ -104,15 +104,11 @@ public class Income extends BaseEntity {
 	}
 
 	public String getCategoryName() {
-		if (Objects.isNull(this.userCategory)) {
+		if (Objects.isNull(this.userCategory.getCategory())) {
 			return this.categoryName;
 		}
 
-		return this.userCategory.getCategory().getName();
-	}
-
-	public void deleteUserCategory() {
-		this.userCategory = null;
+		return this.userCategory.getCategoryName();
 	}
 
 	private void validateAmount(Long amount) {

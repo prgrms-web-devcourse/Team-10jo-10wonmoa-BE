@@ -1,0 +1,203 @@
+openapi: 3.0.1
+info:
+  title: Tenwonmoa API
+  description: Tenwonmoa API description
+  version: 1.0.0
+servers:
+- url: http://3.39.184.232:8080
+tags: []
+paths:
+  /api/v1/incomes/:
+    post:
+      tags:
+      - api
+      operationId: income-create
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/api-v1-incomes-incomeId1988379506'
+            examples:
+              income-create:
+                value: "{\"registerDate\":\"2022-08-03T00:49:00.716411\",\"amount\"\
+                  :1000,\"content\":\"content\",\"userCategoryId\":1}"
+              income-create-fail:
+                value: "{\"registerDate\":\"2022-08-03T00:49:00.749698\",\"amount\"\
+                  :1000,\"content\":\"content\",\"userCategoryId\":1}"
+      responses:
+        "201":
+          description: "201"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/api-v1-incomes-486549215'
+              examples:
+                income-create:
+                  value: "1"
+        "400":
+          description: "400"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/api-v1-incomes-incomeId-940438351'
+              examples:
+                income-create-fail:
+                  value: "{\"messages\":[\"해당 사용자 카테고리는 존재하지 않습니다.\"],\"status\":400}"
+  /api/v1/incomes/{incomeId}:
+    get:
+      tags:
+      - api
+      operationId: income-f
+      parameters:
+      - name: incomeId
+        in: path
+        description: ""
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/api-v1-incomes-486549215'
+            examples:
+              income-find-by-id-fail:
+                value: "{\"registerDate\":\"2022-08-03T00:49:00.788601\",\"amount\"\
+                  :1000,\"content\":\"content\",\"userCategoryId\":1}"
+              income-find-by-id:
+                value: "{\"registerDate\":\"2022-08-03T00:49:00.767635\",\"amount\"\
+                  :1000,\"content\":\"content\",\"userCategoryId\":1}"
+              income-forbidden:
+                value: "{\"registerDate\":\"2022-08-03T00:49:00.804763\",\"amount\"\
+                  :1000,\"content\":\"content\",\"userCategoryId\":1}"
+      responses:
+        "400":
+          description: "400"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/api-v1-incomes-incomeId-940438351'
+              examples:
+                income-find-by-id-fail:
+                  value: "{\"messages\":[\"수입 정보가 존재하지 않습니다.\"],\"status\":400}"
+        "200":
+          description: "200"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/api-v1-incomes-incomeId-1128985720'
+              examples:
+                income-find-by-id:
+                  value: "{\"id\":1,\"registerDate\":\"2022-08-03T00:49:00.767646\"\
+                    ,\"amount\":1000,\"content\":\"content\",\"categoryName\":\"용돈\
+                    \"}"
+        "403":
+          description: "403"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/api-v1-incomes-incomeId-940438351'
+              examples:
+                income-forbidden:
+                  value: "{\"messages\":[\"권한이 없습니다.\"],\"status\":403}"
+    put:
+      tags:
+      - api
+      operationId: income-update
+      parameters:
+      - name: incomeId
+        in: path
+        description: ""
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/api-v1-incomes-incomeId1988379506'
+            examples:
+              income-update:
+                value: "{\"registerDate\":\"2022-08-03T00:48:59.615524\",\"amount\"\
+                  :2000,\"content\":\"updateContent\",\"userCategoryId\":2}"
+              income-update-fail:
+                value: "{\"registerDate\":\"2022-08-03T00:49:00.674563\",\"amount\"\
+                  :2000,\"content\":\"updateContent\",\"userCategoryId\":2}"
+      responses:
+        "204":
+          description: "204"
+        "400":
+          description: "400"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/api-v1-incomes-incomeId-940438351'
+              examples:
+                income-update-fail:
+                  value: "{\"messages\":[\"수입 정보가 존재하지 않습니다.\"],\"status\":400}"
+    delete:
+      tags:
+      - api
+      operationId: income-delete
+      parameters:
+      - name: incomeId
+        in: path
+        description: ""
+        required: true
+        schema:
+          type: string
+      responses:
+        "204":
+          description: "204"
+components:
+  schemas:
+    api-v1-incomes-incomeId-940438351:
+      type: object
+      properties:
+        messages:
+          type: array
+          description: 예외 메시지
+          items:
+            oneOf:
+            - type: object
+            - type: boolean
+            - type: string
+            - type: number
+        status:
+          type: number
+          description: 에러 코드
+    api-v1-incomes-incomeId1988379506:
+      type: object
+      properties:
+        amount:
+          type: number
+          description: 수입 금액
+        userCategoryId:
+          type: number
+          description: 유저 카테고리 ID
+        content:
+          type: string
+          description: 내용
+        registerDate:
+          type: string
+          description: 수입 등록 날짜
+    api-v1-incomes-incomeId-1128985720:
+      type: object
+      properties:
+        amount:
+          type: number
+          description: 수입 금액
+        id:
+          type: number
+          description: 수입 ID
+        categoryName:
+          type: string
+          description: 카테고리 이름
+        content:
+          type: string
+          description: 내용
+        registerDate:
+          type: string
+          description: 수입 등록 날짜
+    api-v1-incomes-486549215:
+      type: object

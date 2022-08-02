@@ -4,6 +4,7 @@ import javax.validation.Valid;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -22,6 +23,8 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/api/v1/users")
 public class UserController {
 
+	private static final String ACCESS_TOKEN = "access-token";
+
 	private final UserService userService;
 
 	@PostMapping
@@ -31,13 +34,22 @@ public class UserController {
 	}
 
 	@PostMapping("/login")
-	public ResponseEntity<Void> login(@Valid @RequestBody LoginUserRequest loginUserRequest) {
+	public ResponseEntity<LoginUserResponse> login(@Valid @RequestBody LoginUserRequest loginUserRequest) {
 		LoginUserResponse loginResponse =
 			userService.login(loginUserRequest.getEmail(), loginUserRequest.getPassword());
 
 		String accessToken = loginResponse.getAccessToken();
+		ResponseCookie accessTokenCookie = generateAccessTokenCookie(accessToken);
 
-		return ResponseEntity.noContent().header(HttpHeaders.SET_COOKIE, accessToken).build();
+		return ResponseEntity.ok()
+			.header(HttpHeaders.SET_COOKIE, accessTokenCookie.toString())
+			.body(loginResponse);
+	}
+
+	private ResponseCookie generateAccessTokenCookie(String accessToken) {
+		return ResponseCookie.from(ACCESS_TOKEN, accessToken)
+			.httpOnly(true)
+			.build();
 	}
 
 }

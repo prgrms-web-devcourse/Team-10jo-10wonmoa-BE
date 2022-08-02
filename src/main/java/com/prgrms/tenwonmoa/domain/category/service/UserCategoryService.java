@@ -38,6 +38,10 @@ public class UserCategoryService {
 		validateUser(authenticatedUser, user);
 
 		Category category = userCategory.getCategory();
+
+		checkNotNull(category, String.format(
+			"삭제된 카테고리는 수정할 수 없습니다, 유저 아이디 : %d, 유저 카테고리 아이디 : %d 업데이트할 이름 : %s",
+			authenticatedUser.getId(), userCategoryId, desiredName));
 		category.updateName(desiredName);
 
 		return category.getName();

@@ -149,6 +149,23 @@ class UserCategoryServiceTest {
 		assertThatIllegalStateException().isThrownBy(
 			() -> userCategoryService.updateName(otherUser, userCategoryId, "업데이트된 카테고리 이름")
 		);
+
+	}
+
+	@Test
+	void 삭제된_카테고리는_카테고리_이름_수정_실패() {
+		//given
+		String categoryType = "EXPENDITURE";
+		String categoryName = "예시지출카테고리";
+		Long userCategoryId = userCategoryService.createUserCategory(user, categoryType, categoryName);
+		userCategoryService.deleteUserCategory(user, userCategoryId);
+
+		//when
+		//then
+		assertThatNullPointerException().isThrownBy(
+			() -> userCategoryService.updateName(user, userCategoryId, "업데이트된 카테고리 이름")
+		);
+
 	}
 
 	@Test

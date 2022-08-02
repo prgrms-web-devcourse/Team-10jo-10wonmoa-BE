@@ -15,17 +15,17 @@ import lombok.Getter;
 
 @Getter
 public class CreateIncomeRequest {
-	@NotNull
+	@NotNull(message = "등록일을 채워주세요")
 	private final LocalDateTime registerDate;
 
-	@Min(1L)
-	@Max(1_000_000_000_000L)
+	@Min(value = 0L, message = "최소값은 0입니다")
+	@Max(value = 1_000_000_000_000L, message = "최대값은 1조입니다")
 	private final Long amount;
 
-	@Size(max = 50)
+	@Size(max = 50, message = "내용의 최대 길이는 50입니다")
 	private final String content;
 
-	@NotNull
+	@NotNull(message = "유저 카테고리 아이디를 채워주세요")
 	private final Long userCategoryId;
 
 	public CreateIncomeRequest(LocalDateTime registerDate, Long amount, String content, Long userCategoryId) {

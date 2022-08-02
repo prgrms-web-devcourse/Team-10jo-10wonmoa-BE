@@ -9,10 +9,10 @@ import lombok.Getter;
 @Getter
 public class CreateCategoryRequest {
 
-	@NotEmpty
+	@NotEmpty(message = "카테고리 타입이 필요합니다")
 	private String categoryType;
 
-	@NotEmpty
+	@NotEmpty(message = "카테고리 이름을 필요합니다")
 	private String name;
 
 }

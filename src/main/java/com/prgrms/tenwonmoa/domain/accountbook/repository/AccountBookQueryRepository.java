@@ -137,7 +137,7 @@ public class AccountBookQueryRepository {
 		int year = date.getYear();
 		int month = date.getMonthValue();
 
-		List<LocalDateTime> expenditureTimes = queryFactory.select(expenditure.registerDate)
+		List<LocalDateTime> dateTimes = queryFactory.select(expenditure.registerDate)
 			.from(expenditure)
 			.where(
 				expenditure.user.id.eq(userId),
@@ -146,32 +146,24 @@ public class AccountBookQueryRepository {
 			)
 			.fetch();
 
-		List<LocalDateTime> incomeTimes = queryFactory.select(income.registerDate)
-			.from(income)
-			.where(
-				income.user.id.eq(userId),
-				income.registerDate.year().eq(year),
-				income.registerDate.month().eq(month)
-			)
-			.fetch();
+		dateTimes.addAll(
+			queryFactory.select(income.registerDate)
+				.from(income)
+				.where(
+					income.user.id.eq(userId),
+					income.registerDate.year().eq(year),
+					income.registerDate.month().eq(month)
+				)
+				.fetch()
+		);
 
-		List<LocalDate> expenditureDate = expenditureTimes.stream()
+		List<LocalDate> dates = dateTimes.stream()
 			.map(LocalDateTime::toLocalDate)
-			.collect(Collectors.toList());
-
-		List<LocalDate> incomeDate = incomeTimes.stream()
-			.map(LocalDateTime::toLocalDate)
-			.collect(Collectors.toList());
-
-		expenditureDate.addAll(incomeDate);
-
-		List<LocalDate> dates = expenditureDate.stream()
 			.distinct()
+			.sorted((d1, d2) -> d1.isAfter(d2) ? -1 : 1)
 			.collect(Collectors.toList());
 
-		Collections.sort(dates, (d1, d2) -> d1.isAfter(d2) ? -1 : 1);
-
-		int end = (int)offset + size > dates.size() ? dates.size() : (int)offset + size;
+		int end = Math.min((int)offset + size, dates.size());
 
 		return dates.subList(((int)offset), end);
 	}

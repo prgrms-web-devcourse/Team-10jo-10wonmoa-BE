@@ -2,6 +2,7 @@ package com.prgrms.tenwonmoa.domain.accountbook.controller;
 
 import java.time.LocalDate;
 
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,7 +11,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.prgrms.tenwonmoa.domain.accountbook.dto.FindDayAccountResponse;
 import com.prgrms.tenwonmoa.domain.accountbook.dto.FindMonthSumResponse;
 import com.prgrms.tenwonmoa.domain.accountbook.service.AccountBookQueryService;
@@ -31,7 +31,7 @@ public class AccountBookQueryController {
 		@AuthenticationPrincipal Long userId,
 		@RequestBody PageCustomRequest pageRequest,
 		@PathVariable
-		@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
+		@DateTimeFormat(pattern = "yyyy-MM-dd")
 			LocalDate date
 	) {
 		PageCustomImpl<FindDayAccountResponse> response = accountBookQueryService.findDailyAccount(userId, pageRequest,
@@ -43,7 +43,7 @@ public class AccountBookQueryController {
 	public ResponseEntity<FindMonthSumResponse> findMonthSum(
 		@AuthenticationPrincipal Long userId,
 		@PathVariable
-		@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
+		@DateTimeFormat(pattern = "yyyy-MM-dd")
 			LocalDate date
 	) {
 		FindMonthSumResponse response = accountBookQueryService.findMonthSum(userId, date);

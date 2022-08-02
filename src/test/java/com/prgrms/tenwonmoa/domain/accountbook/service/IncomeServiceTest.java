@@ -16,7 +16,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.prgrms.tenwonmoa.domain.accountbook.Income;
-import com.prgrms.tenwonmoa.domain.accountbook.dto.income.FindIncomeResponse;
 import com.prgrms.tenwonmoa.domain.accountbook.repository.IncomeRepository;
 import com.prgrms.tenwonmoa.domain.user.User;
 import com.prgrms.tenwonmoa.exception.message.Message;
@@ -32,7 +31,8 @@ class IncomeServiceTest {
 
 	private final Income income = createIncome(createUserCategory(createUser(), createIncomeCategory()));
 
-	private final Long incomeId = 1L;
+	private User mockUser = mock(User.class);
+	private Income mockIncome = mock(Income.class);
 
 	@Test
 	void 수입저장_성공() {
@@ -47,19 +47,12 @@ class IncomeServiceTest {
 
 	@Test
 	void 아이디로_수입조회_성공() {
-		User mockUser = mock(User.class);
-		doNothing().when(mockUser).validateLogin(income.getUser());
-		given(incomeRepository.findById(any(Long.class))).willReturn(Optional.of(income));
+		given(incomeRepository.findById(anyLong())).willReturn(Optional.of(mockIncome));
+		given(mockIncome.getUser()).willReturn(mockUser);
+		doNothing().when(mockUser).validateLogin(anyLong());
 
-		FindIncomeResponse findIncomeResponse = incomeService.findIncome(incomeId, mockUser);
-		assertAll(
-			() -> assertThat(findIncomeResponse.getId()).isEqualTo(income.getId()),
-			() -> assertThat(findIncomeResponse.getRegisterDate()).isEqualTo(income.getRegisterDate()),
-			() -> assertThat(findIncomeResponse.getAmount()).isEqualTo(income.getAmount()),
-			() -> assertThat(findIncomeResponse.getContent()).isEqualTo(income.getContent()),
-			() -> assertThat(findIncomeResponse.getCategoryName()).isEqualTo(income.getCategoryName()),
-			() -> verify(incomeRepository).findById(incomeId)
-		);
+		incomeService.findIncome(mockIncome.getId(), anyLong());
+		verify(incomeRepository).findById(anyLong());
 	}
 
 	@Test

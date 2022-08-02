@@ -13,6 +13,8 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import com.prgrms.tenwonmoa.config.JwtConfigure;
+import com.prgrms.tenwonmoa.domain.user.security.jwt.Jwt;
+import com.prgrms.tenwonmoa.domain.user.security.jwt.TokenProvider;
 
 @DisplayName("토큰 생성기 테스트")
 @ExtendWith(SpringExtension.class)

@@ -32,7 +32,7 @@ import com.prgrms.tenwonmoa.domain.accountbook.dto.income.FindIncomeResponse;
 import com.prgrms.tenwonmoa.domain.accountbook.dto.income.UpdateIncomeRequest;
 import com.prgrms.tenwonmoa.domain.accountbook.service.IncomeService;
 import com.prgrms.tenwonmoa.domain.accountbook.service.IncomeTotalService;
-import com.prgrms.tenwonmoa.domain.user.jwt.JwtAuthenticationFilter;
+import com.prgrms.tenwonmoa.domain.user.security.jwt.JwtAuthenticationFilter;
 import com.prgrms.tenwonmoa.domain.user.service.UserService;
 import com.prgrms.tenwonmoa.exception.UnauthorizedUserException;
 

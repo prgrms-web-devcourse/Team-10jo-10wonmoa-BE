@@ -10,7 +10,6 @@ import org.springframework.transaction.annotation.Transactional;
 import com.prgrms.tenwonmoa.domain.accountbook.Income;
 import com.prgrms.tenwonmoa.domain.accountbook.dto.income.FindIncomeResponse;
 import com.prgrms.tenwonmoa.domain.accountbook.repository.IncomeRepository;
-import com.prgrms.tenwonmoa.domain.user.User;
 
 import lombok.RequiredArgsConstructor;
 
@@ -26,10 +25,10 @@ public class IncomeService {
 		return incomeRepository.save(income).getId();
 	}
 
-	public FindIncomeResponse findIncome(Long incomeId, User authUser) {
+	public FindIncomeResponse findIncome(Long incomeId, Long authId) {
 		Income findIncome = findById(incomeId);
-		authUser.validateLogin(findIncome.getUser());
 
+		findIncome.getUser().validateLogin(authId);
 		return FindIncomeResponse.of(findIncome);
 	}
 

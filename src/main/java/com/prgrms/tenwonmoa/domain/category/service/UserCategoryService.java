@@ -7,8 +7,6 @@ import java.util.NoSuchElementException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.prgrms.tenwonmoa.domain.accountbook.service.ExpenditureService;
-import com.prgrms.tenwonmoa.domain.accountbook.service.IncomeService;
 import com.prgrms.tenwonmoa.domain.category.Category;
 import com.prgrms.tenwonmoa.domain.category.UserCategory;
 import com.prgrms.tenwonmoa.domain.category.repository.UserCategoryRepository;
@@ -25,10 +23,6 @@ public class UserCategoryService {
 	private final UserCategoryRepository userCategoryRepository;
 
 	private final CategoryService categoryService;
-
-	private final ExpenditureService expenditureService;
-
-	private final IncomeService incomeService;
 
 	public Long createUserCategory(User user, String catgoryType, String name) {
 		Category savedCategory = categoryService.createCategory(catgoryType, name);
@@ -61,16 +55,12 @@ public class UserCategoryService {
 	}
 
 	public void deleteUserCategory(User authenticatedUser, Long userCategoryId) {
-		incomeService.setUserCategoryNull(userCategoryId);
-		expenditureService.setUserCategoryNull(userCategoryId);
-
 		UserCategory userCategory = findById(userCategoryId);
 		User user = userCategory.getUser();
 		validateUser(authenticatedUser, user);
 
-		userCategoryRepository.delete(userCategory);
-
 		Category category = userCategory.getCategory();
+		userCategory.updateCategoryAsNull();
 		categoryService.deleteCategory(category.getId());
 	}
 }

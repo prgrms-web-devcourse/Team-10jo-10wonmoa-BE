@@ -206,7 +206,7 @@ class UserCategoryServiceTest {
 		//when
 		userCategoryService.deleteUserCategory(user, userCategoryId);
 		//then
-		assertThatExceptionOfType(NullPointerException.class)
+		assertThatNullPointerException()
 			.isThrownBy(() -> userCategoryService.deleteUserCategory(user, userCategoryId));
 	}
 }

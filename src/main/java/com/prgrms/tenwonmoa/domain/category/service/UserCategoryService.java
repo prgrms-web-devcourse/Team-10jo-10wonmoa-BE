@@ -65,6 +65,10 @@ public class UserCategoryService {
 
 		Category category = userCategory.getCategory();
 		userCategory.updateCategoryAsNull();
+
+		checkNotNull(category, String.format(
+			"삭제된 카테고리는 다시 삭제할 수 없습니다, 유저 아이디 : %d, 유저 카테고리 아이디 : %d",
+			authenticatedUser.getId(), userCategoryId));
 		categoryService.deleteCategory(category.getId());
 	}
 }

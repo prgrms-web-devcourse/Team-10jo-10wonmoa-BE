@@ -10,6 +10,7 @@ public class ServletConfig implements WebMvcConfigurer {
 	@Override
 	public void addCorsMappings(CorsRegistry registry) {
 		registry.addMapping("/api/**")
+			.allowCredentials(true)
 			.allowedOrigins("http://localhost:3000", "https://team-10jo-10wonmoa-fe.vercel.app")
 			.allowedMethods("*")
 			.allowedHeaders("*");

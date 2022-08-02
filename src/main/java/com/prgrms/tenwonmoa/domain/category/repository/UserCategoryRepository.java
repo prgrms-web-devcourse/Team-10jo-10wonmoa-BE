@@ -11,9 +11,10 @@ import com.prgrms.tenwonmoa.domain.category.UserCategory;
 
 @Repository
 public interface UserCategoryRepository extends JpaRepository<UserCategory, Long> {
+
 	@Query("select uc from UserCategory uc "
 		+ "join fetch uc.category c "
-		+ "where uc.user.id = :userId and c.categoryType = :categoryType")
+		+ "where uc.user.id = :userId "
+		+ "and c.categoryType = :categoryType")
 	List<UserCategory> findByUserIdAndCategoryType(Long userId, CategoryType categoryType);
-
 }

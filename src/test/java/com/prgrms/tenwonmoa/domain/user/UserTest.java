@@ -50,21 +50,6 @@ class UserTest {
 	}
 
 	@Test
-	void 비밀번호의_길이는_8에서_20_사이가_아니면_예외() {
-		String invalidPassword1 = "1234567";
-		String invalidPassword2 = "1234567890abcedfr!flv";
-
-		assertAll(
-			() -> assertThatThrownBy(() -> new User("a@a.com", invalidPassword1, "yanju"))
-				.isInstanceOf(IllegalArgumentException.class)
-				.hasMessageContaining(INVALID_PASSWORD_LENGTH.getMessage()),
-			() -> assertThatThrownBy(() -> new User("a@a.com", invalidPassword2, "yanju"))
-				.isInstanceOf(IllegalArgumentException.class)
-				.hasMessageContaining(INVALID_PASSWORD_LENGTH.getMessage())
-		);
-	}
-
-	@Test
 	void 이름이_null_일_때_예외() {
 		assertThatThrownBy(() -> new User("a@a.com", "12345678", null))
 			.isInstanceOf(NullPointerException.class)

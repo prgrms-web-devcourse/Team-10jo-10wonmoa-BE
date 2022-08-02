@@ -2,6 +2,7 @@ package com.prgrms.tenwonmoa.domain.user.service;
 
 import java.util.NoSuchElementException;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,9 +23,8 @@ import lombok.RequiredArgsConstructor;
 public class UserService {
 
 	private final UserRepository userRepository;
-
 	private final TokenProvider tokenProvider;
-
+	private final PasswordEncoder passwordEncoder;
 	private final CreateDefaultUserCategoryService createDefaultUserCategoryService;
 
 	public User findById(Long userId) {
@@ -38,7 +38,7 @@ public class UserService {
 			throw new AlreadyExistException(Message.ALREADY_EXISTS_USER);
 		}
 
-		User savedUser = userRepository.save(createUserRequest.toEntity());
+		User savedUser = userRepository.save(createUserRequest.toEntity(passwordEncoder));
 		createDefaultUserCategoryService.createDefaultUserCategory(savedUser);
 		return savedUser.getId();
 	}
@@ -58,9 +58,8 @@ public class UserService {
 		return new LoginUserResponse(accessToken, refreshToken);
 	}
 
-	private boolean checkPassword(String originalPassword, String requestPassword) {
-		// todo: PasswordEncoder 를 통한 비밀번호 암호화
-		return originalPassword.equals(requestPassword);
+	private boolean checkPassword(String encodedPassword, String requestPassword) {
+		return passwordEncoder.matches(requestPassword, encodedPassword);
 	}
 
 }

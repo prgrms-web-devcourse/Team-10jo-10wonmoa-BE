@@ -14,6 +14,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.prgrms.tenwonmoa.domain.category.service.CreateDefaultUserCategoryService;
 import com.prgrms.tenwonmoa.domain.user.User;
@@ -26,6 +28,9 @@ import com.prgrms.tenwonmoa.exception.message.Message;
 @DisplayName("유저 서비스 테스트")
 @ExtendWith(MockitoExtension.class)
 class UserServiceTest {
+
+	@Mock
+	private PasswordEncoder passwordEncoder;
 	@Mock
 	private UserRepository userRepository;
 
@@ -63,9 +68,11 @@ class UserServiceTest {
 
 	@Test
 	void 유저_생성_성공() {
-		CreateUserRequest createUserRequest = new CreateUserRequest("test@test.com", "12345678", "testuser1");
-		User user = createUserRequest.toEntity();
+		CreateUserRequest createUserRequest = new CreateUserRequest("test@test.com", "testuser", "12345678");
+		String encryptPassword = new BCryptPasswordEncoder().encode(createUserRequest.getPassword());
+		User user = new User(createUserRequest.getEmail(), encryptPassword, createUserRequest.getUsername());
 
+		given(passwordEncoder.encode(any(String.class))).willReturn(encryptPassword);
 		given(userRepository.existsByEmail(any(String.class))).willReturn(false);
 		given(userRepository.save(any(User.class))).willReturn(user);
 
@@ -91,10 +98,15 @@ class UserServiceTest {
 
 	@Test
 	void 로그인_성공() {
+		String password = "testPassword";
+		String encryptPassword = new BCryptPasswordEncoder().encode(password);
+		User user = new User("test@test.com", encryptPassword, "testuser");
+
+		given(passwordEncoder.matches(password, encryptPassword)).willReturn(true);
 		given(userRepository.findByEmail(any(String.class))).willReturn(Optional.of(user));
+
 		Long userId = user.getId();
 		String email = user.getEmail();
-		String password = user.getPassword();
 
 		userService.login(email, password);
 

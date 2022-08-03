@@ -114,6 +114,22 @@ class AccountBookQueryRepositoryTest extends RepositoryTest {
 	class FindDayAccount {
 
 		@Test
+		public void 해당_페이징에_데이터가_없을때() {
+
+			PageCustomImpl<FindDayAccountResponse> dailyAccount = accountBookQueryRepository.findDailyAccount(
+				user.getId(),
+				new PageCustomRequest(1, 10),
+				LocalDate.parse("2022-08-01", DateTimeFormatter.ofPattern("yyyy-MM-dd"))
+			);
+
+			List<FindDayAccountResponse> results = dailyAccount.getResults();
+
+			assertThat(results.size()).isEqualTo(0);
+			assertThat(dailyAccount.getCurrentPage()).isEqualTo(1);
+			assertThat(dailyAccount.getNextPage()).isNull();
+		}
+
+		@Test
 		public void 날짜를_수입과_집합의_날짜_합집합을_10개_반환하여_페이징처리한다() {
 			createExpenditures(10);
 			createIncomes(10);

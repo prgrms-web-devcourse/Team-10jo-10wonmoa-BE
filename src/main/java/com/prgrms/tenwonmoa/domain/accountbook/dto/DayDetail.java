@@ -1,11 +1,11 @@
 package com.prgrms.tenwonmoa.domain.accountbook.dto;
 
-import com.querydsl.core.annotations.QueryProjection;
+import java.time.LocalDateTime;
 
 import lombok.Getter;
 
 @Getter
-public class DayDetail {
+public class DayDetail implements Comparable<DayDetail> {
 
 	private final Long id;
 
@@ -17,12 +17,29 @@ public class DayDetail {
 
 	private final String categoryName;
 
-	@QueryProjection
-	public DayDetail(Long id, String type, Long amount, String content, String categoryName) {
+	private final LocalDateTime registerTime;
+
+	public DayDetail(Long id, String type, Long amount, String content, String categoryName,
+		LocalDateTime registerTime) {
 		this.id = id;
 		this.type = type;
 		this.amount = amount;
 		this.content = content;
 		this.categoryName = categoryName;
+		this.registerTime = registerTime;
+	}
+
+	/**
+	 * 날짜별 상세 정렬 기준
+	 * 1.type: INCOME, EXPENDITURE 순으로 정렬
+	 * 2.type이 같으면 등록한 최신 순으로
+	 * */
+	@Override
+	public int compareTo(DayDetail dayDetail) {
+		if (this.type.equals(dayDetail.type)) {
+			return this.registerTime.isAfter(dayDetail.registerTime) ? -1 : 1;
+		}
+
+		return this.type.compareTo(dayDetail.getType());
 	}
 }

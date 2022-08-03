@@ -7,6 +7,7 @@ import static javax.persistence.FetchType.*;
 import static lombok.AccessLevel.*;
 import static org.springframework.util.StringUtils.*;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
@@ -123,5 +124,9 @@ public class Income extends BaseEntity {
 	private void validateCategoryName(String categoryName) {
 		checkArgument(hasText(categoryName));
 		checkArgument(categoryName.length() <= Category.MAX_NAME_LENGTH);
+	}
+
+	public LocalDate getDate() {
+		return this.registerDate.toLocalDate();
 	}
 }

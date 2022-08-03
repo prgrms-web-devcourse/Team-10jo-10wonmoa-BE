@@ -35,10 +35,11 @@ public class DayDetail implements Comparable<DayDetail> {
 	 * 2.type이 같으면 등록한 최신 순으로
 	 * */
 	@Override
-	public int compareTo(DayDetail d) {
-		if (this.type.equals(d.type))
-			return this.registerTime.isAfter(d.registerTime) ? -1 : 1;
+	public int compareTo(DayDetail dayDetail) {
+		if (this.type.equals(dayDetail.type)) {
+			return this.registerTime.isAfter(dayDetail.registerTime) ? -1 : 1;
+		}
 
-		return this.type.compareTo(d.getType());
+		return this.type.compareTo(dayDetail.getType());
 	}
 }

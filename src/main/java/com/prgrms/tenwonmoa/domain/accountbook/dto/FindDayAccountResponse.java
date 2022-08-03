@@ -34,7 +34,7 @@ public class FindDayAccountResponse implements Comparable<FindDayAccountResponse
 	 * 날짜 최신순으로 정렬
 	 * */
 	@Override
-	public int compareTo(FindDayAccountResponse r) {
-		return this.registerDate.isAfter(r.getRegisterDate()) ? -1 : 1;
+	public int compareTo(FindDayAccountResponse response) {
+		return this.registerDate.isAfter(response.getRegisterDate()) ? -1 : 1;
 	}
 }

@@ -38,9 +38,8 @@ public class IncomeTotalService {
 		UserCategory userCategory = userCategoryService.findById(updateIncomeRequest.getUserCategoryId());
 		if (CategoryType.isExpenditure(userCategory.getCategory().getCategoryType())) {
 			incomeService.deleteById(incomeId);
-			User authUser = userService.findById(authId);
 			expenditureRepository.save(
-				updateIncomeRequest.toExpenditure(authUser, userCategory, userCategory.getCategoryName()));
+				updateIncomeRequest.toExpenditure(income.getUser(), userCategory, userCategory.getCategoryName()));
 		} else {
 			income.update(userCategory, updateIncomeRequest);
 		}

@@ -106,7 +106,6 @@ class IncomeTotalServiceTest {
 		doNothing().when(mockUser).validateLogin(anyLong());
 		UserCategory expenditureCategory = createUserCategory(income.getUser(), createExpenditureCategory());
 		given(userCategoryService.findById(anyLong())).willReturn(expenditureCategory);
-		given(userService.findById(anyLong())).willReturn(income.getUser());
 
 		// when
 		incomeTotalService.updateIncome(anyLong(),

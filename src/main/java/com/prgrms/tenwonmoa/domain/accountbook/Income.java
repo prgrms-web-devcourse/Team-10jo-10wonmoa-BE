@@ -74,6 +74,10 @@ public class Income extends BaseEntity {
 		changeContent(updateIncomeRequest.getContent());
 	}
 
+	public void validateOwner(Long authId) {
+		this.user.validateLogin(authId);
+	}
+
 	private void changeContent(String content) {
 		validateContent(content);
 		this.content = content;
@@ -105,15 +109,11 @@ public class Income extends BaseEntity {
 	}
 
 	public String getCategoryName() {
-		if (Objects.isNull(this.userCategory)) {
+		if (Objects.isNull(this.userCategory.getCategory())) {
 			return this.categoryName;
 		}
 
-		return this.userCategory.getCategory().getName();
-	}
-
-	public void deleteUserCategory() {
-		this.userCategory = null;
+		return this.userCategory.getCategoryName();
 	}
 
 	private void validateAmount(Long amount) {

@@ -6,7 +6,6 @@ import static org.assertj.core.api.Assertions.*;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Optional;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -150,6 +149,23 @@ class UserCategoryServiceTest {
 		assertThatIllegalStateException().isThrownBy(
 			() -> userCategoryService.updateName(otherUser, userCategoryId, "업데이트된 카테고리 이름")
 		);
+
+	}
+
+	@Test
+	void 삭제된_카테고리는_카테고리_이름_수정_실패() {
+		//given
+		String categoryType = "EXPENDITURE";
+		String categoryName = "예시지출카테고리";
+		Long userCategoryId = userCategoryService.createUserCategory(user, categoryType, categoryName);
+		userCategoryService.deleteUserCategory(user, userCategoryId);
+
+		//when
+		//then
+		assertThatNullPointerException().isThrownBy(
+			() -> userCategoryService.updateName(user, userCategoryId, "업데이트된 카테고리 이름")
+		);
+
 	}
 
 	@Test
@@ -163,8 +179,8 @@ class UserCategoryServiceTest {
 		userCategoryService.deleteUserCategory(user, userCategoryId);
 
 		//then
-		assertThatExceptionOfType(NoSuchElementException.class)
-			.isThrownBy(() -> userCategoryService.findById(userCategoryId));
+		UserCategory userCategory = userCategoryService.findById(userCategoryId);
+		assertThat(userCategory.getCategory()).isNull();
 	}
 
 	@Test
@@ -181,42 +197,16 @@ class UserCategoryServiceTest {
 	}
 
 	@Test
-	void 유저카테고리를_갖고있는_지출과_수입이_있어도_유저카테고리_삭제_성공() {
+	void 이미_삭제가_된_유저카테고리는_삭제_실패() {
 		//given
 		String categoryType = "EXPENDITURE";
 		String categoryName = "예시지출카테고리";
 		Long userCategoryId = userCategoryService.createUserCategory(user, categoryType, categoryName);
-		UserCategory userCategory = userCategoryService.findById(userCategoryId);
-
-		Expenditure savedExpenditure = expenditureRepository.save(
-			new Expenditure(LocalDateTime.now(), 10000L, "내용", "식비", user, userCategory));
-		Income savedIncome = incomeRepository.save(
-			new Income(LocalDateTime.now(), 10000L, "내용", "식비", user, userCategory));
-		new Expenditure(LocalDateTime.now(), 10000L, "내용", "식비", user, userCategory);
 
 		//when
 		userCategoryService.deleteUserCategory(user, userCategoryId);
-
 		//then
-		assertThatExceptionOfType(NoSuchElementException.class)
-			.isThrownBy(() -> userCategoryService.findById(userCategoryId));
-
-		Optional<Expenditure> expenditureOptional = expenditureRepository.findById(savedExpenditure.getId());
-		Optional<Income> incomeOptional = incomeRepository.findById(savedIncome.getId());
-
-		assertThat(expenditureOptional).isPresent();
-		assertThat(expenditureOptional.get().getUserCategory()).isNull();
-
-		assertThat(incomeOptional).isPresent();
-		assertThat(incomeOptional.get().getUserCategory()).isNull();
-
-	}
-
-	@Test
-	void 유저카테고리_존재하지_않을시_삭제_실패() {
-		//when
-		//then
-		assertThatExceptionOfType(NoSuchElementException.class)
-			.isThrownBy(() -> userCategoryService.deleteUserCategory(user, 1L));
+		assertThatNullPointerException()
+			.isThrownBy(() -> userCategoryService.deleteUserCategory(user, userCategoryId));
 	}
 }

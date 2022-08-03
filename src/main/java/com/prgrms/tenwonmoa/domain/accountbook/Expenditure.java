@@ -38,7 +38,7 @@ public class Expenditure extends BaseEntity {
 	@Column(name = "amount", nullable = false)
 	private Long amount;
 
-	@Column(name = "content", nullable = true, length = CONTENT_MAX)
+	@Column(name = "content", length = CONTENT_MAX)
 	private String content;
 
 	@Column(name = "category_name", nullable = false, length = Category.MAX_NAME_LENGTH)
@@ -93,18 +93,11 @@ public class Expenditure extends BaseEntity {
 	 * TODO : naming 부자연스럽지 않은지 조언 필요
 	 * */
 	public String getCategoryName() {
-		if (Objects.isNull(this.userCategory)) {
+		if (Objects.isNull(this.userCategory.getCategory())) {
 			return this.categoryName;
 		}
 
-		return this.userCategory.getCategory().getName();
-	}
-
-	/**
-	 * TODO : 의논 필요, 윌리엄이 userCategory 만들때 null 설정할 메서드
-	 * */
-	public void deleteUserCategory() {
-		this.userCategory = null;
+		return this.userCategory.getCategoryName();
 	}
 
 	public LocalDate getDate() {

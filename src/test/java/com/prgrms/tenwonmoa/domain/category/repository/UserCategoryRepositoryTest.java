@@ -44,12 +44,18 @@ class UserCategoryRepositoryTest extends RepositoryTest {
 
 		userCategoryRepository.save(createUserCategory(user, expenditureCategory));
 
+		UserCategory userCategory = userCategoryRepository.save(createUserCategory(user, expenditureCategory));
+		userCategory.updateCategoryAsNull();
+		save(userCategory);
+
 		// when
-		List<UserCategory> userCategories =
+		List<UserCategory> allUserCategories = userCategoryRepository.findAll();
+		List<UserCategory> expenditureCategories =
 			userCategoryRepository.findByUserIdAndCategoryType(user.getId(), CategoryType.EXPENDITURE);
 
 		// then
-		assertThat(userCategories).hasSize(1);
-		assertThat(userCategories.get(0).getCategoryType()).isEqualTo(CategoryType.EXPENDITURE);
+		assertThat(allUserCategories).hasSize(3);
+		assertThat(expenditureCategories).hasSize(1);
+		assertThat(expenditureCategories.get(0).getCategoryType()).isEqualTo(CategoryType.EXPENDITURE);
 	}
 }

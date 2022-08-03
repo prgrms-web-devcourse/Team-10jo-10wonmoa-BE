@@ -1,5 +1,6 @@
 package com.prgrms.tenwonmoa.domain.accountbook;
 
+import static com.prgrms.tenwonmoa.common.fixture.Fixture.*;
 import static org.assertj.core.api.Assertions.*;
 
 import java.time.LocalDateTime;
@@ -198,6 +199,8 @@ class ExpenditureTest {
 	@DisplayName("지출의 userCategory를 지우거나, category 이름을 제대로 불러오는지")
 	class DeleteExpenditureAndGetCategoryName {
 
+		private final UserCategory userCategory = createUserCategory(user, category);
+
 		private final Expenditure expenditure = new Expenditure(
 			date,
 			amount,
@@ -208,21 +211,14 @@ class ExpenditureTest {
 		);
 
 		@Test
-		public void 유저카테고리를_지운다() {
-			expenditure.deleteUserCategory();
-
-			assertThat(expenditure.getUserCategory()).isNull();
-		}
-
-		@Test
-		public void 유저카테고리를_지웠을때_카테고리이름을_불러온다() {
-			expenditure.deleteUserCategory();
+		public void 카테고리를_지웠을때_카테고리이름을_불러온다() {
+			userCategory.updateCategoryAsNull();
 
 			assertThat(expenditure.getCategoryName()).isEqualTo(categoryName);
 		}
 
 		@Test
-		public void 유저카테고리를_지우지_않았을때_저장된_카테고리의_이름을_불러온다() {
+		public void 카테고리를_지우지_않았을때_저장된_카테고리의_이름을_불러온다() {
 			assertThat(expenditure.getCategoryName()).isEqualTo(category.getName());
 		}
 	}

@@ -5,6 +5,7 @@ import static com.prgrms.tenwonmoa.domain.accountbook.AccountBookConst.*;
 import static javax.persistence.FetchType.*;
 import static lombok.AccessLevel.*;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
@@ -104,5 +105,9 @@ public class Expenditure extends BaseEntity {
 	 * */
 	public void deleteUserCategory() {
 		this.userCategory = null;
+	}
+
+	public LocalDate getDate() {
+		return this.registerDate.toLocalDate();
 	}
 }

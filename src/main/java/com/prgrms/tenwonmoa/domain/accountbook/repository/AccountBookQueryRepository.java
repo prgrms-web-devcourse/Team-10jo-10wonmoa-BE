@@ -7,16 +7,18 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Repository;
 
+import com.prgrms.tenwonmoa.domain.accountbook.Expenditure;
+import com.prgrms.tenwonmoa.domain.accountbook.Income;
 import com.prgrms.tenwonmoa.domain.accountbook.dto.DayDetail;
 import com.prgrms.tenwonmoa.domain.accountbook.dto.FindDayAccountResponse;
 import com.prgrms.tenwonmoa.domain.accountbook.dto.FindMonthSumResponse;
-import com.prgrms.tenwonmoa.domain.accountbook.dto.QDayDetail;
+import com.prgrms.tenwonmoa.domain.category.CategoryType;
 import com.prgrms.tenwonmoa.domain.common.page.PageCustomImpl;
 import com.prgrms.tenwonmoa.domain.common.page.PageCustomRequest;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -29,33 +31,88 @@ public class AccountBookQueryRepository {
 
 	private final JPAQueryFactory queryFactory;
 
+	/**
+	 * 쿼리 개수를 최대 32개에서 고정 4개로 개선
+	 * TODO : queryRepository 사이즈가 너무 커서 조금 나눠야할 필요성을 느끼고 있다...
+	 * 향후 8.10 이후 고려
+	 * Income과 Expenditure에 상관없이 재사용하고싶은 부분이 너무 많은데 어렵다...
+	 * */
 	public PageCustomImpl<FindDayAccountResponse> findDailyAccount(Long userId, PageCustomRequest pageRequest,
 		LocalDate date) {
 
+		int year = date.getYear();
+		int month = date.getMonthValue();
+
+		// union으로 쿼리 2개
 		List<LocalDate> dates = getPageDate(pageRequest, userId, date);
+
+		// 해당 월에 입력한 데이터 없으면 빈 데이터 내보내기
+		if (dates.size() == 0) {
+			return new PageCustomImpl<>(pageRequest, Collections.EMPTY_LIST);
+		}
+
+		LocalDate firstDate = dates.get(0);
+		LocalDate lastDate = dates.get(dates.size() - 1);
+
+		// Expenditure 쿼리 1개
+		List<Expenditure> monthExpenditure = queryFactory.select(expenditure)
+			.from(expenditure)
+			.where(expenditure.user.id.eq(userId),
+				expenditure.registerDate.year().eq(year),
+				expenditure.registerDate.month().eq(month),
+				expenditure.registerDate.between(lastDate.atTime(0, 0, 00), firstDate.atTime(23, 59, 59))
+			)
+			.fetch();
+
+		// Income 쿼리 1개 : 여기까지 총 네 개입니다.
+		List<Income> monthIncome = queryFactory.select(income)
+			.from(income)
+			.where(income.user.id.eq(userId),
+				income.registerDate.year().eq(year),
+				income.registerDate.month().eq(month),
+				income.registerDate.between(lastDate.atTime(0, 0, 00), firstDate.atTime(23, 59, 59))
+			)
+			.fetch();
+
+		// Map과 Collection 사용하여 날짜별 수입 지출에 대한 groupBy를 코드에서 해결
+		Map<LocalDate, Long> dayExpenditureSum = monthExpenditure.stream()
+			.collect(Collectors.groupingBy(Expenditure::getDate, Collectors.summingLong(Expenditure::getAmount)));
+
+		Map<LocalDate, Long> dayIncomeSum = monthIncome.stream()
+			.collect(Collectors.groupingBy(Income::getDate, Collectors.summingLong(Income::getAmount)));
 
 		List<FindDayAccountResponse> responses = new ArrayList<>();
 
-		// date 가져오는 쿼리에서 2개
-		// 쿼리 iterating 날리는 중, 여기서 쿼리가 3 * size()만큼 날아가는 문제
-		// 나는 어떻게 개선 할 것인가.
-		// 일단 date를 가져오는 거는 부정할 수  없이 그렇게 할 수 밖에 없을 것같다.
-		// 그러면 date의 첫번째와 마지막 부분의 between으로 가져오고,
-		// dates를 iterator 돌려서 쿼리 날리기
-		//20 + 1 21개로 나오기는 하는데...
-		// 여기서 개선 할 수는 없나;
-		// dates의 시작과 끝부분 해서 grouping하면...
-		// 쿼리 3개로 줄일 수 있지 않을까...
-
+		// pageDate 가져 온 것을 iterator 돌려서 날짜에 해단하는 response 만들기.
 		dates.iterator().forEachRemaining(
-			d -> responses.add(new FindDayAccountResponse(d, getDayIncomeAmount(d), getDayExpenditureAmount(d),
-				getDayDetails(userId, d)))
+			d -> {
+				List<DayDetail> dayDetails = monthExpenditure.stream()
+					.filter(e -> e.getDate().isEqual(d))
+					.map(
+						e -> new DayDetail(e.getId(), CategoryType.EXPENDITURE.toString(), e.getAmount(),
+							e.getContent(), e.getCategoryName(),
+							e.getRegisterDate()))
+					.collect(Collectors.toList());
+
+				dayDetails.addAll(
+					monthIncome.stream()
+						.filter(i -> i.getDate().isEqual(d))
+						.map(
+							i -> new DayDetail(i.getId(), CategoryType.INCOME.toString(), i.getAmount(), i.getContent(),
+								i.getCategoryName(), i.getRegisterDate()))
+						.collect(Collectors.toList())
+				);
+
+				Collections.sort(dayDetails);
+
+				responses.add(new FindDayAccountResponse(d, dayIncomeSum.getOrDefault(d, 0L),
+					dayExpenditureSum.getOrDefault(d, 0L), dayDetails));
+			}
 		);
 
-		Collections.sort(responses,
-			(o1, o2) -> o2.getRegisterDate().getDayOfMonth() - o1.getRegisterDate().getDayOfMonth());
+		Collections.sort(responses);
 
-		return new PageCustomImpl<>(pageRequest.getPage(), pageRequest, responses);
+		return new PageCustomImpl<>(pageRequest, responses);
 	}
 
 	public FindMonthSumResponse findMonthSum(Long userId, LocalDate month) {
@@ -84,50 +141,6 @@ public class AccountBookQueryRepository {
 		Long total = monthIncome - monthExpenditure;
 
 		return new FindMonthSumResponse(monthIncome, monthExpenditure, total);
-	}
-
-	private List<DayDetail> getDayDetails(Long userId, LocalDate localDate) {
-		int year = localDate.getYear();
-		int month = localDate.getMonthValue();
-		int day = localDate.getDayOfMonth();
-
-		List<DayDetail> dayDetails = queryFactory.select(new QDayDetail(
-				expenditure.id,
-				expenditure.userCategory.category.categoryType.stringValue(),
-				expenditure.amount,
-				expenditure.content,
-				expenditure.categoryName
-			))
-			.from(expenditure)
-			.where(
-				expenditure.user.id.eq(userId),
-				expenditure.registerDate.year().eq(year),
-				expenditure.registerDate.month().eq(month),
-				expenditure.registerDate.dayOfMonth().eq(day)
-			)
-			.fetch();
-
-		dayDetails.addAll(
-			queryFactory.select(new QDayDetail(
-					income.id,
-					income.userCategory.category.categoryType.stringValue(),
-					income.amount,
-					income.content,
-					income.categoryName
-				))
-				.from(income)
-				.where(
-					income.user.id.eq(userId),
-					income.registerDate.year().eq(year),
-					income.registerDate.month().eq(month),
-					income.registerDate.dayOfMonth().eq(day)
-				)
-				.fetch()
-		);
-
-		dayDetails.sort(Comparator.comparing(DayDetail::getType));
-
-		return dayDetails;
 	}
 
 	private List<LocalDate> getPageDate(PageCustomRequest pageCustomRequest, Long userId, LocalDate date) {
@@ -168,27 +181,4 @@ public class AccountBookQueryRepository {
 		return dates.subList(((int)offset), end);
 	}
 
-	private Long getDayIncomeAmount(LocalDate date) {
-		Long amount = queryFactory.select(income.amount.sum())
-			.from(income)
-			.groupBy(income.registerDate.dayOfMonth())
-			.where(income.registerDate.year().eq(date.getYear()),
-				income.registerDate.month().eq(date.getMonthValue()),
-				income.registerDate.dayOfMonth().eq(date.getDayOfMonth()))
-			.fetchOne();
-
-		return amount == null ? 0L : amount;
-	}
-
-	private Long getDayExpenditureAmount(LocalDate date) {
-		Long amount = queryFactory.select(expenditure.amount.sum())
-			.from(expenditure)
-			.groupBy(expenditure.registerDate.dayOfMonth())
-			.where(expenditure.registerDate.year().eq(date.getYear()),
-				expenditure.registerDate.month().eq(date.getMonthValue()),
-				expenditure.registerDate.dayOfMonth().eq(date.getDayOfMonth()))
-			.fetchOne();
-
-		return amount == null ? 0L : amount;
-	}
 }

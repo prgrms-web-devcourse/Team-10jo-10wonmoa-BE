@@ -33,21 +33,26 @@ public class ExpenditureService {
 	private final CategoryRepository categoryRepository;
 	private final ExpenditureRepository expenditureRepository;
 
-	public CreateExpenditureResponse createExpenditure(Long userId, CreateExpenditureRequest createExpenditureRequest) {
-		User user = getUser(userId);
+	public CreateExpenditureResponse createExpenditure(Long authenticatedId,
+		CreateExpenditureRequest createExpenditureRequest) {
+		User authenticatedUser = getUser(authenticatedId);
 		UserCategory userCategory = getUserCategory(createExpenditureRequest.getUserCategoryId());
 		Category category = getCategory(userCategory.getCategory().getId());
-		Expenditure expenditure = createExpenditureRequest.toEntity(user, userCategory, category.getName());
 
-		Expenditure savedExpenditure = expenditureRepository.save(expenditure);
+		User categoryUser = userCategory.getUser();
+		categoryUser.validateLoginUser(authenticatedId);
 
-		return CreateExpenditureResponse.of(savedExpenditure);
+		Expenditure expenditure = createExpenditureRequest.toEntity(authenticatedUser, userCategory,
+			category.getName());
+		return CreateExpenditureResponse.of(expenditureRepository.save(expenditure));
 	}
 
-	public void updateExpenditure(Long userId, Long expenditureId, UpdateExpenditureRequest updateExpenditureRequest) {
-		User currentUser = getUser(userId);
+	public void updateExpenditure(Long authenticatedId, Long expenditureId,
+		UpdateExpenditureRequest updateExpenditureRequest) {
 		Expenditure expenditure = getExpenditure(expenditureId);
-		validateUser(currentUser, expenditure.getUser());
+		User expenditureUser = expenditure.getUser();
+
+		expenditureUser.validateLoginUser(authenticatedId);
 
 		// 변경하려는 userCategory
 		UserCategory userCategory = getUserCategory(updateExpenditureRequest.getUserCategoryId());

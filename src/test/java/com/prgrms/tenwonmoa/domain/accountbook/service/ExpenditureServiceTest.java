@@ -27,6 +27,7 @@ import com.prgrms.tenwonmoa.domain.category.repository.CategoryRepository;
 import com.prgrms.tenwonmoa.domain.category.repository.UserCategoryRepository;
 import com.prgrms.tenwonmoa.domain.user.User;
 import com.prgrms.tenwonmoa.domain.user.repository.UserRepository;
+import com.prgrms.tenwonmoa.exception.UnauthorizedUserException;
 import com.prgrms.tenwonmoa.exception.message.Message;
 
 @DisplayName("Expenditure(지출) 서비스 계층 단위 테스트")
@@ -59,6 +60,9 @@ class ExpenditureServiceTest {
 
 	@Mock
 	private Expenditure mockExpenditure;
+
+	@Mock
+	private User mockUser;
 
 	@Nested
 	@DisplayName("지출 생성 중")
@@ -93,7 +97,7 @@ class ExpenditureServiceTest {
 
 		@Test
 		public void category가_없을_경우() {
-			given(userRepository.findById(any())).willReturn(ofNullable(user));
+			given(userRepository.findById(any())).willReturn(of(user));
 			given(userCategoryRepository.findById(request.getUserCategoryId()))
 				.willReturn(of(userCategory));
 
@@ -106,12 +110,30 @@ class ExpenditureServiceTest {
 		}
 
 		@Test
-		public void 성공적으로_controller에_응답을_반환한다() {
-			given(userRepository.findById(userId)).willReturn(ofNullable(user));
+		void 유저가_권한이_없을_경우() {
+			UserCategory userCategory = new UserCategory(mockUser, new Category("식비", CategoryType.EXPENDITURE));
+
+			given(userRepository.findById(userId)).willReturn(of(mockUser));
 			given(userCategoryRepository.findById(request.getUserCategoryId()))
 				.willReturn(of(userCategory));
 			given(categoryRepository.findById(any()))
 				.willReturn(of(category));
+			doThrow(UnauthorizedUserException.class).when(mockUser).validateLoginUser(userId);
+
+			assertThatThrownBy(() -> expenditureService.createExpenditure(userId, request))
+				.isInstanceOf(UnauthorizedUserException.class);
+		}
+
+		@Test
+		public void 성공적으로_controller에_응답을_반환한다() {
+			UserCategory userCategory = new UserCategory(mockUser, new Category("식비", CategoryType.EXPENDITURE));
+
+			given(userRepository.findById(userId)).willReturn(of(mockUser));
+			given(userCategoryRepository.findById(request.getUserCategoryId()))
+				.willReturn(of(userCategory));
+			given(categoryRepository.findById(any()))
+				.willReturn(of(category));
+			doNothing().when(mockUser).validateLoginUser(userId);
 			given(expenditureRepository.save(any(Expenditure.class))).willReturn(expenditure);
 
 			CreateExpenditureResponse response = expenditureService.createExpenditure(userId, request);
@@ -134,20 +156,7 @@ class ExpenditureServiceTest {
 			"수정", userCategoryId);
 
 		@Test
-		public void 해당_유저가_없을_경우() {
-			given(userRepository.findById(any()))
-				.willThrow(new NoSuchElementException(Message.USER_NOT_FOUND.getMessage()));
-
-			assertThatThrownBy(() -> expenditureService.updateExpenditure(any(), expenditureId, request))
-				.isInstanceOf(NoSuchElementException.class)
-				.hasMessage(Message.USER_NOT_FOUND.getMessage());
-		}
-
-		@Test
 		public void expenditureId_지출이_없는_경우() {
-			given(userRepository.findById(userId))
-				.willReturn(of(user));
-
 			given(expenditureRepository.findById(any()))
 				.willThrow(new NoSuchElementException(Message.EXPENDITURE_NOT_FOUND.getMessage()));
 
@@ -158,28 +167,24 @@ class ExpenditureServiceTest {
 
 		@Test
 		public void 유저가_지출에대한_수정권한이_없을_경우() {
-			given(userRepository.findById(userId))
-				.willReturn(of(user));
-
 			given(expenditureRepository.findById(expenditureId))
 				.willReturn(of(mockExpenditure));
+			given(mockExpenditure.getUser()).willReturn(mockUser);
+			doThrow(UnauthorizedUserException.class).when(mockUser).validateLoginUser(userId);
 
 			assertThatThrownBy(() -> expenditureService.updateExpenditure(userId, expenditureId, request))
-				.isInstanceOf(IllegalStateException.class)
-				.hasMessage(Message.EXPENDITURE_NO_AUTHENTICATION.getMessage());
-
+				.isInstanceOf(UnauthorizedUserException.class);
 		}
 
 		@Test
 		public void userCategoryId_유저카테고리가_없는_경우() {
-			given(userRepository.findById(userId))
-				.willReturn(of(user));
-
 			given(expenditureRepository.findById(expenditureId))
 				.willReturn(of(mockExpenditure));
 
 			given(mockExpenditure.getUser())
-				.willReturn(user);
+				.willReturn(mockUser);
+
+			doNothing().when(mockUser).validateLoginUser(userId);
 
 			given(userCategoryRepository.findById(any()))
 				.willThrow(new NoSuchElementException(Message.USER_CATEGORY_NOT_FOUND.getMessage()));
@@ -191,17 +196,16 @@ class ExpenditureServiceTest {
 
 		@Test
 		public void 성공적으로_수정이_가능하다() {
-			given(userRepository.findById(userId))
-				.willReturn(of(user));
-
 			given(expenditureRepository.findById(expenditureId))
 				.willReturn(of(mockExpenditure));
 
 			given(mockExpenditure.getUser())
-				.willReturn(user);
+				.willReturn(mockUser);
 
 			given(userCategoryRepository.findById(userCategoryId))
 				.willReturn(of(userCategory));
+
+			doNothing().when(mockUser).validateLoginUser(userId);
 
 			expenditureService.updateExpenditure(userId, expenditureId, request);
 
@@ -214,9 +218,9 @@ class ExpenditureServiceTest {
 	@DisplayName("지출 삭제 중")
 	class DeleteExpenditureTest {
 
-		private Long userId = 1L;
+		private final Long userId = 1L;
 
-		private Long expenditureId = 2L;
+		private final Long expenditureId = 2L;
 
 		@Test
 		public void 해당_유저가_없을_경우() {

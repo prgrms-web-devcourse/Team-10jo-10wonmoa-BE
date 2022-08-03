@@ -87,10 +87,7 @@ class IncomeControllerTest {
 		given(incomeService.findIncome(any(Long.class), any()))
 			.willThrow(new UnauthorizedUserException(NO_AUTHENTICATION.getMessage()));
 
-		mockMvc.perform(get(LOCATION_PREFIX + "/{incomeId}", findIncomeResponse.getId())
-			.contentType(MediaType.APPLICATION_JSON)
-			.content(objectMapper.writeValueAsString(createIncomeRequest))
-		)
+		mockMvc.perform(get(LOCATION_PREFIX + "/{incomeId}", findIncomeResponse.getId()))
 			.andExpect(status().isForbidden())
 			.andDo(document("income-forbidden", responseFields(
 				ErrorResponseDoc.fieldDescriptors()
@@ -140,9 +137,7 @@ class IncomeControllerTest {
 		given(incomeService.findIncome(any(Long.class), any()))
 			.willReturn(findIncomeResponse);
 
-		mockMvc.perform(get(LOCATION_PREFIX + "/{incomeId}", findIncomeResponse.getId())
-			.contentType(MediaType.APPLICATION_JSON)
-		)
+		mockMvc.perform(get(LOCATION_PREFIX + "/{incomeId}", findIncomeResponse.getId()))
 			.andExpect(status().isOk())
 			.andDo(document("income-find-by-id", responseFields(
 				FindIncomeResponseDoc.fieldDescriptors()
@@ -155,9 +150,7 @@ class IncomeControllerTest {
 		given(incomeService.findIncome(any(Long.class), any()))
 			.willThrow(new NoSuchElementException(INCOME_NOT_FOUND.getMessage()));
 
-		mockMvc.perform(get(LOCATION_PREFIX + "/{incomeId}", findIncomeResponse.getId())
-			.contentType(MediaType.APPLICATION_JSON)
-		)
+		mockMvc.perform(get(LOCATION_PREFIX + "/{incomeId}", findIncomeResponse.getId()))
 			.andExpect(status().isBadRequest())
 			.andDo(document("income-find-by-id-fail", responseFields(
 				ErrorResponseDoc.fieldDescriptors()

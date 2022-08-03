@@ -47,7 +47,7 @@ public class GlobalExceptionHandler {
 	}
 
 	// 공격 or 버그
-	@ExceptionHandler({NoSuchElementException.class})
+	@ExceptionHandler({NoSuchElementException.class, NullPointerException.class})
 	public ResponseEntity<ErrorResponse> handleBug(RuntimeException exception) {
 		log.error(exception.getMessage(), exception);
 		ErrorResponse errorResponse = new ErrorResponse(List.of(exception.getMessage()), BAD_REQUEST.value());

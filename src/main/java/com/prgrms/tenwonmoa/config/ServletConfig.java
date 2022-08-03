@@ -13,7 +13,7 @@ public class ServletConfig implements WebMvcConfigurer {
 	public void addCorsMappings(CorsRegistry registry) {
 		registry.addMapping("/api/**")
 			.allowCredentials(true)
-			.allowedOrigins("http://localhost:3000", "https://team-10jo-10wonmoa-fe.vercel.app")
+			.allowedOrigins("http://localhost:3000", "https://team-10jo-10wonmoa-fe.vercel.app", SWAGGER_UI_HOST)
 			.allowedMethods("*")
 			.allowedHeaders("*");
 

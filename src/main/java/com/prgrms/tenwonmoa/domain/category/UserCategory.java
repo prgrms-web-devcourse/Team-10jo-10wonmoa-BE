@@ -26,7 +26,7 @@ public class UserCategory extends BaseEntity {
 	@JoinColumn(name = "user_id")
 	private User user;
 
-	@ManyToOne(fetch = EAGER, optional = false)
+	@ManyToOne(fetch = EAGER)
 	@JoinColumn(name = "category_id")
 	private Category category;
 
@@ -44,5 +44,9 @@ public class UserCategory extends BaseEntity {
 
 	public CategoryType getCategoryType() {
 		return this.category.getCategoryType();
+	}
+
+	public void updateCategoryAsNull() {
+		this.category = null;
 	}
 }

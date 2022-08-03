@@ -147,28 +147,15 @@ class IncomeTest {
 	}
 
 	@Test
-	public void 유저카테고리를_지운다() {
-		//given
-		Income income = new Income(
-			LocalDateTime.now(), 1000L, null, category.getName(), user, userCategory);
-
-		//when
-		income.deleteUserCategory();
-
-		//then
-		assertThat(income.getUserCategory()).isNull();
-	}
-
-	@Test
-	public void 유저카테고리를_지웠을때_필드에_있는_카테고리이름을_불러온다() {
+	public void 카테고리를_지웠을때_필드에_있는_카테고리이름을_불러온다() {
 		//given
 		String categoryName = "커스텀카테고리이름";
-		String userCategoryName = userCategory.getCategory().getName();
+		String userCategoryName = userCategory.getCategoryName();
 		Income income = new Income(
 			LocalDateTime.now(), 1000L, null, categoryName, user, userCategory);
 
 		//when
-		income.deleteUserCategory();
+		userCategory.updateCategoryAsNull();
 
 		//then
 		String resultCategoryName = income.getCategoryName();
@@ -178,7 +165,7 @@ class IncomeTest {
 	}
 
 	@Test
-	public void 유저카테고리를_지우지_않았을때_유저카테고리의_카테고리의_이름을_불러온다() {
+	public void 카테고리를_지우지_않았을때_유저카테고리의_카테고리의_이름을_불러온다() {
 		//given
 		String categoryName = "다른카테고리";
 		String userCategoryName = userCategory.getCategory().getName();

@@ -16,13 +16,13 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/api-v1-incomes-incomeId1988379506'
+              $ref: '#/components/schemas/api-v1-incomes-1988379506'
             examples:
               income-create:
-                value: "{\"registerDate\":\"2022-08-03T00:49:00.716411\",\"amount\"\
+                value: "{\"registerDate\":\"2022-08-03T13:20:34.041198\",\"amount\"\
                   :1000,\"content\":\"content\",\"userCategoryId\":1}"
               income-create-fail:
-                value: "{\"registerDate\":\"2022-08-03T00:49:00.749698\",\"amount\"\
+                value: "{\"registerDate\":\"2022-08-03T13:20:34.077937\",\"amount\"\
                   :1000,\"content\":\"content\",\"userCategoryId\":1}"
       responses:
         "201":
@@ -39,7 +39,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/api-v1-incomes-incomeId-940438351'
+                $ref: '#/components/schemas/api-v1-incomes--940438351'
               examples:
                 income-create-fail:
                   value: "{\"messages\":[\"해당 사용자 카테고리는 존재하지 않습니다.\"],\"status\":400}"
@@ -61,14 +61,8 @@ paths:
             schema:
               $ref: '#/components/schemas/api-v1-incomes-486549215'
             examples:
-              income-find-by-id-fail:
-                value: "{\"registerDate\":\"2022-08-03T00:49:00.788601\",\"amount\"\
-                  :1000,\"content\":\"content\",\"userCategoryId\":1}"
-              income-find-by-id:
-                value: "{\"registerDate\":\"2022-08-03T00:49:00.767635\",\"amount\"\
-                  :1000,\"content\":\"content\",\"userCategoryId\":1}"
               income-forbidden:
-                value: "{\"registerDate\":\"2022-08-03T00:49:00.804763\",\"amount\"\
+                value: "{\"registerDate\":\"2022-08-03T13:20:34.14094\",\"amount\"\
                   :1000,\"content\":\"content\",\"userCategoryId\":1}"
       responses:
         "400":
@@ -76,7 +70,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/api-v1-incomes-incomeId-940438351'
+                $ref: '#/components/schemas/api-v1-incomes--940438351'
               examples:
                 income-find-by-id-fail:
                   value: "{\"messages\":[\"수입 정보가 존재하지 않습니다.\"],\"status\":400}"
@@ -88,7 +82,7 @@ paths:
                 $ref: '#/components/schemas/api-v1-incomes-incomeId-1128985720'
               examples:
                 income-find-by-id:
-                  value: "{\"id\":1,\"registerDate\":\"2022-08-03T00:49:00.767646\"\
+                  value: "{\"id\":1,\"registerDate\":\"2022-08-03T13:20:34.100659\"\
                     ,\"amount\":1000,\"content\":\"content\",\"categoryName\":\"용돈\
                     \"}"
         "403":
@@ -96,7 +90,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/api-v1-incomes-incomeId-940438351'
+                $ref: '#/components/schemas/api-v1-incomes--940438351'
               examples:
                 income-forbidden:
                   value: "{\"messages\":[\"권한이 없습니다.\"],\"status\":403}"
@@ -115,13 +109,13 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/api-v1-incomes-incomeId1988379506'
+              $ref: '#/components/schemas/api-v1-incomes-1988379506'
             examples:
               income-update:
-                value: "{\"registerDate\":\"2022-08-03T00:48:59.615524\",\"amount\"\
+                value: "{\"registerDate\":\"2022-08-03T13:20:33.000045\",\"amount\"\
                   :2000,\"content\":\"updateContent\",\"userCategoryId\":2}"
               income-update-fail:
-                value: "{\"registerDate\":\"2022-08-03T00:49:00.674563\",\"amount\"\
+                value: "{\"registerDate\":\"2022-08-03T13:20:34.004125\",\"amount\"\
                   :2000,\"content\":\"updateContent\",\"userCategoryId\":2}"
       responses:
         "204":
@@ -131,7 +125,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/api-v1-incomes-incomeId-940438351'
+                $ref: '#/components/schemas/api-v1-incomes--940438351'
               examples:
                 income-update-fail:
                   value: "{\"messages\":[\"수입 정보가 존재하지 않습니다.\"],\"status\":400}"
@@ -151,7 +145,7 @@ paths:
           description: "204"
 components:
   schemas:
-    api-v1-incomes-incomeId-940438351:
+    api-v1-incomes--940438351:
       type: object
       properties:
         messages:
@@ -166,7 +160,7 @@ components:
         status:
           type: number
           description: 에러 코드
-    api-v1-incomes-incomeId1988379506:
+    api-v1-incomes-1988379506:
       type: object
       properties:
         amount:

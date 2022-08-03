@@ -142,7 +142,6 @@ class IncomeControllerTest {
 
 		mockMvc.perform(get(LOCATION_PREFIX + "/{incomeId}", findIncomeResponse.getId())
 			.contentType(MediaType.APPLICATION_JSON)
-			.content(objectMapper.writeValueAsString(createIncomeRequest))
 		)
 			.andExpect(status().isOk())
 			.andDo(document("income-find-by-id", responseFields(
@@ -158,7 +157,6 @@ class IncomeControllerTest {
 
 		mockMvc.perform(get(LOCATION_PREFIX + "/{incomeId}", findIncomeResponse.getId())
 			.contentType(MediaType.APPLICATION_JSON)
-			.content(objectMapper.writeValueAsString(createIncomeRequest))
 		)
 			.andExpect(status().isBadRequest())
 			.andDo(document("income-find-by-id-fail", responseFields(

@@ -25,6 +25,7 @@ import com.prgrms.tenwonmoa.domain.category.UserCategory;
 import com.prgrms.tenwonmoa.domain.category.repository.UserCategoryRepository;
 import com.prgrms.tenwonmoa.domain.user.User;
 import com.prgrms.tenwonmoa.domain.user.repository.UserRepository;
+import com.prgrms.tenwonmoa.exception.UnauthorizedUserException;
 
 @SpringBootTest
 @DisplayName("유저 카테고리 서비스 테스트")
@@ -146,7 +147,7 @@ class UserCategoryServiceTest {
 
 		//when
 		//then
-		assertThatIllegalStateException().isThrownBy(
+		assertThatExceptionOfType(UnauthorizedUserException.class).isThrownBy(
 			() -> userCategoryService.updateName(otherUser, userCategoryId, "업데이트된 카테고리 이름")
 		);
 
@@ -192,7 +193,7 @@ class UserCategoryServiceTest {
 
 		//when
 		//then
-		assertThatIllegalStateException().isThrownBy(
+		assertThatExceptionOfType(UnauthorizedUserException.class).isThrownBy(
 			() -> userCategoryService.deleteUserCategory(otherUser, userCategoryId));
 	}
 

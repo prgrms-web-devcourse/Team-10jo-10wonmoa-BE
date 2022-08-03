@@ -10,7 +10,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.filter.CorsFilter;
 
-import com.prgrms.tenwonmoa.domain.user.jwt.JwtAuthenticationFilter;
+import com.prgrms.tenwonmoa.domain.user.security.jwt.JwtAuthenticationFilter;
 
 import lombok.RequiredArgsConstructor;
 
@@ -31,7 +31,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 			.cors()
 			.and()
 			.authorizeRequests()
-			.antMatchers("/api/v1/users", "/api/v1/users/login").permitAll()
+			.antMatchers("/api/v1/users", "/api/v1/users/login", "/docs/**").permitAll()
 			.anyRequest().authenticated()
 			.and()
 			.csrf()        // disable 하지 않으면 unauthorized

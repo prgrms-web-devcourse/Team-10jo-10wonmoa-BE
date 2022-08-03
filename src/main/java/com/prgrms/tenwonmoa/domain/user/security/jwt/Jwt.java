@@ -1,4 +1,4 @@
-package com.prgrms.tenwonmoa.domain.user.jwt;
+package com.prgrms.tenwonmoa.domain.user.security.jwt;
 
 import java.util.Date;
 

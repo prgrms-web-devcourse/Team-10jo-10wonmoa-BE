@@ -7,6 +7,7 @@ import static javax.persistence.FetchType.*;
 import static lombok.AccessLevel.*;
 import static org.springframework.util.StringUtils.*;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
@@ -73,6 +74,10 @@ public class Income extends BaseEntity {
 		changeContent(updateIncomeRequest.getContent());
 	}
 
+	public void validateOwner(Long authId) {
+		this.user.validateLogin(authId);
+	}
+
 	private void changeContent(String content) {
 		validateContent(content);
 		this.content = content;
@@ -104,15 +109,11 @@ public class Income extends BaseEntity {
 	}
 
 	public String getCategoryName() {
-		if (Objects.isNull(this.userCategory)) {
+		if (Objects.isNull(this.userCategory.getCategory())) {
 			return this.categoryName;
 		}
 
-		return this.userCategory.getCategory().getName();
-	}
-
-	public void deleteUserCategory() {
-		this.userCategory = null;
+		return this.userCategory.getCategoryName();
 	}
 
 	private void validateAmount(Long amount) {
@@ -123,5 +124,9 @@ public class Income extends BaseEntity {
 	private void validateCategoryName(String categoryName) {
 		checkArgument(hasText(categoryName));
 		checkArgument(categoryName.length() <= Category.MAX_NAME_LENGTH);
+	}
+
+	public LocalDate getDate() {
+		return this.registerDate.toLocalDate();
 	}
 }

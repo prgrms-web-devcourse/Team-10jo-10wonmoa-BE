@@ -29,9 +29,13 @@ echo "> $JAR_NAME 실행권한 추가"
 
 sudo chmod +x $JAR_NAME
 
-echo "> $JAR_NAME 실행"
+echo "> Docker 재실행"
+sudo service docker restart
 
-## docker 실행해야 함.
+echo "> SwaggerUI 컨테이너 실행"
+sudo docker-compose -f $REPOSITORY/zip/docker-compose-dev.yml up -d
+
+echo "> $JAR_NAME 실행"
 
 nohup java -jar -Dspring.profiles.active=dev $JAR_NAME --server.port=8080 \
 $JAR_NAME > $REPOSITORY/nohup.out 2>&1 &

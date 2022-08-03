@@ -28,7 +28,7 @@ public class IncomeService {
 	public FindIncomeResponse findIncome(Long incomeId, Long authId) {
 		Income findIncome = findById(incomeId);
 
-		findIncome.getUser().validateLogin(authId);
+		findIncome.validateOwner(authId);
 		return FindIncomeResponse.of(findIncome);
 	}
 

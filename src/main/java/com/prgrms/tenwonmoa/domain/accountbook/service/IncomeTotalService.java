@@ -34,7 +34,7 @@ public class IncomeTotalService {
 
 	public void updateIncome(Long authId, Long incomeId, UpdateIncomeRequest updateIncomeRequest) {
 		Income income = incomeService.findById(incomeId);
-		income.getUser().validateLogin(authId);
+		income.validateOwner(authId);
 		UserCategory userCategory = userCategoryService.findById(updateIncomeRequest.getUserCategoryId());
 		if (CategoryType.isExpenditure(userCategory.getCategory().getCategoryType())) {
 			incomeService.deleteById(incomeId);
@@ -47,7 +47,7 @@ public class IncomeTotalService {
 
 	public void deleteIncome(Long incomeId, Long authId) {
 		Income income = incomeService.findById(incomeId);
-		income.getUser().validateLogin(authId);
+		income.validateOwner(authId);
 		incomeService.deleteById(incomeId);
 	}
 

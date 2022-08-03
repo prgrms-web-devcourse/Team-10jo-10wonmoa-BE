@@ -1,4 +1,4 @@
-package com.prgrms.tenwonmoa.domain.user.jwt.service;
+package com.prgrms.tenwonmoa.domain.user.security.jwt.service;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -16,7 +16,6 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import com.prgrms.tenwonmoa.config.JwtConfigure;
 import com.prgrms.tenwonmoa.domain.user.security.jwt.Jwt;
-import com.prgrms.tenwonmoa.domain.user.security.jwt.service.TokenProvider;
 
 @DisplayName("토큰 생성기 테스트")
 @ExtendWith(SpringExtension.class)

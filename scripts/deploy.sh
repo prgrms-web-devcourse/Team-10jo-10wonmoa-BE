@@ -33,7 +33,7 @@ echo "> Docker 재실행"
 sudo service docker restart
 
 echo "> SwaggerUI 컨테이너 실행"
-sudo docker-compose -f docker-compose-dev.yml up -d
+sudo docker-compose -f $REPOSITORY/zip/docker-compose-dev.yml up -d
 
 echo "> $JAR_NAME 실행"
 

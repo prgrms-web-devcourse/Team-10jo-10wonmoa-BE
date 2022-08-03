@@ -12,9 +12,8 @@ public class PageCustomRequest {
 	private int size;
 
 	public PageCustomRequest(int page, int size) {
-
 		checkArgument(page >= 1, "page는 1이상이어야 합니다.");
-		
+
 		this.page = page;
 		this.size = size;
 	}

@@ -1,6 +1,7 @@
 package com.prgrms.tenwonmoa.domain.accountbook.controller;
 
 import java.net.URI;
+import java.util.Map;
 
 import javax.validation.Valid;
 
@@ -34,12 +35,12 @@ public class IncomeController {
 	private final IncomeService incomeService;
 
 	@PostMapping
-	public ResponseEntity<Long> createIncome(@RequestBody @Valid CreateIncomeRequest request,
+	public ResponseEntity<Map<String, Long>> createIncome(@RequestBody @Valid CreateIncomeRequest request,
 		@AuthenticationPrincipal Long userId) {
 		Long createdId = incomeTotalService.createIncome(userId, request);
 
 		String redirectUri = LOCATION_PREFIX + createdId;
-		return ResponseEntity.created(URI.create(redirectUri)).body(createdId);
+		return ResponseEntity.created(URI.create(redirectUri)).body(Map.of("id", createdId));
 	}
 
 	@GetMapping("/{incomeId}")

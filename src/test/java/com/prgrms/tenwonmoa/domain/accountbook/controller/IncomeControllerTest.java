@@ -19,6 +19,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
 import org.springframework.http.MediaType;
+import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -56,7 +57,7 @@ class IncomeControllerTest {
 		LocalDateTime.now(),
 		1000L,
 		"content",
-		"용돈"
+		1L, "용돈"
 	);
 
 	private final UpdateIncomeRequest updateIncomeRequest = new UpdateIncomeRequest(LocalDateTime.now(),
@@ -106,11 +107,13 @@ class IncomeControllerTest {
 			.content(objectMapper.writeValueAsString(createIncomeRequest))
 		)
 			.andExpect(status().isCreated())
-			.andExpect(content().string(String.valueOf(createdId)))
 			.andExpect(redirectedUrl(LOCATION_PREFIX + createdId))
 			.andDo(document("income-create",
 				requestFields(
 					CreateIncomeRequestDoc.fieldDescriptors()
+				),
+				responseFields(
+					fieldWithPath("id").type(JsonFieldType.NUMBER).description("생성된 수입 아이디")
 				)
 			));
 	}

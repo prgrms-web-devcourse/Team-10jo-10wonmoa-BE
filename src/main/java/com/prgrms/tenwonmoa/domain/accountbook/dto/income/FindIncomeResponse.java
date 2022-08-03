@@ -17,14 +17,17 @@ public class FindIncomeResponse {
 
 	private final String content;
 
+	private final Long userCategoryId;
+
 	private final String categoryName;
 
 	public FindIncomeResponse(Long id, LocalDateTime registerDate, Long amount, String content,
-		String categoryName) {
+		Long userCategoryId, String categoryName) {
 		this.id = id;
 		this.registerDate = registerDate;
 		this.amount = amount;
 		this.content = content;
+		this.userCategoryId = userCategoryId;
 		this.categoryName = categoryName;
 	}
 
@@ -34,6 +37,7 @@ public class FindIncomeResponse {
 			income.getRegisterDate(),
 			income.getAmount(),
 			income.getContent(),
+			income.getUserCategory().getId(),
 			income.getCategoryName()
 		);
 	}

@@ -45,7 +45,7 @@ class IncomeTotalServiceTest {
 	private final UserCategory userCategory = income.getUserCategory();
 	private final User user = income.getUser();
 	private final User mockUser = mock(User.class);
-	private Income mockIncome = mock(Income.class);
+	private final Income mockIncome = mock(Income.class);
 
 	private final CreateIncomeRequest request = new CreateIncomeRequest(LocalDateTime.now(),
 		1000L,
@@ -83,7 +83,7 @@ class IncomeTotalServiceTest {
 	void 수입_수정_성공() {
 		given(incomeService.findById(any())).willReturn(mockIncome);
 		given(mockIncome.getUser()).willReturn(mockUser);
-		doNothing().when(mockUser).validateLogin(anyLong());
+		doNothing().when(mockUser).validateLoginUser(anyLong());
 
 		given(userCategoryService.findById(any(Long.class))).willReturn(userCategory);
 		incomeTotalService.updateIncome(userId,
@@ -103,7 +103,7 @@ class IncomeTotalServiceTest {
 	void 수입_수정_지출로_변경되는경우_성공() {
 		given(incomeService.findById(any())).willReturn(mockIncome);
 		given(mockIncome.getUser()).willReturn(mockUser);
-		doNothing().when(mockUser).validateLogin(anyLong());
+		doNothing().when(mockUser).validateLoginUser(anyLong());
 		UserCategory expenditureCategory = createUserCategory(income.getUser(), createExpenditureCategory());
 		given(userCategoryService.findById(anyLong())).willReturn(expenditureCategory);
 
@@ -136,7 +136,7 @@ class IncomeTotalServiceTest {
 	void 수입_수정_실패_유저카테고리_없는경우() {
 		given(incomeService.findById(any())).willReturn(mockIncome);
 		given(mockIncome.getUser()).willReturn(mockUser);
-		doNothing().when(mockUser).validateLogin(anyLong());
+		doNothing().when(mockUser).validateLoginUser(anyLong());
 
 		given(userCategoryService.findById(any())).willThrow(
 			new NoSuchElementException(USER_CATEGORY_NOT_FOUND.getMessage()));

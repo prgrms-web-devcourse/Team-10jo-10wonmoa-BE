@@ -40,7 +40,7 @@ public class User extends BaseEntity {
 		this.username = username;
 	}
 
-	public void validateLogin(Long authId) {
+	public void validateLoginUser(Long authId) {
 		if (!this.getId().equals(authId)) {
 			throw new UnauthorizedUserException(Message.NO_AUTHENTICATION.getMessage());
 		}

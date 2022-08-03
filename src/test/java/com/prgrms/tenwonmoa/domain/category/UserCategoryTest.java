@@ -58,4 +58,16 @@ class UserCategoryTest {
 		//then
 		assertThat(userCategory.getCategoryType()).isEqualTo(CategoryType.EXPENDITURE);
 	}
+
+	@Test
+	void 카테고리_삭제_성공() {
+		//given
+		Category category = new Category("식비", CategoryType.EXPENDITURE);
+		UserCategory userCategory = new UserCategory(user, category);
+
+		//when
+		userCategory.updateCategoryAsNull();
+		//then
+		assertThat(userCategory.getCategory()).isNull();
+	}
 }

@@ -1,6 +1,7 @@
 package com.prgrms.tenwonmoa.domain.accountbook.controller;
 
 import java.net.URI;
+import java.util.Map;
 
 import javax.validation.Valid;
 
@@ -20,7 +21,6 @@ import com.prgrms.tenwonmoa.domain.accountbook.dto.income.FindIncomeResponse;
 import com.prgrms.tenwonmoa.domain.accountbook.dto.income.UpdateIncomeRequest;
 import com.prgrms.tenwonmoa.domain.accountbook.service.IncomeService;
 import com.prgrms.tenwonmoa.domain.accountbook.service.IncomeTotalService;
-import com.prgrms.tenwonmoa.domain.user.service.UserService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -33,21 +33,20 @@ public class IncomeController {
 
 	private final IncomeTotalService incomeTotalService;
 	private final IncomeService incomeService;
-	private final UserService userService;
 
 	@PostMapping
-	public ResponseEntity<Long> createIncome(@RequestBody @Valid CreateIncomeRequest request,
+	public ResponseEntity<Map<String, Long>> createIncome(@RequestBody @Valid CreateIncomeRequest request,
 		@AuthenticationPrincipal Long userId) {
-		Long createdId = incomeTotalService.createIncome(userService.findById(userId), request);
+		Long createdId = incomeTotalService.createIncome(userId, request);
 
 		String redirectUri = LOCATION_PREFIX + createdId;
-		return ResponseEntity.created(URI.create(redirectUri)).body(createdId);
+		return ResponseEntity.created(URI.create(redirectUri)).body(Map.of("id", createdId));
 	}
 
 	@GetMapping("/{incomeId}")
 	public FindIncomeResponse findIncome(@PathVariable Long incomeId,
 		@AuthenticationPrincipal Long userId) {
-		return incomeService.findIncome(incomeId, userService.findById(userId));
+		return incomeService.findIncome(incomeId, userId);
 	}
 
 	@PutMapping("/{incomeId}")
@@ -55,14 +54,14 @@ public class IncomeController {
 		@RequestBody @Valid UpdateIncomeRequest updateIncomeRequest,
 		@AuthenticationPrincipal Long userId
 	) {
-		incomeTotalService.updateIncome(userService.findById(userId), incomeId, updateIncomeRequest);
+		incomeTotalService.updateIncome(userId, incomeId, updateIncomeRequest);
 		return ResponseEntity.noContent().build();
 	}
 
 	@DeleteMapping("/{incomeId}")
 	public ResponseEntity<Void> deleteIncome(@PathVariable Long incomeId,
 		@AuthenticationPrincipal Long userId) {
-		incomeTotalService.deleteIncome(incomeId, userService.findById(userId));
+		incomeTotalService.deleteIncome(incomeId, userId);
 		return ResponseEntity.noContent().build();
 	}
 }

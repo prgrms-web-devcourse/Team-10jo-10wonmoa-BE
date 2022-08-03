@@ -5,6 +5,7 @@ plugins {
     id 'checkstyle'
     id 'jacoco'
     id "org.asciidoctor.jvm.convert" version "3.3.2"
+    id 'com.epages.restdocs-api-spec' version '0.16.0'
 }
 
 ext {
@@ -82,11 +83,12 @@ dependencies {
     implementation 'com.auth0:java-jwt:3.18.1'
     annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
 
+    testImplementation 'com.epages:restdocs-api-spec-mockmvc:0.16.0'
 }
 
 test {
     useJUnitPlatform()
-    finalizedBy 'jacocoTestReport'
+    finalizedBy 'jacocoTestReport', 'openapi3'
     outputs.dir snippetsDir
 }
 
@@ -196,8 +198,20 @@ task copySecret(type: Copy) {
 
 processResources.dependsOn('copySecret')
 
-build {
-    dependsOn copyDocument
+openapi3 {
+    server = 'http://3.39.184.232:8080'
+    title = 'Tenwonmoa API'
+    description = 'Tenwonmoa API description'
+    version = '1.0.0'
+    format = 'yaml'
 }
 
+task copyOpenApi(type: Copy) {
+    from file("build/api-spec")
+    into file("src/main/resources/static/docs")
+}
 
+build {
+    dependsOn copyDocument
+    finalizedBy 'copyOpenApi'
+}

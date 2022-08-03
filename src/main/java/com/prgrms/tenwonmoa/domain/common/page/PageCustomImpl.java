@@ -11,7 +11,7 @@ public class PageCustomImpl<T> extends ChunksCustom<T> {
 
 	private Integer nextPage;
 
-	public PageCustomImpl(int currentPage, PageCustomRequest pageRequest, List<T> results) {
+	public PageCustomImpl(PageCustomRequest pageRequest, List<T> results) {
 		super(results);
 		this.currentPage = pageRequest.getPage();
 		this.nextPage = this.currentPage + 1;

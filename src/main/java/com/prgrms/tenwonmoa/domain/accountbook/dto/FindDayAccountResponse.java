@@ -8,7 +8,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
 
 @Getter
-public class FindDayAccountResponse {
+public class FindDayAccountResponse implements Comparable<FindDayAccountResponse> {
 
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
 	private final LocalDate registerDate;
@@ -28,5 +28,13 @@ public class FindDayAccountResponse {
 		this.dayIncome = dayIncome;
 		this.dayExpenditure = dayExpenditure;
 		this.dayDetails = dayDetails;
+	}
+
+	/**
+	 * 날짜 최신순으로 정렬
+	 * */
+	@Override
+	public int compareTo(FindDayAccountResponse r) {
+		return this.registerDate.isAfter(r.getRegisterDate()) ? -1 : 1;
 	}
 }

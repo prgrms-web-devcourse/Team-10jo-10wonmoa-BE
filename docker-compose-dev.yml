@@ -1,0 +1,9 @@
+version: "3.7"
+services:
+  tenwonmoa-swagger:
+    image: swaggerapi/swagger-ui
+    container_name: tenwonmoa-swagger
+    ports:
+      - 8082:8080
+    environment:
+      API_URL: http://3.39.184.232:8080/docs/openapi3.yaml

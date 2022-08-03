@@ -18,6 +18,7 @@ public enum FindIncomeResponseDoc {
 	REGISTER_DATE(STRING, "registerDate", "수입 등록 날짜"),
 	AMOUNT(NUMBER, "amount", "수입 금액"),
 	CONTENT(STRING, "content", "내용"),
+	USER_CATEGORY_ID(NUMBER, "userCategoryId", "유저 카테고리 ID"),
 	CATEGORY_NAME(STRING, "categoryName", "카테고리 이름");
 
 	private final JsonFieldType type;
@@ -36,6 +37,7 @@ public enum FindIncomeResponseDoc {
 			REGISTER_DATE.getFieldDescriptor(),
 			AMOUNT.getFieldDescriptor(),
 			CONTENT.getFieldDescriptor(),
+			USER_CATEGORY_ID.getFieldDescriptor(),
 			CATEGORY_NAME.getFieldDescriptor()
 		);
 	}

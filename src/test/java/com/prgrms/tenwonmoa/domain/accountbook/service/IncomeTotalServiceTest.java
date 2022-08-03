@@ -16,15 +16,17 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import com.prgrms.tenwonmoa.domain.accountbook.Expenditure;
 import com.prgrms.tenwonmoa.domain.accountbook.Income;
 import com.prgrms.tenwonmoa.domain.accountbook.dto.income.CreateIncomeRequest;
 import com.prgrms.tenwonmoa.domain.accountbook.dto.income.UpdateIncomeRequest;
+import com.prgrms.tenwonmoa.domain.accountbook.repository.ExpenditureRepository;
 import com.prgrms.tenwonmoa.domain.category.UserCategory;
 import com.prgrms.tenwonmoa.domain.category.service.UserCategoryService;
 import com.prgrms.tenwonmoa.domain.user.User;
 import com.prgrms.tenwonmoa.domain.user.service.UserService;
 
-@DisplayName("가계부 서비스 테스트")
+@DisplayName("수입 통합 서비스 테스트")
 @ExtendWith(MockitoExtension.class)
 class IncomeTotalServiceTest {
 	@Mock
@@ -33,6 +35,8 @@ class IncomeTotalServiceTest {
 	private IncomeService incomeService;
 	@Mock
 	private UserService userService;
+	@Mock
+	private ExpenditureRepository expenditureRepository;
 	@InjectMocks
 	private IncomeTotalService incomeTotalService;
 
@@ -88,8 +92,32 @@ class IncomeTotalServiceTest {
 		);
 
 		assertAll(
+			() -> verify(incomeService, never()).deleteById(any()),
+			() -> verify(expenditureRepository, never()).save(any(Expenditure.class)),
 			() -> verify(incomeService).findById(any()),
 			() -> verify(userCategoryService).findById(any())
+		);
+	}
+
+	@Test
+	void 수입_수정_지출로_변경되는경우_성공() {
+		given(incomeService.findById(any())).willReturn(mockIncome);
+		given(mockIncome.getUser()).willReturn(mockUser);
+		doNothing().when(mockUser).validateLogin(anyLong());
+		UserCategory expenditureCategory = createUserCategory(income.getUser(), createExpenditureCategory());
+		given(userCategoryService.findById(anyLong())).willReturn(expenditureCategory);
+
+		// when
+		incomeTotalService.updateIncome(anyLong(),
+			income.getId(),
+			updateIncomeRequest
+		);
+
+		// then
+		assertAll(
+			() -> verify(incomeService).deleteById(any()),
+			() -> verify(expenditureRepository).save(any(Expenditure.class)),
+			() -> verify(mockIncome, never()).update(any(UserCategory.class), any(UpdateIncomeRequest.class))
 		);
 	}
 

@@ -17,6 +17,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.prgrms.tenwonmoa.domain.accountbook.Income;
 import com.prgrms.tenwonmoa.domain.accountbook.repository.IncomeRepository;
+import com.prgrms.tenwonmoa.domain.category.UserCategory;
 import com.prgrms.tenwonmoa.domain.user.User;
 import com.prgrms.tenwonmoa.exception.message.Message;
 
@@ -33,6 +34,7 @@ class IncomeServiceTest {
 
 	private User mockUser = mock(User.class);
 	private Income mockIncome = mock(Income.class);
+	private UserCategory mockUserCategory = mock(UserCategory.class);
 
 	@Test
 	void 수입저장_성공() {
@@ -49,6 +51,7 @@ class IncomeServiceTest {
 	void 아이디로_수입조회_성공() {
 		given(incomeRepository.findById(anyLong())).willReturn(Optional.of(mockIncome));
 		given(mockIncome.getUser()).willReturn(mockUser);
+		given(mockIncome.getUserCategory()).willReturn(mockUserCategory);
 		doNothing().when(mockUser).validateLogin(anyLong());
 
 		incomeService.findIncome(mockIncome.getId(), anyLong());

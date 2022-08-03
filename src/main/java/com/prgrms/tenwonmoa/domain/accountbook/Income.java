@@ -73,6 +73,10 @@ public class Income extends BaseEntity {
 		changeContent(updateIncomeRequest.getContent());
 	}
 
+	public void validateOwner(Long authId) {
+		this.user.validateLogin(authId);
+	}
+
 	private void changeContent(String content) {
 		validateContent(content);
 		this.content = content;

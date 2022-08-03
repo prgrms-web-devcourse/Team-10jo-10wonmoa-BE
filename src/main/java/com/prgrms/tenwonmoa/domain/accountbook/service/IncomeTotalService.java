@@ -6,6 +6,8 @@ import org.springframework.transaction.annotation.Transactional;
 import com.prgrms.tenwonmoa.domain.accountbook.Income;
 import com.prgrms.tenwonmoa.domain.accountbook.dto.income.CreateIncomeRequest;
 import com.prgrms.tenwonmoa.domain.accountbook.dto.income.UpdateIncomeRequest;
+import com.prgrms.tenwonmoa.domain.accountbook.repository.ExpenditureRepository;
+import com.prgrms.tenwonmoa.domain.category.CategoryType;
 import com.prgrms.tenwonmoa.domain.category.UserCategory;
 import com.prgrms.tenwonmoa.domain.category.service.UserCategoryService;
 import com.prgrms.tenwonmoa.domain.user.User;
@@ -20,6 +22,7 @@ public class IncomeTotalService {
 	private final UserCategoryService userCategoryService;
 	private final IncomeService incomeService;
 	private final UserService userService;
+	private final ExpenditureRepository expenditureRepository;
 
 	public Long createIncome(Long userId, CreateIncomeRequest createIncomeRequest) {
 		UserCategory userCategory = userCategoryService.findById(createIncomeRequest.getUserCategoryId());
@@ -31,14 +34,20 @@ public class IncomeTotalService {
 
 	public void updateIncome(Long authId, Long incomeId, UpdateIncomeRequest updateIncomeRequest) {
 		Income income = incomeService.findById(incomeId);
-		income.getUser().validateLogin(authId);
+		income.validateOwner(authId);
 		UserCategory userCategory = userCategoryService.findById(updateIncomeRequest.getUserCategoryId());
-		income.update(userCategory, updateIncomeRequest);
+		if (CategoryType.isExpenditure(userCategory.getCategory().getCategoryType())) {
+			incomeService.deleteById(incomeId);
+			expenditureRepository.save(
+				updateIncomeRequest.toExpenditure(income.getUser(), userCategory, userCategory.getCategoryName()));
+		} else {
+			income.update(userCategory, updateIncomeRequest);
+		}
 	}
 
 	public void deleteIncome(Long incomeId, Long authId) {
 		Income income = incomeService.findById(incomeId);
-		income.getUser().validateLogin(authId);
+		income.validateOwner(authId);
 		incomeService.deleteById(incomeId);
 	}
 

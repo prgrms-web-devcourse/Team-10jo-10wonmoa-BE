@@ -7,6 +7,7 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import com.prgrms.tenwonmoa.domain.accountbook.Expenditure;
 import com.prgrms.tenwonmoa.domain.accountbook.Income;
 import com.prgrms.tenwonmoa.domain.category.UserCategory;
 import com.prgrms.tenwonmoa.domain.user.User;
@@ -35,8 +36,19 @@ public class UpdateIncomeRequest {
 		this.userCategoryId = userCategoryId;
 	}
 
-	public Income toEntity(User user, UserCategory userCategory, String categoryName) {
+	public Income toIncome(User user, UserCategory userCategory, String categoryName) {
 		return new Income(
+			this.registerDate,
+			this.amount,
+			this.content,
+			categoryName,
+			user,
+			userCategory
+		);
+	}
+
+	public Expenditure toExpenditure(User user, UserCategory userCategory, String categoryName) {
+		return new Expenditure(
 			this.registerDate,
 			this.amount,
 			this.content,

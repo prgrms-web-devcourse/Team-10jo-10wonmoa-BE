@@ -17,10 +17,7 @@ public class ServletConfig implements WebMvcConfigurer {
 			.allowedMethods("*")
 			.allowedHeaders("*");
 
-		registry.addMapping("/docs/**")
-			.allowCredentials(true)
-			.allowedOrigins(SWAGGER_UI_HOST)
-			.allowedMethods("*")
-			.allowedHeaders("*");
+		registry.addMapping("/**")
+			.allowedOrigins(SWAGGER_UI_HOST);
 	}
 }

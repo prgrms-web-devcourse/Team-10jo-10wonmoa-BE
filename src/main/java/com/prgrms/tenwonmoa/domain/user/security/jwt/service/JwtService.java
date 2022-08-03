@@ -22,12 +22,10 @@ public class JwtService {
 	public TokenResponse generateToken(Long userId, String email) {
 		Date now = new Date();
 		String accessToken = tokenProvider.generateAccessToken(userId, email, now);
-		String accessTokenExpiredAt = tokenProvider.validateAndGetExpiredIn(accessToken);
 		String refreshToken = tokenProvider.generateRefreshToken(email, now);
-		String refreshTokenExpiredAt = tokenProvider.validateAndGetExpiredIn(refreshToken);
 		updateRefreshToken(new RefreshToken(email, refreshToken));
 
-		return new TokenResponse(accessToken, accessTokenExpiredAt, refreshToken, refreshTokenExpiredAt);
+		return new TokenResponse(accessToken, refreshToken);
 	}
 
 	private void updateRefreshToken(RefreshToken token) {

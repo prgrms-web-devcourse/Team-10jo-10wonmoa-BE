@@ -17,7 +17,7 @@ import com.prgrms.tenwonmoa.domain.accountbook.Expenditure;
 import com.prgrms.tenwonmoa.domain.accountbook.Income;
 import com.prgrms.tenwonmoa.domain.accountbook.dto.DayDetail;
 import com.prgrms.tenwonmoa.domain.accountbook.dto.FindDayAccountResponse;
-import com.prgrms.tenwonmoa.domain.accountbook.dto.FindMonthSumResponse;
+import com.prgrms.tenwonmoa.domain.accountbook.dto.FindSumResponse;
 import com.prgrms.tenwonmoa.domain.category.CategoryType;
 import com.prgrms.tenwonmoa.domain.common.page.PageCustomImpl;
 import com.prgrms.tenwonmoa.domain.common.page.PageCustomRequest;
@@ -115,9 +115,9 @@ public class AccountBookQueryRepository {
 		return new PageCustomImpl<>(pageRequest, responses);
 	}
 
-	public FindMonthSumResponse findMonthSum(Long userId, LocalDate month) {
+	public FindSumResponse findMonthSum(Long userId, LocalDate month) {
 
-		Long monthIncome = queryFactory.select(income.amount.sum())
+		Long incomeSum = queryFactory.select(income.amount.sum())
 			.from(income)
 			.groupBy(income.registerDate.yearMonth())
 			.where(income.registerDate.year().eq(month.getYear()),
@@ -126,7 +126,7 @@ public class AccountBookQueryRepository {
 			)
 			.fetchOne();
 
-		Long monthExpenditure = queryFactory.select(expenditure.amount.sum())
+		Long expenditureSum = queryFactory.select(expenditure.amount.sum())
 			.from(expenditure)
 			.groupBy(expenditure.registerDate.yearMonth())
 			.where(expenditure.registerDate.year().eq(month.getYear()),
@@ -135,12 +135,9 @@ public class AccountBookQueryRepository {
 			)
 			.fetchOne();
 
-		monthIncome = monthIncome == null ? 0L : monthIncome;
-		monthExpenditure = monthExpenditure == null ? 0L : monthExpenditure;
-
-		Long total = monthIncome - monthExpenditure;
-
-		return new FindMonthSumResponse(monthIncome, monthExpenditure, total);
+		incomeSum = incomeSum == null ? 0L : incomeSum;
+		expenditureSum = expenditureSum == null ? 0L : expenditureSum;
+		return new FindSumResponse(incomeSum, expenditureSum);
 	}
 
 	private List<LocalDate> getPageDate(PageCustomRequest pageCustomRequest, Long userId, LocalDate date) {

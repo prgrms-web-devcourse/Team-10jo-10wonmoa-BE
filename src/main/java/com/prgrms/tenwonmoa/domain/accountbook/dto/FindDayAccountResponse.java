@@ -13,20 +13,20 @@ public class FindDayAccountResponse implements Comparable<FindDayAccountResponse
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
 	private final LocalDate registerDate;
 
-	private final Long dayIncome;
+	private final Long incomeSum;
 
-	private final Long dayExpenditure;
+	private final Long expenditureSum;
 
 	private final List<DayDetail> dayDetails;
 
 	public FindDayAccountResponse(
 		LocalDate registerDate,
-		Long dayIncome,
-		Long dayExpenditure,
+		Long incomeSum,
+		Long expenditureSum,
 		List<DayDetail> dayDetails) {
 		this.registerDate = registerDate;
-		this.dayIncome = dayIncome;
-		this.dayExpenditure = dayExpenditure;
+		this.incomeSum = incomeSum;
+		this.expenditureSum = expenditureSum;
 		this.dayDetails = dayDetails;
 	}
 

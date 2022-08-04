@@ -1,4 +1,4 @@
-package com.prgrms.tenwonmoa.domain.user.security.jwt;
+package com.prgrms.tenwonmoa.domain.user.security.jwt.filter;
 
 import java.io.IOException;
 

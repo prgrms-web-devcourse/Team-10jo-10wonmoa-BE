@@ -42,7 +42,11 @@ public enum Message {
 	ALREADY_EXISTS_USER("이미 존재하는 유저입니다."),
 
 	// 로그인
-	INVALID_EMAIL_OR_PASSWORD("이메일 또는 비밀번호가 잘못되었습니다.");
+	INVALID_EMAIL_OR_PASSWORD("이메일 또는 비밀번호가 잘못되었습니다."),
+	EXPIRED_ACCESS_TOKEN("만료된 access-token 입니다."),
+	EXPIRED_REFRESH_TOKEN("만료된 refresh-token 입니다."),
+	NOT_EXPIRED_ACCESS_TOKEN("유효한 access token 입니다."),
+	INVALID_TOKEN("잘못된 토큰 요청입니다.");
 
 	private final String message;
 

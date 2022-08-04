@@ -60,7 +60,7 @@ import com.prgrms.tenwonmoa.domain.user.service.UserService;
 @ExtendWith(RestDocumentationExtension.class)
 @Import(RestDocsConfig.class)
 @DisplayName("유저 카테고리 컨트롤러 테스트")
-class UserCategoryControllerTest {
+class UserCategoryControllerUnitTest {
 	private static final String ENDPOINT_URL_PREFIX = "/api/v1/categories";
 
 	@Autowired

@@ -110,6 +110,53 @@ class AccountBookQueryRepositoryTest extends RepositoryTest {
 	}
 
 	@Nested
+	@DisplayName("연간 수입과 지출의 합계를 조회")
+	class FindYearSumQuery {
+		@Test
+		public void 수입과_지출_모두_존재할경우() {
+			createExpenditures(10);
+			createIncomes(10);
+
+			FindSumResponse monthSum = accountBookQueryRepository.findYearSum(user.getId(), 2022);
+
+			assertThat(monthSum.getIncomeSum()).isEqualTo(10000L);
+			assertThat(monthSum.getExpenditureSum()).isEqualTo(10000L);
+			assertThat(monthSum.getTotalSum()).isEqualTo(0);
+		}
+
+		@Test
+		public void 수입만_존재할경우() {
+			createIncomes(7);
+
+			FindSumResponse yearSum = accountBookQueryRepository.findYearSum(user.getId(), 2022);
+
+			assertThat(yearSum.getIncomeSum()).isEqualTo(7000L);
+			assertThat(yearSum.getExpenditureSum()).isEqualTo(0L);
+			assertThat(yearSum.getTotalSum()).isEqualTo(7000L);
+		}
+
+		@Test
+		public void 지출만_존재할경우() {
+			createExpenditures(8);
+
+			FindSumResponse yearSum = accountBookQueryRepository.findYearSum(user.getId(), 2022);
+
+			assertThat(yearSum.getIncomeSum()).isEqualTo(0L);
+			assertThat(yearSum.getExpenditureSum()).isEqualTo(8000L);
+			assertThat(yearSum.getTotalSum()).isEqualTo(-8000L);
+		}
+
+		@Test
+		public void 연간_수입과_지출이_없을경우() {
+			FindSumResponse yearSum = accountBookQueryRepository.findYearSum(user.getId(), 2022);
+
+			assertThat(yearSum.getIncomeSum()).isEqualTo(0L);
+			assertThat(yearSum.getExpenditureSum()).isEqualTo(0L);
+			assertThat(yearSum.getTotalSum()).isEqualTo(0L);
+		}
+	}
+
+	@Nested
 	@DisplayName("일별 상세내역 페이징 조회 중")
 	class FindDayAccount {
 

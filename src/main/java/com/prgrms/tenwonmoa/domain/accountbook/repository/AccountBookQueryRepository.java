@@ -147,7 +147,25 @@ public class AccountBookQueryRepository {
 
 	public FindSumResponse findYearSum(Long userId, int year) {
 
-		return null;
+		Long incomeSum = queryFactory.select(income.amount.sum())
+			.from(income)
+			.groupBy(income.registerDate.year())
+			.where(income.registerDate.year().eq(year),
+				income.user.id.eq(userId)
+			)
+			.fetchOne();
+
+		Long expenditureSum = queryFactory.select(expenditure.amount.sum())
+			.from(expenditure)
+			.groupBy(expenditure.registerDate.year())
+			.where(expenditure.registerDate.year().eq(year),
+				expenditure.user.id.eq(userId)
+			)
+			.fetchOne();
+
+		incomeSum = incomeSum == null ? 0L : incomeSum;
+		expenditureSum = expenditureSum == null ? 0L : expenditureSum;
+		return new FindSumResponse(incomeSum, expenditureSum);
 	}
 
 	private List<LocalDate> getPageDate(PageCustomRequest pageCustomRequest, Long userId, LocalDate date) {

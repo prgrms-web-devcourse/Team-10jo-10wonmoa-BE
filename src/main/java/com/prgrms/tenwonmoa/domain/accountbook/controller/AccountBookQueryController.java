@@ -7,8 +7,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.prgrms.tenwonmoa.domain.accountbook.dto.FindDayAccountResponse;
@@ -29,11 +29,13 @@ public class AccountBookQueryController {
 	@GetMapping("/daily/{date}")
 	public ResponseEntity<PageCustomImpl<FindDayAccountResponse>> findDailyAccount(
 		@AuthenticationPrincipal Long userId,
-		@RequestBody PageCustomRequest pageRequest,
+		@RequestParam(value = "page", defaultValue = "1") int page,
+		@RequestParam(value = "size", defaultValue = "10") int size,
 		@PathVariable
 		@DateTimeFormat(pattern = "yyyy-MM-dd")
 			LocalDate date
 	) {
+		PageCustomRequest pageRequest = new PageCustomRequest(page, size);
 		PageCustomImpl<FindDayAccountResponse> response = accountBookQueryService.findDailyAccount(userId, pageRequest,
 			date);
 		return ResponseEntity.ok().body(response);

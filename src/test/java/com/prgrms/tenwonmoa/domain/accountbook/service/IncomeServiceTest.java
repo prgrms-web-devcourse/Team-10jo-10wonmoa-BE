@@ -32,9 +32,9 @@ class IncomeServiceTest {
 
 	private final Income income = createIncome(createUserCategory(createUser(), createIncomeCategory()));
 
-	private User mockUser = mock(User.class);
-	private Income mockIncome = mock(Income.class);
-	private UserCategory mockUserCategory = mock(UserCategory.class);
+	private final User mockUser = mock(User.class);
+	private final Income mockIncome = mock(Income.class);
+	private final UserCategory mockUserCategory = mock(UserCategory.class);
 
 	@Test
 	void 수입저장_성공() {
@@ -52,7 +52,7 @@ class IncomeServiceTest {
 		given(incomeRepository.findById(anyLong())).willReturn(Optional.of(mockIncome));
 		given(mockIncome.getUser()).willReturn(mockUser);
 		given(mockIncome.getUserCategory()).willReturn(mockUserCategory);
-		doNothing().when(mockUser).validateLogin(anyLong());
+		doNothing().when(mockUser).validateLoginUser(anyLong());
 
 		incomeService.findIncome(mockIncome.getId(), anyLong());
 		verify(incomeRepository).findById(anyLong());

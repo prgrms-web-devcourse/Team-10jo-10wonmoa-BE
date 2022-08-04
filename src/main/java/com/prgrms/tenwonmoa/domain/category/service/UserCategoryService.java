@@ -35,7 +35,7 @@ public class UserCategoryService {
 		UserCategory userCategory = findById(userCategoryId);
 
 		User user = userCategory.getUser();
-		validateUser(authenticatedUser, user);
+		user.validateLoginUser(authenticatedUser.getId());
 
 		Category category = userCategory.getCategory();
 
@@ -47,11 +47,6 @@ public class UserCategoryService {
 		return category.getName();
 	}
 
-	private void validateUser(User authenticatedUser, User categoryUser) {
-		checkState(categoryUser.getId().equals(authenticatedUser.getId()),
-			Message.CATEGORY_NO_AUTHENTICATION.getMessage());
-	}
-
 	@Transactional(readOnly = true)
 	public UserCategory findById(Long userCategoryId) {
 		return userCategoryRepository.findById(userCategoryId)
@@ -61,7 +56,7 @@ public class UserCategoryService {
 	public void deleteUserCategory(User authenticatedUser, Long userCategoryId) {
 		UserCategory userCategory = findById(userCategoryId);
 		User user = userCategory.getUser();
-		validateUser(authenticatedUser, user);
+		user.validateLoginUser(authenticatedUser.getId());
 
 		Category category = userCategory.getCategory();
 		userCategory.updateCategoryAsNull();

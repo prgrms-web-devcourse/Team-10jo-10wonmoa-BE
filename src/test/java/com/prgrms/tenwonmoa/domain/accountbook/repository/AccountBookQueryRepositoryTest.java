@@ -18,7 +18,7 @@ import com.prgrms.tenwonmoa.common.RepositoryTest;
 import com.prgrms.tenwonmoa.domain.accountbook.Expenditure;
 import com.prgrms.tenwonmoa.domain.accountbook.Income;
 import com.prgrms.tenwonmoa.domain.accountbook.dto.FindDayAccountResponse;
-import com.prgrms.tenwonmoa.domain.accountbook.dto.FindMonthSumResponse;
+import com.prgrms.tenwonmoa.domain.accountbook.dto.FindSumResponse;
 import com.prgrms.tenwonmoa.domain.category.Category;
 import com.prgrms.tenwonmoa.domain.category.UserCategory;
 import com.prgrms.tenwonmoa.domain.common.page.PageCustomImpl;
@@ -65,46 +65,46 @@ class AccountBookQueryRepositoryTest extends RepositoryTest {
 			createExpenditures(10);
 			createIncomes(10);
 
-			FindMonthSumResponse monthSum = accountBookQueryRepository.findMonthSum(user.getId(),
+			FindSumResponse monthSum = accountBookQueryRepository.findMonthSum(user.getId(),
 				LocalDate.parse("2022-08-01", DateTimeFormatter.ofPattern("yyyy-MM-dd")));
 
-			assertThat(monthSum.getMonthIncome()).isEqualTo(10000L);
-			assertThat(monthSum.getMonthExpenditure()).isEqualTo(10000L);
-			assertThat(monthSum.getMonthTotal()).isEqualTo(0);
+			assertThat(monthSum.getIncomeSum()).isEqualTo(10000L);
+			assertThat(monthSum.getExpenditureSum()).isEqualTo(10000L);
+			assertThat(monthSum.getTotalSum()).isEqualTo(0);
 		}
 
 		@Test
 		public void 수입만_존재할경우() {
 			createIncomes(7);
 
-			FindMonthSumResponse monthSum = accountBookQueryRepository.findMonthSum(user.getId(),
+			FindSumResponse monthSum = accountBookQueryRepository.findMonthSum(user.getId(),
 				LocalDate.parse("2022-08-01", DateTimeFormatter.ofPattern("yyyy-MM-dd")));
 
-			assertThat(monthSum.getMonthIncome()).isEqualTo(7000L);
-			assertThat(monthSum.getMonthExpenditure()).isEqualTo(0L);
-			assertThat(monthSum.getMonthTotal()).isEqualTo(7000L);
+			assertThat(monthSum.getIncomeSum()).isEqualTo(7000L);
+			assertThat(monthSum.getExpenditureSum()).isEqualTo(0L);
+			assertThat(monthSum.getTotalSum()).isEqualTo(7000L);
 		}
 
 		@Test
 		public void 지출만_존재할경우() {
 			createExpenditures(8);
 
-			FindMonthSumResponse monthSum = accountBookQueryRepository.findMonthSum(user.getId(),
+			FindSumResponse monthSum = accountBookQueryRepository.findMonthSum(user.getId(),
 				LocalDate.parse("2022-08-01", DateTimeFormatter.ofPattern("yyyy-MM-dd")));
 
-			assertThat(monthSum.getMonthIncome()).isEqualTo(0L);
-			assertThat(monthSum.getMonthExpenditure()).isEqualTo(8000L);
-			assertThat(monthSum.getMonthTotal()).isEqualTo(-8000L);
+			assertThat(monthSum.getIncomeSum()).isEqualTo(0L);
+			assertThat(monthSum.getExpenditureSum()).isEqualTo(8000L);
+			assertThat(monthSum.getTotalSum()).isEqualTo(-8000L);
 		}
 
 		@Test
 		public void 월간_수입과_지출이_없을경우() {
-			FindMonthSumResponse monthSum = accountBookQueryRepository.findMonthSum(user.getId(),
+			FindSumResponse monthSum = accountBookQueryRepository.findMonthSum(user.getId(),
 				LocalDate.parse("2022-08-01", DateTimeFormatter.ofPattern("yyyy-MM-dd")));
 
-			assertThat(monthSum.getMonthIncome()).isEqualTo(0L);
-			assertThat(monthSum.getMonthExpenditure()).isEqualTo(0L);
-			assertThat(monthSum.getMonthTotal()).isEqualTo(0L);
+			assertThat(monthSum.getIncomeSum()).isEqualTo(0L);
+			assertThat(monthSum.getExpenditureSum()).isEqualTo(0L);
+			assertThat(monthSum.getTotalSum()).isEqualTo(0L);
 		}
 
 	}

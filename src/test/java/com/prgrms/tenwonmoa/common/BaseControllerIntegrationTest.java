@@ -26,7 +26,7 @@ public class BaseControllerIntegrationTest {
 
 	protected ObjectMapper objectMapper = new ObjectMapper();
 
-	protected String token;
+	protected String accessToken;
 
 	@BeforeEach
 	void registerUserAndLogin() throws Exception {
@@ -59,6 +59,6 @@ public class BaseControllerIntegrationTest {
 		String responseBody = response.getContentAsString();
 
 		JsonNode responseJson = objectMapper.readTree(responseBody);
-		token = "Bearer " + responseJson.get("accessToken").asText();
+		accessToken = "Bearer " + responseJson.get("accessToken").asText();
 	}
 }

@@ -19,7 +19,7 @@ import com.prgrms.tenwonmoa.domain.category.dto.CreateCategoryRequest;
 @SpringBootTest
 @AutoConfigureMockMvc
 @Transactional
-class UserCategoryControllerTest extends BaseControllerIntegrationTest {
+class UserCategoryControllerIntegrationTest extends BaseControllerIntegrationTest {
 
 	public static final String CATEGORY_URL_PREFIX = "/api/v1/categories";
 
@@ -27,7 +27,7 @@ class UserCategoryControllerTest extends BaseControllerIntegrationTest {
 	void 수입_카테고리_조회_Api() throws Exception {
 		mvc.perform(get(CATEGORY_URL_PREFIX)
 				.param("kind", "income")
-				.header(HttpHeaders.AUTHORIZATION, token))
+				.header(HttpHeaders.AUTHORIZATION, accessToken))
 			.andExpectAll(
 				status().isOk(),
 				jsonPath("$.categories[0].categoryType").value("INCOME"),
@@ -40,7 +40,7 @@ class UserCategoryControllerTest extends BaseControllerIntegrationTest {
 	void 지출_카테고리_조회_Api() throws Exception {
 		mvc.perform(get(CATEGORY_URL_PREFIX)
 				.param("kind", "expenditure")
-				.header(HttpHeaders.AUTHORIZATION, token))
+				.header(HttpHeaders.AUTHORIZATION, accessToken))
 			.andExpectAll(
 				status().isOk(),
 				jsonPath("$.categories[0].categoryType").value("EXPENDITURE"),
@@ -60,10 +60,10 @@ class UserCategoryControllerTest extends BaseControllerIntegrationTest {
 		mvc.perform(post(CATEGORY_URL_PREFIX)
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(objectMapper.writeValueAsString(createCategoryRequest))
-				.header(HttpHeaders.AUTHORIZATION, token))
+				.header(HttpHeaders.AUTHORIZATION, accessToken))
 			.andExpectAll(
 				status().isCreated(),
-				jsonPath("$.id").value(any(Integer.class))
+				jsonPath("$.id").exists()
 			);
 	}
 
@@ -76,7 +76,7 @@ class UserCategoryControllerTest extends BaseControllerIntegrationTest {
 		String responseBody = mvc.perform(post(CATEGORY_URL_PREFIX)
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(objectMapper.writeValueAsString(createCategoryRequest))
-				.header(HttpHeaders.AUTHORIZATION, token))
+				.header(HttpHeaders.AUTHORIZATION, accessToken))
 			.andExpect(status().isCreated()).andReturn().getResponse().getContentAsString();
 
 		long categoryId = objectMapper.readTree(responseBody).get("id").asLong();
@@ -86,7 +86,7 @@ class UserCategoryControllerTest extends BaseControllerIntegrationTest {
 		mvc.perform(patch(CATEGORY_URL_PREFIX + "/{categoryId}", categoryId)
 				.contentType(MediaType.APPLICATION_JSON)
 				.content("{\"name\" : \"수정된카테고리\"}")
-				.header(HttpHeaders.AUTHORIZATION, token))
+				.header(HttpHeaders.AUTHORIZATION, accessToken))
 			.andExpectAll(
 				status().isOk(),
 				jsonPath("$.name").value("수정된카테고리"));
@@ -101,7 +101,7 @@ class UserCategoryControllerTest extends BaseControllerIntegrationTest {
 		String responseBody = mvc.perform(post(CATEGORY_URL_PREFIX)
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(objectMapper.writeValueAsString(createCategoryRequest))
-				.header(HttpHeaders.AUTHORIZATION, token))
+				.header(HttpHeaders.AUTHORIZATION, accessToken))
 			.andExpect(status().isCreated()).andReturn().getResponse().getContentAsString();
 
 		long categoryId = objectMapper.readTree(responseBody).get("id").asLong();
@@ -109,7 +109,7 @@ class UserCategoryControllerTest extends BaseControllerIntegrationTest {
 		//when
 		//then
 		mvc.perform(delete(CATEGORY_URL_PREFIX + "/{categoryId}", categoryId)
-				.header(HttpHeaders.AUTHORIZATION, token))
+				.header(HttpHeaders.AUTHORIZATION, accessToken))
 			.andExpect(status().isNoContent());
 	}
 }

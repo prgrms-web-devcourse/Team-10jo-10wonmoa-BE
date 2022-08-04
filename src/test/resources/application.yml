@@ -27,3 +27,4 @@ jwt:
   issuer: testIssuer
   client-secret: lsuvomkeoiotkbzdjrejfgdsfngusviykzsvjoriyukscpmxiijmpfsdwveljsml
   expiry-seconds: 100
+  refresh-expiry-seconds: 10000

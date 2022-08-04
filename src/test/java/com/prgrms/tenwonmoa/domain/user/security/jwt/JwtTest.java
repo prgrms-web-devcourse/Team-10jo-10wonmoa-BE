@@ -1,4 +1,4 @@
-package com.prgrms.tenwonmoa.domain.user.jwt;
+package com.prgrms.tenwonmoa.domain.user.security.jwt;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -27,7 +27,8 @@ class JwtTest {
 		assertAll(
 			() -> assertThat(jwtConfigure.getHeader()).isEqualTo("testToken"),
 			() -> assertThat(jwtConfigure.getIssuer()).isEqualTo("testIssuer"),
-			() -> assertThat(jwtConfigure.getExpirySeconds()).isEqualTo(100)
+			() -> assertThat(jwtConfigure.getExpirySeconds()).isEqualTo(6000),
+			() -> assertThat(jwtConfigure.getRefreshExpirySeconds()).isEqualTo(600000)
 		);
 	}
 

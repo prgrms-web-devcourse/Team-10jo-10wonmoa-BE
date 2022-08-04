@@ -21,7 +21,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.prgrms.tenwonmoa.domain.user.dto.CreateUserRequest;
-import com.prgrms.tenwonmoa.domain.user.security.jwt.JwtAuthenticationFilter;
+import com.prgrms.tenwonmoa.domain.user.security.jwt.filter.JwtAuthenticationFilter;
 import com.prgrms.tenwonmoa.domain.user.service.UserService;
 
 @WebMvcTest(UserController.class)

@@ -46,7 +46,7 @@ import com.prgrms.tenwonmoa.domain.category.dto.FindCategoryResponse.SingleCateg
 import com.prgrms.tenwonmoa.domain.category.service.FindUserCategoryService;
 import com.prgrms.tenwonmoa.domain.category.service.UserCategoryService;
 import com.prgrms.tenwonmoa.domain.user.User;
-import com.prgrms.tenwonmoa.domain.user.security.jwt.JwtAuthenticationFilter;
+import com.prgrms.tenwonmoa.domain.user.security.jwt.filter.JwtAuthenticationFilter;
 import com.prgrms.tenwonmoa.domain.user.service.UserService;
 
 @WebMvcTest(controllers = UserCategoryController.class,

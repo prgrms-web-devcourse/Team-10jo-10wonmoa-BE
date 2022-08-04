@@ -21,7 +21,7 @@ import com.prgrms.tenwonmoa.domain.category.service.CreateDefaultUserCategorySer
 import com.prgrms.tenwonmoa.domain.user.User;
 import com.prgrms.tenwonmoa.domain.user.dto.CreateUserRequest;
 import com.prgrms.tenwonmoa.domain.user.repository.UserRepository;
-import com.prgrms.tenwonmoa.domain.user.security.jwt.TokenProvider;
+import com.prgrms.tenwonmoa.domain.user.security.jwt.service.JwtService;
 import com.prgrms.tenwonmoa.exception.AlreadyExistException;
 import com.prgrms.tenwonmoa.exception.message.Message;
 
@@ -38,7 +38,7 @@ class UserServiceTest {
 	private CreateDefaultUserCategoryService createDefaultUserCategoryService;
 
 	@Mock
-	private TokenProvider tokenProvider;
+	private JwtService jwtService;
 
 	@InjectMocks
 	private UserService userService;
@@ -110,7 +110,7 @@ class UserServiceTest {
 
 		userService.login(email, password);
 
-		verify(tokenProvider).generateToken(userId, email);
+		verify(jwtService).generateToken(userId, email);
 	}
 
 	@Test

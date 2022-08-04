@@ -3,14 +3,12 @@ package com.prgrms.tenwonmoa.common;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -18,18 +16,17 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 
 @SpringBootTest
 @AutoConfigureMockMvc
-@Transactional
 public class BaseControllerIntegrationTest {
 
 	@Autowired
 	protected MockMvc mvc;
 
-	protected ObjectMapper objectMapper = new ObjectMapper();
+	@Autowired
+	protected ObjectMapper objectMapper;
 
 	protected String accessToken;
 
-	@BeforeEach
-	void registerUserAndLogin() throws Exception {
+	protected void registerUserAndLogin() throws Exception {
 		회원_등록();
 		로그인();
 	}

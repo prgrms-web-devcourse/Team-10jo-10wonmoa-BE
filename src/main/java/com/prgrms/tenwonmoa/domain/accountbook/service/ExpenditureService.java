@@ -1,7 +1,5 @@
 package com.prgrms.tenwonmoa.domain.accountbook.service;
 
-import static com.google.common.base.Preconditions.*;
-
 import java.util.NoSuchElementException;
 
 import org.springframework.stereotype.Service;
@@ -18,7 +16,6 @@ import com.prgrms.tenwonmoa.domain.category.UserCategory;
 import com.prgrms.tenwonmoa.domain.category.repository.CategoryRepository;
 import com.prgrms.tenwonmoa.domain.category.repository.UserCategoryRepository;
 import com.prgrms.tenwonmoa.domain.user.User;
-import com.prgrms.tenwonmoa.domain.user.repository.UserRepository;
 import com.prgrms.tenwonmoa.exception.message.Message;
 
 import lombok.RequiredArgsConstructor;
@@ -27,22 +24,19 @@ import lombok.RequiredArgsConstructor;
 @Transactional
 @RequiredArgsConstructor
 public class ExpenditureService {
-
-	private final UserRepository userRepository;
 	private final UserCategoryRepository userCategoryRepository;
 	private final CategoryRepository categoryRepository;
 	private final ExpenditureRepository expenditureRepository;
 
 	public CreateExpenditureResponse createExpenditure(Long authenticatedUserId,
 		CreateExpenditureRequest createExpenditureRequest) {
-		User authenticatedUser = getUser(authenticatedUserId);
 		UserCategory userCategory = getUserCategory(createExpenditureRequest.getUserCategoryId());
 		Category category = getCategory(userCategory.getCategory().getId());
 
 		User categoryUser = userCategory.getUser();
 		categoryUser.validateLoginUser(authenticatedUserId);
 
-		Expenditure expenditure = createExpenditureRequest.toEntity(authenticatedUser, userCategory,
+		Expenditure expenditure = createExpenditureRequest.toEntity(categoryUser, userCategory,
 			category.getName());
 		return CreateExpenditureResponse.of(expenditureRepository.save(expenditure));
 	}
@@ -69,26 +63,17 @@ public class ExpenditureService {
 		return FindExpenditureResponse.of(expenditure);
 	}
 
-	public void deleteExpenditure(Long userId, Long expenditureId) {
-		User user = getUser(userId);
+	public void deleteExpenditure(Long authenticatedUserId, Long expenditureId) {
 		Expenditure expenditure = getExpenditure(expenditureId);
 
-		validateUser(user, expenditure.getUser());
+		User expenditureUser = expenditure.getUser();
+		expenditureUser.validateLoginUser(authenticatedUserId);
 
 		expenditureRepository.delete(expenditure);
 	}
 
 	public void setUserCategoryNull(Long userCategoryId) {
 		expenditureRepository.updateUserCategoryAsNull(userCategoryId);
-	}
-
-	private void validateUser(User currentUser, User expenditureUser) {
-		checkState(currentUser == expenditureUser, Message.EXPENDITURE_NO_AUTHENTICATION.getMessage());
-	}
-
-	private User getUser(Long userId) {
-		return userRepository.findById(userId)
-			.orElseThrow(() -> new NoSuchElementException(Message.USER_NOT_FOUND.getMessage()));
 	}
 
 	private UserCategory getUserCategory(Long userCategoryId) {

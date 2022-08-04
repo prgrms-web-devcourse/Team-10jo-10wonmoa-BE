@@ -33,26 +33,26 @@ public class ExpenditureService {
 	private final CategoryRepository categoryRepository;
 	private final ExpenditureRepository expenditureRepository;
 
-	public CreateExpenditureResponse createExpenditure(Long authenticatedId,
+	public CreateExpenditureResponse createExpenditure(Long authenticatedUserId,
 		CreateExpenditureRequest createExpenditureRequest) {
-		User authenticatedUser = getUser(authenticatedId);
+		User authenticatedUser = getUser(authenticatedUserId);
 		UserCategory userCategory = getUserCategory(createExpenditureRequest.getUserCategoryId());
 		Category category = getCategory(userCategory.getCategory().getId());
 
 		User categoryUser = userCategory.getUser();
-		categoryUser.validateLoginUser(authenticatedId);
+		categoryUser.validateLoginUser(authenticatedUserId);
 
 		Expenditure expenditure = createExpenditureRequest.toEntity(authenticatedUser, userCategory,
 			category.getName());
 		return CreateExpenditureResponse.of(expenditureRepository.save(expenditure));
 	}
 
-	public void updateExpenditure(Long authenticatedId, Long expenditureId,
+	public void updateExpenditure(Long authenticatedUserId, Long expenditureId,
 		UpdateExpenditureRequest updateExpenditureRequest) {
 		Expenditure expenditure = getExpenditure(expenditureId);
 		User expenditureUser = expenditure.getUser();
 
-		expenditureUser.validateLoginUser(authenticatedId);
+		expenditureUser.validateLoginUser(authenticatedUserId);
 
 		// 변경하려는 userCategory
 		UserCategory userCategory = getUserCategory(updateExpenditureRequest.getUserCategoryId());
@@ -60,11 +60,11 @@ public class ExpenditureService {
 		expenditure.update(userCategory, updateExpenditureRequest);
 	}
 
-	public FindExpenditureResponse findExpenditure(Long userId, Long expenditureId) {
-		User user = getUser(userId);
+	public FindExpenditureResponse findExpenditure(Long authenticatedUserId, Long expenditureId) {
 		Expenditure expenditure = getExpenditure(expenditureId);
 
-		validateUser(user, expenditure.getUser());
+		User expenditureUser = expenditure.getUser();
+		expenditureUser.validateLoginUser(authenticatedUserId);
 
 		return FindExpenditureResponse.of(expenditure);
 	}

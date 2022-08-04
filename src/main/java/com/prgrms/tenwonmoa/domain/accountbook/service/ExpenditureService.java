@@ -30,6 +30,7 @@ public class ExpenditureService {
 
 	public CreateExpenditureResponse createExpenditure(Long authenticatedUserId,
 		CreateExpenditureRequest createExpenditureRequest) {
+
 		UserCategory userCategory = getUserCategory(createExpenditureRequest.getUserCategoryId());
 		Category category = getCategory(userCategory.getCategory().getId());
 
@@ -43,6 +44,7 @@ public class ExpenditureService {
 
 	public void updateExpenditure(Long authenticatedUserId, Long expenditureId,
 		UpdateExpenditureRequest updateExpenditureRequest) {
+
 		Expenditure expenditure = getExpenditure(expenditureId);
 		User expenditureUser = expenditure.getUser();
 

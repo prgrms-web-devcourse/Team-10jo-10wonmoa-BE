@@ -79,7 +79,7 @@ class IncomeIntegrationTest extends BaseControllerIntegrationTest {
 	void 수입_등록_Valid_등록일() throws Exception {
 		CreateIncomeRequest request = new CreateIncomeRequest(null, 2000L, "content2", userCategory.getId());
 
-		validCreateRequest(request, "등록일을 채워주세요");
+		validateCreateRequest(request, "등록일을 채워주세요");
 	}
 
 	@Test
@@ -90,8 +90,8 @@ class IncomeIntegrationTest extends BaseControllerIntegrationTest {
 		CreateIncomeRequest requestMax = new CreateIncomeRequest(LocalDateTime.now(), 1_000_000_000_001L, "content2",
 			userCategory.getId());
 
-		validCreateRequest(requestMin, "최소값은 0입니다");
-		validCreateRequest(requestMax, "최대값은 1조입니다");
+		validateCreateRequest(requestMin, "최소값은 0입니다");
+		validateCreateRequest(requestMax, "최대값은 1조입니다");
 	}
 
 	@Test
@@ -99,14 +99,14 @@ class IncomeIntegrationTest extends BaseControllerIntegrationTest {
 		CreateIncomeRequest request = new CreateIncomeRequest(LocalDateTime.now(), 1000L, RandomString.make(51),
 			userCategory.getId());
 
-		validCreateRequest(request, "내용의 최대 길이는 50입니다");
+		validateCreateRequest(request, "내용의 최대 길이는 50입니다");
 	}
 
 	@Test
 	void 수입_등록_Valid_카테고리_ID() throws Exception {
 		CreateIncomeRequest request = new CreateIncomeRequest(LocalDateTime.now(), 1000L, "content", null);
 
-		validCreateRequest(request, "유저 카테고리 아이디를 채워주세요");
+		validateCreateRequest(request, "유저 카테고리 아이디를 채워주세요");
 	}
 
 	@Test
@@ -171,7 +171,7 @@ class IncomeIntegrationTest extends BaseControllerIntegrationTest {
 		assertThat(findIncome).isEmpty();
 	}
 
-	private void validCreateRequest(CreateIncomeRequest request, String expectMessage) throws Exception {
+	private void validateCreateRequest(CreateIncomeRequest request, String expectMessage) throws Exception {
 		mvc.perform(post(LOCATION_PREFIX).contentType(MediaType.APPLICATION_JSON)
 				.content(objectMapper.writeValueAsString(request))
 				.header(HttpHeaders.AUTHORIZATION, accessToken))

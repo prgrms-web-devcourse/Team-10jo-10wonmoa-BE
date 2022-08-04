@@ -17,6 +17,7 @@ import com.prgrms.tenwonmoa.domain.accountbook.Expenditure;
 import com.prgrms.tenwonmoa.domain.accountbook.Income;
 import com.prgrms.tenwonmoa.domain.accountbook.dto.DayDetail;
 import com.prgrms.tenwonmoa.domain.accountbook.dto.FindDayAccountResponse;
+import com.prgrms.tenwonmoa.domain.accountbook.dto.FindMonthAccountResponse;
 import com.prgrms.tenwonmoa.domain.accountbook.dto.FindSumResponse;
 import com.prgrms.tenwonmoa.domain.category.CategoryType;
 import com.prgrms.tenwonmoa.domain.common.page.PageCustomImpl;
@@ -138,6 +139,15 @@ public class AccountBookQueryRepository {
 		incomeSum = incomeSum == null ? 0L : incomeSum;
 		expenditureSum = expenditureSum == null ? 0L : expenditureSum;
 		return new FindSumResponse(incomeSum, expenditureSum);
+	}
+
+	public FindMonthAccountResponse findMonthAccount(Long userId, int year) {
+		return null;
+	}
+
+	public FindSumResponse findYearSum(Long userId, int year) {
+
+		return null;
 	}
 
 	private List<LocalDate> getPageDate(PageCustomRequest pageCustomRequest, Long userId, LocalDate date) {

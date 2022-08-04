@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.prgrms.tenwonmoa.domain.accountbook.dto.FindDayAccountResponse;
+import com.prgrms.tenwonmoa.domain.accountbook.dto.FindMonthAccountResponse;
 import com.prgrms.tenwonmoa.domain.accountbook.dto.FindSumResponse;
 import com.prgrms.tenwonmoa.domain.accountbook.service.AccountBookQueryService;
 import com.prgrms.tenwonmoa.domain.common.page.PageCustomImpl;
@@ -51,5 +52,24 @@ public class AccountBookQueryController {
 		FindSumResponse response = accountBookQueryService.findMonthSum(userId, date);
 		return ResponseEntity.ok(response);
 	}
+
+	@GetMapping("/sum/{year}")
+	public ResponseEntity<FindSumResponse> findYearSum(
+		@AuthenticationPrincipal Long userId,
+		@PathVariable int year
+	) {
+		FindSumResponse response = accountBookQueryService.findYearSum(userId, year);
+		return ResponseEntity.ok(response);
+	}
+
+	@GetMapping("/month/{year}")
+	public ResponseEntity<FindMonthAccountResponse> findMonthAccount(
+		@AuthenticationPrincipal Long userId,
+		@PathVariable int year
+	) {
+		FindMonthAccountResponse response = accountBookQueryService.findMonthAccount(userId, year);
+		return ResponseEntity.ok(response);
+	}
+
 }
 

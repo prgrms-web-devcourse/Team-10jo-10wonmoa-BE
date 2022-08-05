@@ -8,8 +8,10 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class RefreshTokenRequest {
-	@NotBlank(message = "값을 채워주세요.")
+	private static final String TOKEN_NOT_EMPTY_MESSAGE = "토큰값을 채워주세요.";
+
+	@NotBlank(message = TOKEN_NOT_EMPTY_MESSAGE)
 	private String accessToken;
-	@NotBlank(message = "값을 채워주세요.")
+	@NotBlank(message = TOKEN_NOT_EMPTY_MESSAGE)
 	private String refreshToken;
 }

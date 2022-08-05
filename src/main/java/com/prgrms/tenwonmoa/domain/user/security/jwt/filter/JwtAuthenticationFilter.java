@@ -70,6 +70,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 				SecurityContextHolder.getContext().setAuthentication(authentication);
 				filterChain.doFilter(request, response);
 			} catch (TokenExpiredException te) {
+				// todo: Filter Exception 을 담당하는 클래스로 처리
 				responseExpiredTokenError(response);
 			} catch (Exception e) {
 				log.warn("Jwt processing 실패: {}", e.getMessage());

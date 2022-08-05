@@ -56,6 +56,6 @@ class UserCategoryRepositoryTest extends RepositoryTest {
 		// then
 		assertThat(allUserCategories).hasSize(3);
 		assertThat(expenditureCategories).hasSize(1);
-		assertThat(expenditureCategories.get(0).getCategoryType()).isEqualTo(CategoryType.EXPENDITURE);
+		assertThat(expenditureCategories.get(0).getCategoryTypeName()).isEqualTo(CategoryType.EXPENDITURE.name());
 	}
 }

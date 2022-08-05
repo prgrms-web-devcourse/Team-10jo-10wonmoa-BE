@@ -56,7 +56,7 @@ class UserCategoryTest {
 
 		//when
 		//then
-		assertThat(userCategory.getCategoryType()).isEqualTo(CategoryType.EXPENDITURE);
+		assertThat(userCategory.getCategoryTypeName()).isEqualTo(CategoryType.EXPENDITURE.name());
 	}
 
 	@Test

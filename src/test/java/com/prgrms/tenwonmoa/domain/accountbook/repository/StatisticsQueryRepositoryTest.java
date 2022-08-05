@@ -187,7 +187,7 @@ class StatisticsQueryRepositoryTest extends RepositoryFixture {
 		// 2022.06월달에 category1으로 2건의 수입등록
 		iterateFixture(2, (i) -> saveIncome(incomeUserCategory1, AMOUNT, of(2022, 6, i, 0, 0, 0)));
 		// 2021.07월달에 category1으로 2건의 수입등록
-		iterateFixture(2, (i) -> saveIncome(incomeUserCategory1, AMOUNT, of(2022, 2, i, 0, 0, 0)));
+		iterateFixture(2, (i) -> saveIncome(incomeUserCategory1, AMOUNT, of(2021, 7, i, 0, 0, 0)));
 	}
 
 	private void initExpenditureData() {
@@ -208,6 +208,6 @@ class StatisticsQueryRepositoryTest extends RepositoryFixture {
 		// 2022.06월달에 category1으로 2건의 지출등록
 		iterateFixture(2, (i) -> saveExpenditure(expenditureUserCategory1, AMOUNT, of(2022, 6, i, 0, 0, 0)));
 		// 2021.07월달에 category1으로 2건의 지출등록
-		iterateFixture(2, (i) -> saveExpenditure(expenditureUserCategory1, AMOUNT, of(2022, 2, i, 0, 0, 0)));
+		iterateFixture(2, (i) -> saveExpenditure(expenditureUserCategory1, AMOUNT, of(2021, 7, i, 0, 0, 0)));
 	}
 }

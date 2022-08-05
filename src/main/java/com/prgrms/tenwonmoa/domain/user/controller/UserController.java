@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.prgrms.tenwonmoa.domain.user.dto.CreateUserRequest;
 import com.prgrms.tenwonmoa.domain.user.dto.LoginUserRequest;
+import com.prgrms.tenwonmoa.domain.user.dto.RefreshTokenRequest;
 import com.prgrms.tenwonmoa.domain.user.dto.TokenResponse;
 import com.prgrms.tenwonmoa.domain.user.service.UserService;
 
@@ -34,4 +35,12 @@ public class UserController {
 		TokenResponse loginResponse = userService.login(loginUserRequest.getEmail(), loginUserRequest.getPassword());
 		return ResponseEntity.ok().body(loginResponse);
 	}
+
+	@PostMapping("/refresh")
+	public ResponseEntity<TokenResponse> refresh(@Valid @RequestBody RefreshTokenRequest refreshTokenRequest) {
+		TokenResponse refreshResponse = userService.refresh(refreshTokenRequest.getAccessToken(),
+			refreshTokenRequest.getRefreshToken());
+		return ResponseEntity.ok().body(refreshResponse);
+	}
+
 }

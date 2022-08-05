@@ -4,6 +4,7 @@ import static com.prgrms.tenwonmoa.common.fixture.Fixture.*;
 import static com.prgrms.tenwonmoa.domain.accountbook.AccountBookConst.*;
 import static org.assertj.core.api.Assertions.*;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -128,8 +129,8 @@ class AccountBookSearchRepositoryTest extends RepositoryTest {
 		List<Long> allUserCategoryIds = List.of(expenditureUserCategory.getId(), expenditureUserCategory2.getId());
 
 		List<Expenditure> results = repository.searchExpenditures(
-			AMOUNT_MIN, AMOUNT_MAX, LocalDateTime.now().minusDays(6),
-			LocalDateTime.now(), "", allUserCategoryIds, 10, 0);
+			AMOUNT_MIN, AMOUNT_MAX, LocalDate.now().minusDays(6),
+			LocalDate.now(), "", allUserCategoryIds, 10, 0);
 
 		assertThat(results).extracting(Expenditure::getRegisterDate)
 			.containsExactly(registerDate4, registerDate3, registerDate2);

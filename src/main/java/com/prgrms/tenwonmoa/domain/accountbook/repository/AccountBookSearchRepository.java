@@ -1,6 +1,8 @@
 package com.prgrms.tenwonmoa.domain.accountbook.repository;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Map;
 
@@ -20,7 +22,7 @@ public class AccountBookSearchRepository {
 	private EntityManager em;
 
 	public List<Expenditure> searchExpenditures(Long minPrice, Long maxPrice,
-		LocalDateTime startDate, LocalDateTime endDate,
+		LocalDate startDate, LocalDate endDate,
 		String content, List<Long> userCategoryIds,
 		int size, int page) {
 
@@ -36,8 +38,8 @@ public class AccountBookSearchRepository {
 		setParameters(query, Map.of(
 			"minPrice", minPrice,
 			"maxPrice", maxPrice,
-			"startDate", startDate,
-			"endDate", endDate,
+			"startDate", LocalDateTime.of(startDate, LocalTime.MIN),
+			"endDate", LocalDateTime.of(endDate, LocalTime.MAX),
 			"userCategoryIds", userCategoryIds,
 			"content", content));
 
@@ -47,7 +49,7 @@ public class AccountBookSearchRepository {
 	}
 
 	public List<Income> searchIncomes(Long minPrice, Long maxPrice,
-		LocalDateTime startDate, LocalDateTime endDate,
+		LocalDate startDate, LocalDate endDate,
 		String content, List<Long> userCategoryIds,
 		int size, int page) {
 
@@ -63,8 +65,8 @@ public class AccountBookSearchRepository {
 		setParameters(query, Map.of(
 			"minPrice", minPrice,
 			"maxPrice", maxPrice,
-			"startDate", startDate,
-			"endDate", endDate,
+			"startDate", LocalDateTime.of(startDate, LocalTime.MIN),
+			"endDate", LocalDateTime.of(endDate, LocalTime.MAX),
 			"userCategoryIds", userCategoryIds,
 			"content", content));
 

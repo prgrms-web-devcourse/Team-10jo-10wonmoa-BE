@@ -18,7 +18,6 @@ import com.prgrms.tenwonmoa.domain.accountbook.dto.statistics.FindStatisticsData
 import com.prgrms.tenwonmoa.domain.category.Category;
 import com.prgrms.tenwonmoa.domain.category.UserCategory;
 import com.prgrms.tenwonmoa.domain.user.User;
-import com.querydsl.jpa.impl.JPAQueryFactory;
 
 class StatisticsQueryRepositoryTest extends RepositoryFixture {
 	private static final String NAME = "name";
@@ -39,16 +38,16 @@ class StatisticsQueryRepositoryTest extends RepositoryFixture {
 	@BeforeEach
 	void init() {
 		user = saveRandomUser();
-
 		initIncomeData();
 		initExpenditureData();
 	}
 
 	@Test
 	void 수입_월조건통계조회_성공() {
+		// when
 		List<FindStatisticsData> incomes = statisticsQueryRepository
 			.searchIncomeByRegisterDate(user.getId(), 2022, 07);
-
+		// then
 		assertThat(incomes).hasSize(3);
 		assertThat(incomes).extracting(NAME)
 			.containsExactly(INCOME_DEFAULT.get(0), INCOME_DEFAULT.get(1), INCOME_DEFAULT.get(2));
@@ -64,55 +63,53 @@ class StatisticsQueryRepositoryTest extends RepositoryFixture {
 
 	@Test
 	void 수입_년조건_통계_월_null_일때_성공() {
+		// when
 		List<FindStatisticsData> findStatisticsData = statisticsQueryRepository.searchIncomeByRegisterDate(user.getId(),
 			2022,
 			null);
+		// then
 		assertThat(findStatisticsData).hasSize(3);
 	}
 
 	@Test
 	void 유저카테고리_삭제시_카테고리의이름을_참조한다() {
-		// userCategory2 삭제
+		// given
 		UserCategory findUserCategory2 = em.find(UserCategory.class, incomeUserCategory2.getId());
 		findUserCategory2.updateCategoryAsNull();
 		save(findUserCategory2);
-
+		// when
 		List<FindStatisticsData> incomes = statisticsQueryRepository
 			.searchIncomeByRegisterDate(user.getId(), 2022, 07);
+		// then
 		assertThat(incomes).hasSize(3);
 		assertThat(incomes).extracting(NAME)
 			.containsExactly(INCOME_DEFAULT.get(0), INCOME_DEFAULT.get(1), INCOME_DEFAULT.get(2));
 		assertThat(incomes).extracting(NAME)
 			.doesNotContainNull();
 	}
-
 	@Test
 	void 카테고리이름_변경시_변경된이름을_참조한다() {
-		// category3의 이름변경
+		// given
 		Category findCategory3 = em.find(Category.class, incomeCategory3.getId());
 		String updateCategoryName = "KAN-TE";
 		findCategory3.updateName(updateCategoryName);
 		save(findCategory3);
-
+		// when
 		List<FindStatisticsData> incomes = statisticsQueryRepository
 			.searchIncomeByRegisterDate(user.getId(), 2022, 07);
+		// then
 		assertThat(incomes).hasSize(3);
 		assertThat(incomes).extracting(NAME)
 			.containsExactly(INCOME_DEFAULT.get(0), INCOME_DEFAULT.get(1), updateCategoryName);
 		assertThat(incomes).extracting(NAME)
 			.doesNotContain(INCOME_DEFAULT.get(2));
 	}
-
-	// 000000
-
 	@Test
 	void 지출_월조건통계조회_성공() {
+		// when
 		List<FindStatisticsData> findData = statisticsQueryRepository
 			.searchExpenditureByRegisterDate(user.getId(), 2022, 07);
-
-		for (FindStatisticsData d : findData) {
-			System.out.println(d);
-		}
+		// then
 		assertThat(findData).hasSize(3);
 		assertThat(findData).extracting(NAME)
 			.containsExactly(EXPENDITURE_DEFAULT.get(2), EXPENDITURE_DEFAULT.get(1), EXPENDITURE_DEFAULT.get(0));
@@ -137,13 +134,14 @@ class StatisticsQueryRepositoryTest extends RepositoryFixture {
 
 	@Test
 	void 지출_유저카테고리_삭제시_카테고리의이름을_참조한다() {
-		// userCategory2 삭제
+		// given
 		UserCategory findUserCategory2 = em.find(UserCategory.class, expenditureUserCategory2.getId());
 		findUserCategory2.updateCategoryAsNull();
 		save(findUserCategory2);
-
+		// when
 		List<FindStatisticsData> findData = statisticsQueryRepository
 			.searchExpenditureByRegisterDate(user.getId(), 2022, 07);
+		// then
 		assertThat(findData).hasSize(3);
 		assertThat(findData).extracting(NAME)
 			.containsExactly(EXPENDITURE_DEFAULT.get(2), EXPENDITURE_DEFAULT.get(1), EXPENDITURE_DEFAULT.get(0));
@@ -153,14 +151,15 @@ class StatisticsQueryRepositoryTest extends RepositoryFixture {
 
 	@Test
 	void 지출_카테고리이름_변경시_변경된이름을_참조한다() {
-		// category3의 이름변경
+		// given
 		Category findCategory3 = em.find(Category.class, expenditureCategory3.getId());
 		String updateCategoryName = "KAN-TE";
 		findCategory3.updateName(updateCategoryName);
 		save(findCategory3);
-
+		// when
 		List<FindStatisticsData> findData = statisticsQueryRepository
 			.searchExpenditureByRegisterDate(user.getId(), 2022, 07);
+		// then
 		assertThat(findData).hasSize(3);
 		assertThat(findData).extracting(NAME)
 			.containsExactly(updateCategoryName, EXPENDITURE_DEFAULT.get(1), EXPENDITURE_DEFAULT.get(0));

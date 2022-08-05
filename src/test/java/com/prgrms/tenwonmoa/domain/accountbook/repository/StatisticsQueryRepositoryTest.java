@@ -205,15 +205,15 @@ class StatisticsQueryRepositoryTest extends RepositoryFixture {
 		expenditureUserCategory2 = saveUserCategory(user, expenditureCategory2);
 		UserCategory expenditureUserCategory3 = saveUserCategory(user, expenditureCategory3);
 
-		// 2022.07월달에 category1으로 1건의 수입등록
+		// 2022.07월달에 category1으로 1건의 지출등록
 		iterateFixture(1, (i) -> saveExpenditure(expenditureUserCategory1, AMOUNT, of(2022, 7, i, 0, 0, 0)));
-		// 2022.07월달에 category2으로 2건의 수입등록
+		// 2022.07월달에 category2으로 2건의 지출등록
 		iterateFixture(2, (i) -> saveExpenditure(expenditureUserCategory2, AMOUNT, of(2022, 7, i, 0, 0, 0)));
-		// 2022.07월달에 category3으로 3건의 수입등록
+		// 2022.07월달에 category3으로 3건의 지출등록
 		iterateFixture(3, (i) -> saveExpenditure(expenditureUserCategory3, AMOUNT, of(2022, 7, i, 0, 0, 0)));
-		// 2022.06월달에 category1으로 2건의 수입등록
+		// 2022.06월달에 category1으로 2건의 지출등록
 		iterateFixture(2, (i) -> saveExpenditure(expenditureUserCategory1, AMOUNT, of(2022, 6, i, 0, 0, 0)));
-		// 2021.07월달에 category1으로 2건의 수입등록
+		// 2021.07월달에 category1으로 2건의 지출등록
 		iterateFixture(2, (i) -> saveExpenditure(expenditureUserCategory1, AMOUNT, of(2022, 2, i, 0, 0, 0)));
 	}
 }

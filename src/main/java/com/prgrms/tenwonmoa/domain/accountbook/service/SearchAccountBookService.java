@@ -1,6 +1,5 @@
 package com.prgrms.tenwonmoa.domain.accountbook.service;
 
-import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -48,7 +47,7 @@ public class SearchAccountBookService {
 			results.add(new Result(i.getDate(), i.getAmount(), i.getContent(),
 				i.getId(), CategoryType.INCOME.name(), i.getCategoryName())));
 
-		results.sort(Comparator.comparing(Result::getRegisterDate, LocalDate::compareTo));
+		results.sort(Comparator.comparing(Result::getRegisterDate, (date1, date2) -> (-1) * date1.compareTo(date2)));
 		return results;
 	}
 

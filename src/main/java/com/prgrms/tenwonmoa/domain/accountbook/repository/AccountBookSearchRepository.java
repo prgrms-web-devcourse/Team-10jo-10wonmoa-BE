@@ -80,7 +80,8 @@ public class AccountBookSearchRepository {
 	}
 
 	private void setPagingParam(TypedQuery query, int size, int page) {
-		query.setFirstResult(size * page);
+		int offset = size * page;
+		query.setFirstResult(offset);
 		query.setMaxResults(size);
 	}
 

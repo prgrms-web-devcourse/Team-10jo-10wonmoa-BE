@@ -3,6 +3,8 @@ package com.prgrms.tenwonmoa.domain.accountbook.dto;
 import java.time.LocalDate;
 import java.util.List;
 
+import com.prgrms.tenwonmoa.domain.common.page.PageCustomRequest;
+
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -16,8 +18,22 @@ public final class SearchAccountBookResponse {
 
 	private final Long expenditureSum;
 
+	private Integer currentPage;
+
+	private Integer nextPage;
+
 	public static SearchAccountBookResponse of(List<Result> results, Long incomeSum, Long expenditureSum) {
 		return new SearchAccountBookResponse(results, incomeSum, expenditureSum);
+	}
+
+	public void setPageInfo(PageCustomRequest pageRequest) {
+		this.currentPage = pageRequest.getPage();
+		this.nextPage = this.currentPage + 1;
+
+		// 마지막 페이지일 경우
+		if (this.results.size() < pageRequest.getSize()) {
+			nextPage = null;
+		}
 	}
 
 	@Getter

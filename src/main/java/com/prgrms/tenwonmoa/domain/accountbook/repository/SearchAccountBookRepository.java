@@ -13,9 +13,10 @@ import org.springframework.stereotype.Repository;
 
 import com.prgrms.tenwonmoa.domain.accountbook.Expenditure;
 import com.prgrms.tenwonmoa.domain.accountbook.Income;
+import com.prgrms.tenwonmoa.domain.common.page.PageCustomRequest;
 
 @Repository
-public class AccountBookSearchRepository {
+public class SearchAccountBookRepository {
 
 	@PersistenceContext
 	private EntityManager em;
@@ -24,9 +25,10 @@ public class AccountBookSearchRepository {
 		LocalDate startDate, LocalDate endDate,
 		String content, List<Long> userCategoryIds,
 		Long userId,
-		int size, int page) {
+		PageCustomRequest pageRequest) {
 
 		TypedQuery<Expenditure> query = em.createQuery("select e from Expenditure e "
+			+ "join fetch e.userCategory "
 			+ "where e.amount >= :minPrice "
 			+ "and e.amount <= :maxPrice "
 			+ "and e.registerDate >= :startDate "
@@ -45,7 +47,7 @@ public class AccountBookSearchRepository {
 			"userId", userId,
 			"content", content));
 
-		setPagingParam(query, size, page);
+		setPagingParam(query, pageRequest);
 
 		return query.getResultList();
 	}
@@ -53,10 +55,10 @@ public class AccountBookSearchRepository {
 	public List<Income> searchIncomes(Long minPrice, Long maxPrice,
 		LocalDate startDate, LocalDate endDate,
 		String content, List<Long> userCategoryIds,
-		Long userId,
-		int size, int page) {
+		Long userId, PageCustomRequest pageRequest) {
 
 		TypedQuery<Income> query = em.createQuery("select i from Income i "
+			+ "join fetch i.userCategory "
 			+ "where i.amount >= :minPrice "
 			+ "and i.amount <= :maxPrice "
 			+ "and i.registerDate >= :startDate "
@@ -75,21 +77,20 @@ public class AccountBookSearchRepository {
 			"userId", userId,
 			"content", content));
 
-		setPagingParam(query, size, page);
+		setPagingParam(query, pageRequest);
 
 		return query.getResultList();
 	}
 
-	private void setParameters(TypedQuery query, Map<String, Object> params) {
+	private void setParameters(TypedQuery<?> query, Map<String, Object> params) {
 		for (String key : params.keySet()) {
 			query.setParameter(key, params.get(key));
 		}
 	}
 
-	private void setPagingParam(TypedQuery query, int size, int page) {
-		int offset = size * page;
-		query.setFirstResult(offset);
-		query.setMaxResults(size);
+	private void setPagingParam(TypedQuery<?> query, PageCustomRequest pageRequest) {
+		query.setFirstResult((int)pageRequest.getOffset());
+		query.setMaxResults(pageRequest.getSize());
 	}
 
 }

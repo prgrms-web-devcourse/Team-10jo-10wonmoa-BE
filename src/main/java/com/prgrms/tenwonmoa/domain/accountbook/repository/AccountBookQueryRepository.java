@@ -19,9 +19,11 @@ import com.prgrms.tenwonmoa.domain.accountbook.dto.DayDetail;
 import com.prgrms.tenwonmoa.domain.accountbook.dto.FindDayAccountResponse;
 import com.prgrms.tenwonmoa.domain.accountbook.dto.FindMonthAccountResponse;
 import com.prgrms.tenwonmoa.domain.accountbook.dto.FindSumResponse;
+import com.prgrms.tenwonmoa.domain.accountbook.dto.MonthCondition;
 import com.prgrms.tenwonmoa.domain.category.CategoryType;
 import com.prgrms.tenwonmoa.domain.common.page.PageCustomImpl;
 import com.prgrms.tenwonmoa.domain.common.page.PageCustomRequest;
+import com.querydsl.core.group.GroupBy;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
 import lombok.RequiredArgsConstructor;
@@ -141,7 +143,26 @@ public class AccountBookQueryRepository {
 		return new FindSumResponse(incomeSum, expenditureSum);
 	}
 
-	public FindMonthAccountResponse findMonthAccount(Long userId, int year) {
+	public FindMonthAccountResponse findMonthAccount(Long userId, MonthCondition condition) {
+		// year가 미래인지 판단
+		// 미래면 사용자가 작성한 월만, 미래가 아니면 전체 작성된 월~
+
+		int year = condition.getYear();
+
+		Map<Integer, Long> expenditureMonthMap = queryFactory.from(expenditure)
+			.where(expenditure.registerDate.year().eq(year))
+			.orderBy(expenditure.registerDate.month().desc())
+			.transform(GroupBy.groupBy(expenditure.registerDate.month())
+				.as(GroupBy.sum(expenditure.amount))
+			);
+
+		Map<Integer, Long> incomeMonthMap = queryFactory.from(income)
+			.where(income.registerDate.year().eq(year))
+			.orderBy(income.registerDate.month().desc())
+			.transform(GroupBy.groupBy(income.registerDate.month())
+				.as(GroupBy.sum(income.amount))
+			);
+
 		return null;
 	}
 

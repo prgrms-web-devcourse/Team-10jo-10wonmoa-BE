@@ -87,6 +87,7 @@ class StatisticsQueryRepositoryTest extends RepositoryFixture {
 		assertThat(incomes).extracting(NAME)
 			.doesNotContainNull();
 	}
+
 	@Test
 	void 카테고리이름_변경시_변경된이름을_참조한다() {
 		// given
@@ -104,6 +105,7 @@ class StatisticsQueryRepositoryTest extends RepositoryFixture {
 		assertThat(incomes).extracting(NAME)
 			.doesNotContain(INCOME_DEFAULT.get(2));
 	}
+
 	@Test
 	void 지출_월조건통계조회_성공() {
 		// when

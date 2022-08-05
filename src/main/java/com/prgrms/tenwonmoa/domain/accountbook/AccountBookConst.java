@@ -2,11 +2,12 @@ package com.prgrms.tenwonmoa.domain.accountbook;
 
 import java.time.LocalDate;
 
-public final class AccountBookConst {
-	private AccountBookConst() {
-	}
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
-	public static final Long AMOUNT_MAX = 1000000000000L;
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+public final class AccountBookConst {
+	public static final Long AMOUNT_MAX = 1_000_000_000_000L;
 	public static final Long AMOUNT_MIN = 1L;
 	public static final int CONTENT_MAX = 50;
 

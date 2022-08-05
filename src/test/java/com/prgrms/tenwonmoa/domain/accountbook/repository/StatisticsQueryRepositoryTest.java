@@ -21,30 +21,23 @@ import com.prgrms.tenwonmoa.domain.user.User;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
 class StatisticsQueryRepositoryTest extends RepositoryFixture {
-	private static final String NEED_TO_YEAR_WHEN_MONTH = "월 조건은 년도가 반드시 입력되어야 합니다.";
-	public static final String NAME = "name";
-	public static final String TOTAL = "total";
-
+	private static final String NAME = "name";
+	private static final String TOTAL = "total";
 	private static final List<String> INCOME_DEFAULT = List.of("용돈", "상여", "금융소득");
 	private static final List<String> EXPENDITURE_DEFAULT = List.of("교통/차량", "문화생활", "마트/편의점");
 	private static final Long AMOUNT = 10L;
-
 	@Autowired
 	EntityManager em;
-	JPAQueryFactory queryFactory;
-	User user;
-
 	@Autowired
 	StatisticsQueryRepository statisticsQueryRepository;
+	User user;
 	UserCategory incomeUserCategory2;
 	Category incomeCategory3;
-
 	UserCategory expenditureUserCategory2;
 	Category expenditureCategory3;
 
 	@BeforeEach
 	void init() {
-		queryFactory = new JPAQueryFactory(em);
 		user = saveRandomUser();
 
 		initIncomeData();

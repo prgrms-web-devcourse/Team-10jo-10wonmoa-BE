@@ -1,7 +1,6 @@
 package com.prgrms.tenwonmoa.domain.accountbook.repository;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Map;
@@ -24,6 +23,7 @@ public class AccountBookSearchRepository {
 	public List<Expenditure> searchExpenditures(Long minPrice, Long maxPrice,
 		LocalDate startDate, LocalDate endDate,
 		String content, List<Long> userCategoryIds,
+		Long userId,
 		int size, int page) {
 
 		TypedQuery<Expenditure> query = em.createQuery("select e from Expenditure e "
@@ -33,14 +33,16 @@ public class AccountBookSearchRepository {
 			+ "and e.registerDate <= :endDate "
 			+ "and e.userCategory.id in :userCategoryIds "
 			+ "and e.content like CONCAT('%', :content, '%') "
+			+ "and e.user.id = :userId "
 			+ "order by e.registerDate desc", Expenditure.class);
 
 		setParameters(query, Map.of(
 			"minPrice", minPrice,
 			"maxPrice", maxPrice,
-			"startDate", LocalDateTime.of(startDate, LocalTime.MIN),
-			"endDate", LocalDateTime.of(endDate, LocalTime.MAX),
+			"startDate", startDate.atTime(LocalTime.MIN),
+			"endDate", endDate.atTime(LocalTime.MAX),
 			"userCategoryIds", userCategoryIds,
+			"userId", userId,
 			"content", content));
 
 		setPagingParam(query, size, page);
@@ -51,6 +53,7 @@ public class AccountBookSearchRepository {
 	public List<Income> searchIncomes(Long minPrice, Long maxPrice,
 		LocalDate startDate, LocalDate endDate,
 		String content, List<Long> userCategoryIds,
+		Long userId,
 		int size, int page) {
 
 		TypedQuery<Income> query = em.createQuery("select i from Income i "
@@ -60,14 +63,16 @@ public class AccountBookSearchRepository {
 			+ "and i.registerDate <= :endDate "
 			+ "and i.userCategory.id in :userCategoryIds "
 			+ "and i.content like CONCAT('%', :content, '%') "
+			+ "and i.user.id = :userId "
 			+ "order by i.registerDate desc", Income.class);
 
 		setParameters(query, Map.of(
 			"minPrice", minPrice,
 			"maxPrice", maxPrice,
-			"startDate", LocalDateTime.of(startDate, LocalTime.MIN),
-			"endDate", LocalDateTime.of(endDate, LocalTime.MAX),
+			"startDate", startDate.atTime(LocalTime.MIN),
+			"endDate", endDate.atTime(LocalTime.MAX),
 			"userCategoryIds", userCategoryIds,
+			"userId", userId,
 			"content", content));
 
 		setPagingParam(query, size, page);

@@ -14,6 +14,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.prgrms.tenwonmoa.exception.AlreadyExistException;
 import com.prgrms.tenwonmoa.exception.UnauthorizedUserException;
 import com.prgrms.tenwonmoa.exception.response.ErrorResponse;
@@ -77,6 +78,16 @@ public class GlobalExceptionHandler {
 		ErrorResponse errorResponse = new ErrorResponse(List.of(exception.getMessage()), FORBIDDEN.value());
 		return ResponseEntity
 			.status(FORBIDDEN.value())
+			.body(errorResponse);
+	}
+
+	// 401: 잘못된 토큰으로 요청
+	@ExceptionHandler({JWTVerificationException.class})
+	public ResponseEntity<ErrorResponse> handleForbidden(JWTVerificationException exception) {
+		log.error(exception.getMessage(), exception);
+		ErrorResponse errorResponse = new ErrorResponse(List.of(exception.getMessage()), UNAUTHORIZED.value());
+		return ResponseEntity
+			.status(UNAUTHORIZED.value())
 			.body(errorResponse);
 	}
 

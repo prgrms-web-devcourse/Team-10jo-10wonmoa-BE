@@ -59,4 +59,8 @@ public class UserService {
 		return passwordEncoder.matches(requestPassword, encodedPassword);
 	}
 
+	@Transactional
+	public TokenResponse refresh(String accessToken, String refreshToken) {
+		return jwtService.refreshToken(accessToken, refreshToken);
+	}
 }

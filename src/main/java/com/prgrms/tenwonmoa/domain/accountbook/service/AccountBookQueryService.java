@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.prgrms.tenwonmoa.domain.accountbook.dto.FindDayAccountResponse;
 import com.prgrms.tenwonmoa.domain.accountbook.dto.FindMonthAccountResponse;
 import com.prgrms.tenwonmoa.domain.accountbook.dto.FindSumResponse;
+import com.prgrms.tenwonmoa.domain.accountbook.dto.MonthCondition;
 import com.prgrms.tenwonmoa.domain.accountbook.repository.AccountBookQueryRepository;
 import com.prgrms.tenwonmoa.domain.common.page.PageCustomImpl;
 import com.prgrms.tenwonmoa.domain.common.page.PageCustomRequest;
@@ -34,7 +35,7 @@ public class AccountBookQueryService {
 		return accountBookQueryRepository.findYearSum(userId, year);
 	}
 
-	public FindMonthAccountResponse findMonthAccount(Long userId, int year) {
-		return accountBookQueryRepository.findMonthAccount(userId, year);
+	public FindMonthAccountResponse findMonthAccount(Long userId, MonthCondition condition) {
+		return accountBookQueryRepository.findMonthAccount(userId, condition);
 	}
 }

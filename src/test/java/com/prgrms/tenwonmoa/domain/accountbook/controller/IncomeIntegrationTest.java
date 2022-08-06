@@ -126,7 +126,6 @@ class IncomeIntegrationTest extends BaseControllerIntegrationTest {
 		mvc.perform(get(LOCATION_PREFIX + "/{incomeId}", income.getId()).header(HttpHeaders.AUTHORIZATION, accessToken))
 			.andExpect(status().isOk())
 			.andExpect(jsonPath("id").value(income.getId()))
-			.andExpect(jsonPath("registerDate").value(income.getRegisterDate().toString()))
 			.andExpect(jsonPath("amount").value(income.getAmount()))
 			.andExpect(jsonPath("content").value(income.getContent()))
 			.andExpect(jsonPath("userCategoryId").value(income.getUserCategory().getId()))

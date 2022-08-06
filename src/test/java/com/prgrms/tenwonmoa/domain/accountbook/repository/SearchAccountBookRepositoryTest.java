@@ -9,6 +9,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -17,12 +18,14 @@ import com.prgrms.tenwonmoa.domain.accountbook.Expenditure;
 import com.prgrms.tenwonmoa.domain.category.Category;
 import com.prgrms.tenwonmoa.domain.category.CategoryType;
 import com.prgrms.tenwonmoa.domain.category.UserCategory;
+import com.prgrms.tenwonmoa.domain.common.page.PageCustomRequest;
 import com.prgrms.tenwonmoa.domain.user.User;
 
-class AccountBookSearchRepositoryTest extends RepositoryTest {
+@DisplayName("가계부 검색 리포지토리 테스트")
+class SearchAccountBookRepositoryTest extends RepositoryTest {
 
 	@Autowired
-	private AccountBookSearchRepository repository;
+	private SearchAccountBookRepository repository;
 
 	private User user;
 
@@ -61,11 +64,11 @@ class AccountBookSearchRepositoryTest extends RepositoryTest {
 
 		List<Expenditure> firstPage = repository.searchExpenditures(
 			1000L, 20000L, LEFT_MOST_REGISTER_DATE, RIGHT_MOST_REGISTER_DATE,
-			"", allUserCategoryIds, user.getId(), 2, 0);
+			"", allUserCategoryIds, user.getId(), new PageCustomRequest(1, 2));
 
 		List<Expenditure> secondPage = repository.searchExpenditures(
 			1000L, 20000L, LEFT_MOST_REGISTER_DATE, RIGHT_MOST_REGISTER_DATE,
-			"", allUserCategoryIds, user.getId(), 2, 1);
+			"", allUserCategoryIds, user.getId(), new PageCustomRequest(2, 2));
 
 		assertThat(firstPage).extracting(Expenditure::getAmount).containsExactly(10000L, 10000L);
 		assertThat(secondPage).extracting(Expenditure::getAmount).containsExactly(1000L);
@@ -93,11 +96,11 @@ class AccountBookSearchRepositoryTest extends RepositoryTest {
 
 		List<Expenditure> firstPage = repository.searchExpenditures(
 			AMOUNT_MIN, AMOUNT_MAX, LEFT_MOST_REGISTER_DATE,
-			RIGHT_MOST_REGISTER_DATE, "영화", allUserCategoryIds, user.getId(), 2, 0);
+			RIGHT_MOST_REGISTER_DATE, "영화", allUserCategoryIds, user.getId(), new PageCustomRequest(1, 2));
 
 		List<Expenditure> secondPage = repository.searchExpenditures(
 			AMOUNT_MIN, AMOUNT_MAX, LEFT_MOST_REGISTER_DATE,
-			RIGHT_MOST_REGISTER_DATE, "영화", allUserCategoryIds, user.getId(), 2, 1);
+			RIGHT_MOST_REGISTER_DATE, "영화", allUserCategoryIds, user.getId(), new PageCustomRequest(2, 2));
 
 		assertThat(firstPage).extracting(Expenditure::getContent).containsExactly("문화 영화 관람", "영화관람");
 		assertThat(secondPage).extracting(Expenditure::getContent).containsExactly("영화");
@@ -130,7 +133,7 @@ class AccountBookSearchRepositoryTest extends RepositoryTest {
 
 		List<Expenditure> results = repository.searchExpenditures(
 			AMOUNT_MIN, AMOUNT_MAX, LocalDate.now().minusDays(6),
-			LocalDate.now(), "", allUserCategoryIds, user.getId(), 10, 0);
+			LocalDate.now(), "", allUserCategoryIds, user.getId(), new PageCustomRequest(1, 10));
 
 		assertThat(results).extracting(Expenditure::getRegisterDate)
 			.containsExactly(registerDate4, registerDate3, registerDate2);
@@ -156,11 +159,13 @@ class AccountBookSearchRepositoryTest extends RepositoryTest {
 
 		List<Expenditure> results = repository.searchExpenditures(
 			AMOUNT_MIN, AMOUNT_MAX, LEFT_MOST_REGISTER_DATE,
-			RIGHT_MOST_REGISTER_DATE, "", List.of(expenditureUserCategory.getId()), user.getId(), 10, 0);
+			RIGHT_MOST_REGISTER_DATE, "", List.of(expenditureUserCategory.getId()), user.getId(),
+			new PageCustomRequest(1, 10));
 
 		List<Expenditure> results2 = repository.searchExpenditures(
 			AMOUNT_MIN, AMOUNT_MAX, LEFT_MOST_REGISTER_DATE,
-			RIGHT_MOST_REGISTER_DATE, "", List.of(expenditureUserCategory2.getId()), user.getId(), 10, 0);
+			RIGHT_MOST_REGISTER_DATE, "", List.of(expenditureUserCategory2.getId()), user.getId(),
+			new PageCustomRequest(1, 10));
 
 		assertThat(results).hasSize(1);
 		assertThat(results2).hasSize(3);

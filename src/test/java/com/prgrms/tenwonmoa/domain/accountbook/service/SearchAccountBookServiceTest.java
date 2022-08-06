@@ -1,7 +1,7 @@
 package com.prgrms.tenwonmoa.domain.accountbook.service;
 
 import static com.prgrms.tenwonmoa.common.fixture.Fixture.*;
-import static com.prgrms.tenwonmoa.domain.accountbook.dto.SearchAccountBookResponse.*;
+import static com.prgrms.tenwonmoa.domain.accountbook.dto.FindAccountBookResponse.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
 
@@ -18,7 +18,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import com.prgrms.tenwonmoa.domain.accountbook.AccountBookConst;
 import com.prgrms.tenwonmoa.domain.accountbook.Expenditure;
 import com.prgrms.tenwonmoa.domain.accountbook.Income;
-import com.prgrms.tenwonmoa.domain.accountbook.dto.SearchAccountBookResponse;
+import com.prgrms.tenwonmoa.domain.accountbook.dto.FindAccountBookResponse;
+import com.prgrms.tenwonmoa.domain.accountbook.dto.service.SearchAccountBookCmd;
 import com.prgrms.tenwonmoa.domain.accountbook.repository.SearchAccountBookRepository;
 import com.prgrms.tenwonmoa.domain.category.Category;
 import com.prgrms.tenwonmoa.domain.category.CategoryType;
@@ -79,20 +80,20 @@ class SearchAccountBookServiceTest {
 			.willReturn(List.of(latestIncome, fifthIncome));
 
 		//when
-		SearchAccountBookResponse searchAccountBookResponse =
+		FindAccountBookResponse findAccountBookResponse =
 			accountBookService.searchAccountBooks(userId, cmd, pageRequest);
 
 		//then
-		assertThat(searchAccountBookResponse.getResults().size()).isEqualTo(pageRequest.getSize());
-		assertThat(searchAccountBookResponse.getResults())
+		assertThat(findAccountBookResponse.getResults().size()).isEqualTo(pageRequest.getSize());
+		assertThat(findAccountBookResponse.getResults())
 			.extracting(Result::getCategoryName)
 			.containsExactlyInAnyOrder(
 				latestIncome.getCategoryName(),
 				secondExpenditure.getCategoryName(),
 				thirdExpenditure.getCategoryName());
 
-		assertThat(searchAccountBookResponse.getIncomeSum()).isEqualTo(latestIncome.getAmount());
-		assertThat(searchAccountBookResponse.getExpenditureSum())
+		assertThat(findAccountBookResponse.getIncomeSum()).isEqualTo(latestIncome.getAmount());
+		assertThat(findAccountBookResponse.getExpenditureSum())
 			.isEqualTo(secondExpenditure.getAmount() + thirdExpenditure.getAmount());
 	}
 

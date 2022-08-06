@@ -3,12 +3,13 @@ package com.prgrms.tenwonmoa.domain.accountbook.dto;
 import java.time.LocalDate;
 import java.util.List;
 
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 @Getter
-@RequiredArgsConstructor
-public final class SearchAccountBookResponse {
+@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+public final class FindAccountBookResponse {
 
 	private final List<Result> results;
 
@@ -16,8 +17,8 @@ public final class SearchAccountBookResponse {
 
 	private final Long expenditureSum;
 
-	public static SearchAccountBookResponse of(List<Result> results, Long incomeSum, Long expenditureSum) {
-		return new SearchAccountBookResponse(results, incomeSum, expenditureSum);
+	public static FindAccountBookResponse of(List<Result> results, Long incomeSum, Long expenditureSum) {
+		return new FindAccountBookResponse(results, incomeSum, expenditureSum);
 	}
 
 	@Getter

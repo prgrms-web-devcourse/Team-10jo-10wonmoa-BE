@@ -1,4 +1,4 @@
-package com.prgrms.tenwonmoa.domain.accountbook.service;
+package com.prgrms.tenwonmoa.domain.accountbook.dto.service;
 
 import java.time.LocalDate;
 import java.util.Arrays;

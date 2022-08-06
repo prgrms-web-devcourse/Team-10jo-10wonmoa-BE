@@ -1,5 +1,6 @@
 package com.prgrms.tenwonmoa.domain.accountbook.service;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -53,12 +54,19 @@ public class SearchAccountBookService {
 	}
 
 	private FindAccountBookResponse sliceAndSum(List<Result> results, PageCustomRequest pageRequest) {
-		List<Result> slicedResult = results.subList(0, pageRequest.getSize());
+		List<Result> slicedResult;
+
+		if (results.size() > pageRequest.getSize()) {
+			slicedResult = new ArrayList<>(results.subList(0, pageRequest.getSize()));
+		} else {
+			slicedResult = new ArrayList<>(results);
+		}
+
 		Long incomeSum = 0L;
 		Long expenditureSum = 0L;
 
 		for (Result result : slicedResult) {
-			if (result.getType().equals(CategoryType.EXPENDITURE.name())) {
+			if (result.getType().equals(CategoryType.INCOME.name())) {
 				incomeSum += result.getAmount();
 			} else {
 				expenditureSum += result.getAmount();

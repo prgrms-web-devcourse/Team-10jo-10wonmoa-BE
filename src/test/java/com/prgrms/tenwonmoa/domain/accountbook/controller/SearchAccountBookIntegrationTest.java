@@ -13,7 +13,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -38,7 +37,7 @@ class SearchAccountBookIntegrationTest extends BaseControllerIntegrationTest {
 		지출_등록(expenditureCategoryId, 5000L, "점심", LocalDateTime.now());
 
 		String categories = String.join(",", String.valueOf(incomeCategoryId), String.valueOf(expenditureCategoryId));
-		mvc.perform(MockMvcRequestBuilders.get("/api/v1/account-book/search")
+		mvc.perform(get("/api/v1/account-book/search")
 				.header(HttpHeaders.AUTHORIZATION, accessToken)
 				.param("categories", categories)
 				.param("minprice", "0")
@@ -64,7 +63,7 @@ class SearchAccountBookIntegrationTest extends BaseControllerIntegrationTest {
 		지출_등록(expenditureCategoryId, 5000L, "점심", LocalDateTime.now());
 
 		String blankCategory = "";
-		mvc.perform(MockMvcRequestBuilders.get("/api/v1/account-book/search")
+		mvc.perform(get("/api/v1/account-book/search")
 				.header(HttpHeaders.AUTHORIZATION, accessToken)
 				.param("categories", blankCategory)
 				.param("minprice", "0")
@@ -78,9 +77,7 @@ class SearchAccountBookIntegrationTest extends BaseControllerIntegrationTest {
 			.andExpect(jsonPath("$.expenditureSum").value(5000L))
 			.andExpect(jsonPath("$.currentPage").value(1))
 			.andExpect(jsonPath("$.nextPage").isEmpty())
-			.andExpect(jsonPath("$.results", hasSize(2))
-			);
-
+			.andExpect(jsonPath("$.results", hasSize(2)));
 	}
 
 	private void 지출_등록(Long userCategoryId, Long amount,

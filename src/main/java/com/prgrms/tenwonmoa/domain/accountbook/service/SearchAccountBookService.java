@@ -73,7 +73,7 @@ public class SearchAccountBookService {
 			}
 		}
 
-		return FindAccountBookResponse.of(slicedResult, incomeSum, expenditureSum);
+		return FindAccountBookResponse.of(pageRequest, slicedResult, incomeSum, expenditureSum);
 	}
 
 }

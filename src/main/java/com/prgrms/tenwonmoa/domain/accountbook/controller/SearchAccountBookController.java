@@ -47,7 +47,6 @@ public class SearchAccountBookController {
 
 		FindAccountBookResponse response = accountBookService.searchAccountBooks(userId,
 			SearchAccountBookCmd.of(categories, minPrice, maxPrice, start, end, content), pageRequest);
-		response.setPageInfo(pageRequest);
 
 		return ResponseEntity.ok(response);
 	}

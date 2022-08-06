@@ -61,7 +61,9 @@ class SearchAccountBookControllerTest {
 	@Test
 	@WithMockCustomUser
 	void 지출_수입_검색() throws Exception {
+		PageCustomRequest pageRequest = new PageCustomRequest(1, 1);
 		FindAccountBookResponse response = of(
+			pageRequest,
 			List.of(
 				new Result(LocalDate.now(), 10000L, "점심", 1L, "EXPENDITURE", "식비"),
 				new Result(LocalDate.now(), 50000L, "용돈", 1L, "INCOME", "용돈")),
@@ -77,8 +79,8 @@ class SearchAccountBookControllerTest {
 				.param("start", "2022-08-01")
 				.param("end", "2022-08-10")
 				.param("content", "점심")
-				.param("size", "1")
-				.param("page", "1"))
+				.param("size", String.valueOf(pageRequest.getSize()))
+				.param("page", String.valueOf(pageRequest.getPage())))
 			.andExpect(status().isOk())
 			.andDo(
 				document("search-account-book",

@@ -1,0 +1,23 @@
+:hardbreaks:
+ifndef::snippets[]
+:snippets: ../../../target/generated-snippets
+endif::[]
+
+== 통계
+
+=== 년 별 통계조회
+
+.Request
+include::{snippets}/statistics-find-year/http-request.adoc[]
+
+.Response
+include::{snippets}/statistics-find-year/http-response.adoc[]
+
+
+=== 월 별 통계조회
+
+.Request
+include::{snippets}/statistics-find-month/http-request.adoc[]
+
+.Response
+include::{snippets}/statistics-find-month/http-response.adoc[]

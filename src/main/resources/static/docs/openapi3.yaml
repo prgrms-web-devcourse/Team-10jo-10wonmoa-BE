@@ -7,6 +7,35 @@ servers:
 - url: http://3.39.184.232:8080
 tags: []
 paths:
+  /api/v1/statistics:
+    get:
+      tags:
+      - api
+      operationId: statistics-find-
+      responses:
+        "200":
+          description: "200"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/api-v1-statistics-1753393928'
+              examples:
+                statistics-find-month:
+                  value: "{\"year\":2022,\"month\":10,\"incomeTotalSum\":60,\"expenditureTotalSum\"\
+                    :132,\"incomes\":[{\"name\":\"용돈\",\"total\":30,\"percent\":50.0},{\"\
+                    name\":\"상여\",\"total\":20,\"percent\":33.33},{\"name\":\"금융소득\
+                    \",\"total\":10,\"percent\":16.67}],\"expenditures\":[{\"name\"\
+                    :\"교통/차량\",\"total\":45,\"percent\":34.09},{\"name\":\"문화생활\"\
+                    ,\"total\":44,\"percent\":33.33},{\"name\":\"마트/편의점\",\"total\"\
+                    :43,\"percent\":32.58}]}"
+                statistics-find-year:
+                  value: "{\"year\":2022,\"month\":null,\"incomeTotalSum\":60,\"expenditureTotalSum\"\
+                    :132,\"incomes\":[{\"name\":\"용돈\",\"total\":30,\"percent\":50.0},{\"\
+                    name\":\"상여\",\"total\":20,\"percent\":33.33},{\"name\":\"금융소득\
+                    \",\"total\":10,\"percent\":16.67}],\"expenditures\":[{\"name\"\
+                    :\"교통/차량\",\"total\":45,\"percent\":34.09},{\"name\":\"문화생활\"\
+                    ,\"total\":44,\"percent\":33.33},{\"name\":\"마트/편의점\",\"total\"\
+                    :43,\"percent\":32.58}]}"
   /api/v1/incomes/:
     post:
       tags:
@@ -16,13 +45,13 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/api-v1-incomes-incomeId1988379506'
+              $ref: '#/components/schemas/api-v1-incomes-1988379506'
             examples:
               income-create:
-                value: "{\"registerDate\":\"2022-08-04T16:58:40.706073\",\"amount\"\
+                value: "{\"registerDate\":\"2022-08-07T01:25:20.769897\",\"amount\"\
                   :1000,\"content\":\"content\",\"userCategoryId\":1}"
               income-create-fail:
-                value: "{\"registerDate\":\"2022-08-04T16:58:41.07363\",\"amount\"\
+                value: "{\"registerDate\":\"2022-08-07T01:25:20.802016\",\"amount\"\
                   :1000,\"content\":\"content\",\"userCategoryId\":1}"
       responses:
         "201":
@@ -39,7 +68,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/api-v1-incomes-incomeId-940438351'
+                $ref: '#/components/schemas/api-v1-incomes--940438351'
               examples:
                 income-create-fail:
                   value: "{\"messages\":[\"해당 사용자 카테고리는 존재하지 않습니다.\"],\"status\":400}"
@@ -61,7 +90,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/api-v1-incomes-incomeId-940438351'
+                $ref: '#/components/schemas/api-v1-incomes--940438351'
               examples:
                 income-find-by-id-fail:
                   value: "{\"messages\":[\"수입 정보가 존재하지 않습니다.\"],\"status\":400}"
@@ -73,7 +102,7 @@ paths:
                 $ref: '#/components/schemas/api-v1-incomes-incomeId-1674408626'
               examples:
                 income-find-by-id:
-                  value: "{\"id\":1,\"registerDate\":\"2022-08-04T16:58:41.268851\"\
+                  value: "{\"id\":1,\"registerDate\":\"2022-08-07T01:25:20.819858\"\
                     ,\"amount\":1000,\"content\":\"content\",\"userCategoryId\":1,\"\
                     categoryName\":\"용돈\"}"
         "403":
@@ -81,7 +110,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/api-v1-incomes-incomeId-940438351'
+                $ref: '#/components/schemas/api-v1-incomes--940438351'
               examples:
                 income-forbidden:
                   value: "{\"messages\":[\"권한이 없습니다.\"],\"status\":403}"
@@ -100,13 +129,13 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/api-v1-incomes-incomeId1988379506'
+              $ref: '#/components/schemas/api-v1-incomes-1988379506'
             examples:
               income-update:
-                value: "{\"registerDate\":\"2022-08-04T16:58:34.808883\",\"amount\"\
+                value: "{\"registerDate\":\"2022-08-07T01:25:19.84052\",\"amount\"\
                   :2000,\"content\":\"updateContent\",\"userCategoryId\":2}"
               income-update-fail:
-                value: "{\"registerDate\":\"2022-08-04T16:58:40.492173\",\"amount\"\
+                value: "{\"registerDate\":\"2022-08-07T01:25:20.737036\",\"amount\"\
                   :2000,\"content\":\"updateContent\",\"userCategoryId\":2}"
       responses:
         "204":
@@ -116,7 +145,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/api-v1-incomes-incomeId-940438351'
+                $ref: '#/components/schemas/api-v1-incomes--940438351'
               examples:
                 income-update-fail:
                   value: "{\"messages\":[\"수입 정보가 존재하지 않습니다.\"],\"status\":400}"
@@ -136,7 +165,7 @@ paths:
           description: "204"
 components:
   schemas:
-    api-v1-incomes-incomeId-940438351:
+    api-v1-incomes--940438351:
       type: object
       properties:
         messages:
@@ -151,7 +180,52 @@ components:
         status:
           type: number
           description: 에러 코드
-    api-v1-incomes-incomeId1988379506:
+    api-v1-statistics-1753393928:
+      type: object
+      properties:
+        incomes:
+          type: array
+          items:
+            type: object
+            properties:
+              total:
+                type: number
+                description: 총 합
+              name:
+                type: string
+                description: 카테고리 이름
+              percent:
+                type: number
+                description: 비율
+        month:
+          description: 월
+          oneOf:
+          - null
+          - type: number
+        year:
+          type: number
+          description: 년도
+        expenditures:
+          type: array
+          items:
+            type: object
+            properties:
+              total:
+                type: number
+                description: 총 합
+              name:
+                type: string
+                description: 카테고리 이름
+              percent:
+                type: number
+                description: 비율
+        incomeTotalSum:
+          type: number
+          description: 수입 총 합계
+        expenditureTotalSum:
+          type: number
+          description: 지출 총 합계
+    api-v1-incomes-1988379506:
       type: object
       properties:
         amount:

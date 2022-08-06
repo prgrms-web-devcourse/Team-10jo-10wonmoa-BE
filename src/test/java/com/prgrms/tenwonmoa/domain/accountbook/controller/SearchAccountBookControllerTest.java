@@ -22,6 +22,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
 import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
+import org.springframework.restdocs.operation.preprocess.Preprocessors;
 import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -81,6 +82,8 @@ class SearchAccountBookControllerTest {
 			.andExpect(status().isOk())
 			.andDo(
 				document("search-account-book",
+					Preprocessors.preprocessRequest(Preprocessors.prettyPrint()),
+					Preprocessors.preprocessResponse(Preprocessors.prettyPrint()),
 					requestParameters(
 						parameterWithName("categories").description("유저카테고리 아이디"),
 						parameterWithName("minprice").description("최소 가격"),

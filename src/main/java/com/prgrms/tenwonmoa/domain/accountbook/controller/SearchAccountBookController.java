@@ -12,8 +12,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.prgrms.tenwonmoa.domain.accountbook.dto.SearchAccountBookResponse;
-import com.prgrms.tenwonmoa.domain.accountbook.service.SearchAccountBookCmd;
+import com.prgrms.tenwonmoa.domain.accountbook.dto.FindAccountBookResponse;
+import com.prgrms.tenwonmoa.domain.accountbook.dto.service.SearchAccountBookCmd;
 import com.prgrms.tenwonmoa.domain.accountbook.service.SearchAccountBookService;
 import com.prgrms.tenwonmoa.domain.category.service.FindUserCategoryService;
 import com.prgrms.tenwonmoa.domain.common.page.PageCustomRequest;
@@ -30,7 +30,7 @@ public class SearchAccountBookController {
 	private final FindUserCategoryService userCategoryService;
 
 	@GetMapping("/search")
-	public ResponseEntity<SearchAccountBookResponse> searchAccountBooks(
+	public ResponseEntity<FindAccountBookResponse> searchAccountBooks(
 		@AuthenticationPrincipal Long userId,
 		@RequestParam(defaultValue = "") String categories,
 		@RequestParam(name = "minprice", required = false) Long minPrice,
@@ -45,7 +45,7 @@ public class SearchAccountBookController {
 
 		PageCustomRequest pageRequest = new PageCustomRequest(page, size);
 
-		SearchAccountBookResponse response = accountBookService.searchAccountBooks(userId,
+		FindAccountBookResponse response = accountBookService.searchAccountBooks(userId,
 			SearchAccountBookCmd.of(categories, minPrice, maxPrice, start, end, content), pageRequest);
 		response.setPageInfo(pageRequest);
 

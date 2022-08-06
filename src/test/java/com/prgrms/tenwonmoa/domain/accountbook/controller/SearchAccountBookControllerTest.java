@@ -1,7 +1,7 @@
 package com.prgrms.tenwonmoa.domain.accountbook.controller;
 
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.*;
-import static com.prgrms.tenwonmoa.domain.accountbook.dto.SearchAccountBookResponse.*;
+import static com.prgrms.tenwonmoa.domain.accountbook.dto.FindAccountBookResponse.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
@@ -28,8 +28,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import com.prgrms.tenwonmoa.common.annotation.WithMockCustomUser;
 import com.prgrms.tenwonmoa.config.JwtConfigure;
 import com.prgrms.tenwonmoa.config.WebSecurityConfig;
-import com.prgrms.tenwonmoa.domain.accountbook.dto.SearchAccountBookResponse;
-import com.prgrms.tenwonmoa.domain.accountbook.service.SearchAccountBookCmd;
+import com.prgrms.tenwonmoa.domain.accountbook.dto.FindAccountBookResponse;
+import com.prgrms.tenwonmoa.domain.accountbook.dto.service.SearchAccountBookCmd;
 import com.prgrms.tenwonmoa.domain.accountbook.service.SearchAccountBookService;
 import com.prgrms.tenwonmoa.domain.category.service.FindUserCategoryService;
 import com.prgrms.tenwonmoa.domain.common.page.PageCustomRequest;
@@ -60,7 +60,7 @@ class SearchAccountBookControllerTest {
 	@Test
 	@WithMockCustomUser
 	void 지출_수입_검색() throws Exception {
-		SearchAccountBookResponse response = of(
+		FindAccountBookResponse response = of(
 			List.of(
 				new Result(LocalDate.now(), 10000L, "점심", 1L, "EXPENDITURE", "식비"),
 				new Result(LocalDate.now(), 50000L, "용돈", 1L, "INCOME", "용돈")),

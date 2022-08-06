@@ -9,8 +9,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.prgrms.tenwonmoa.domain.accountbook.Expenditure;
 import com.prgrms.tenwonmoa.domain.accountbook.Income;
-import com.prgrms.tenwonmoa.domain.accountbook.dto.SearchAccountBookResponse;
-import com.prgrms.tenwonmoa.domain.accountbook.dto.SearchAccountBookResponse.Result;
+import com.prgrms.tenwonmoa.domain.accountbook.dto.FindAccountBookResponse;
+import com.prgrms.tenwonmoa.domain.accountbook.dto.FindAccountBookResponse.Result;
+import com.prgrms.tenwonmoa.domain.accountbook.dto.service.SearchAccountBookCmd;
 import com.prgrms.tenwonmoa.domain.accountbook.repository.SearchAccountBookRepository;
 import com.prgrms.tenwonmoa.domain.category.CategoryType;
 import com.prgrms.tenwonmoa.domain.common.page.PageCustomRequest;
@@ -24,7 +25,7 @@ public class SearchAccountBookService {
 
 	private final SearchAccountBookRepository repository;
 
-	public SearchAccountBookResponse searchAccountBooks(Long authenticatedId, SearchAccountBookCmd cmd,
+	public FindAccountBookResponse searchAccountBooks(Long authenticatedId, SearchAccountBookCmd cmd,
 		PageCustomRequest pageRequest) {
 		List<Expenditure> expenditures = repository.searchExpenditures(cmd.getMinPrice(), cmd.getMaxPrice(),
 			cmd.getStart(), cmd.getEnd(), cmd.getContent(), cmd.getCategories(), authenticatedId, pageRequest);
@@ -51,7 +52,7 @@ public class SearchAccountBookService {
 		return results;
 	}
 
-	private SearchAccountBookResponse sliceAndSum(List<Result> results, PageCustomRequest pageRequest) {
+	private FindAccountBookResponse sliceAndSum(List<Result> results, PageCustomRequest pageRequest) {
 		List<Result> slicedResult = results.subList(0, pageRequest.getSize());
 		Long incomeSum = 0L;
 		Long expenditureSum = 0L;
@@ -64,7 +65,7 @@ public class SearchAccountBookService {
 			}
 		}
 
-		return SearchAccountBookResponse.of(slicedResult, incomeSum, expenditureSum);
+		return FindAccountBookResponse.of(slicedResult, incomeSum, expenditureSum);
 	}
 
 }

@@ -5,12 +5,13 @@ import java.util.List;
 
 import com.prgrms.tenwonmoa.domain.common.page.PageCustomRequest;
 
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 @Getter
-@RequiredArgsConstructor
-public final class SearchAccountBookResponse {
+@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+public final class FindAccountBookResponse {
 
 	private final List<Result> results;
 
@@ -22,8 +23,8 @@ public final class SearchAccountBookResponse {
 
 	private Integer nextPage;
 
-	public static SearchAccountBookResponse of(List<Result> results, Long incomeSum, Long expenditureSum) {
-		return new SearchAccountBookResponse(results, incomeSum, expenditureSum);
+	public static FindAccountBookResponse of(List<Result> results, Long incomeSum, Long expenditureSum) {
+		return new FindAccountBookResponse(results, incomeSum, expenditureSum);
 	}
 
 	public void setPageInfo(PageCustomRequest pageRequest) {

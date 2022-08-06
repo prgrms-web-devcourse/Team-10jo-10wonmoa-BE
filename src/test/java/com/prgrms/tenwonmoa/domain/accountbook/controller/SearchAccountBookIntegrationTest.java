@@ -42,6 +42,32 @@ class SearchAccountBookIntegrationTest extends BaseControllerIntegrationTest {
 				.header(HttpHeaders.AUTHORIZATION, accessToken)
 				.param("categories", categories)
 				.param("minprice", "0")
+				.param("maxprice", "5000")
+				.param("start", LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")))
+				.param("end", LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")))
+				.param("content", "")
+				.param("size", "3")
+				.param("page", "1"))
+			.andExpect(jsonPath("$.incomeSum").value(0L))
+			.andExpect(jsonPath("$.expenditureSum").value(5000L))
+			.andExpect(jsonPath("$.currentPage").value(1))
+			.andExpect(jsonPath("$.nextPage").isEmpty())
+			.andExpect(jsonPath("$.results", hasSize(1))
+			);
+	}
+
+	@Test
+	void 검색_Api_모든_카테고리로_조회() throws Exception {
+		Long incomeCategoryId = 카테고리_등록("INCOME", "월급");
+		Long expenditureCategoryId = 카테고리_등록("EXPENDITURE", "식비");
+		수입_등록(incomeCategoryId, 10000L, "용돈", LocalDateTime.now());
+		지출_등록(expenditureCategoryId, 5000L, "점심", LocalDateTime.now());
+
+		String blankCategory = "";
+		mvc.perform(MockMvcRequestBuilders.get("/api/v1/account-book/search")
+				.header(HttpHeaders.AUTHORIZATION, accessToken)
+				.param("categories", blankCategory)
+				.param("minprice", "0")
 				.param("maxprice", "10000")
 				.param("start", LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")))
 				.param("end", LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")))
@@ -54,6 +80,7 @@ class SearchAccountBookIntegrationTest extends BaseControllerIntegrationTest {
 			.andExpect(jsonPath("$.nextPage").isEmpty())
 			.andExpect(jsonPath("$.results", hasSize(2))
 			);
+
 	}
 
 	private void 지출_등록(Long userCategoryId, Long amount,

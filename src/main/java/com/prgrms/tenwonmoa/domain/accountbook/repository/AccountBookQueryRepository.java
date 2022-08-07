@@ -7,8 +7,11 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Repository;
@@ -20,6 +23,7 @@ import com.prgrms.tenwonmoa.domain.accountbook.dto.FindDayAccountResponse;
 import com.prgrms.tenwonmoa.domain.accountbook.dto.FindMonthAccountResponse;
 import com.prgrms.tenwonmoa.domain.accountbook.dto.FindSumResponse;
 import com.prgrms.tenwonmoa.domain.accountbook.dto.MonthCondition;
+import com.prgrms.tenwonmoa.domain.accountbook.dto.MonthDetail;
 import com.prgrms.tenwonmoa.domain.category.CategoryType;
 import com.prgrms.tenwonmoa.domain.common.page.PageCustomImpl;
 import com.prgrms.tenwonmoa.domain.common.page.PageCustomRequest;
@@ -144,26 +148,34 @@ public class AccountBookQueryRepository {
 	}
 
 	public FindMonthAccountResponse findMonthAccount(Long userId, MonthCondition condition) {
-		// year가 미래인지 판단
-		// 미래면 사용자가 작성한 월만, 미래가 아니면 전체 작성된 월~
 
-		int year = condition.getYear();
+		int year = condition.getConditionYear();
 
 		Map<Integer, Long> expenditureMonthMap = queryFactory.from(expenditure)
-			.where(expenditure.registerDate.year().eq(year))
-			.orderBy(expenditure.registerDate.month().desc())
+			.where(
+				expenditure.user.id.eq(userId),
+				expenditure.registerDate.year().eq(year)
+			)
 			.transform(GroupBy.groupBy(expenditure.registerDate.month())
 				.as(GroupBy.sum(expenditure.amount))
 			);
 
 		Map<Integer, Long> incomeMonthMap = queryFactory.from(income)
-			.where(income.registerDate.year().eq(year))
-			.orderBy(income.registerDate.month().desc())
+			.where(
+				income.registerDate.year().eq(year),
+				income.user.id.eq(userId)
+			)
 			.transform(GroupBy.groupBy(income.registerDate.month())
 				.as(GroupBy.sum(income.amount))
 			);
 
-		return null;
+		List<Integer> monthList = new ArrayList<>(expenditureMonthMap.keySet());
+		monthList.addAll(incomeMonthMap.keySet());
+
+		List<MonthDetail> results = getMonthDetails(condition, new HashSet<>(monthList), expenditureMonthMap,
+			incomeMonthMap);
+
+		return new FindMonthAccountResponse(results);
 	}
 
 	public FindSumResponse findYearSum(Long userId, int year) {
@@ -184,9 +196,41 @@ public class AccountBookQueryRepository {
 			)
 			.fetchOne();
 
-		incomeSum = incomeSum == null ? 0L : incomeSum;
-		expenditureSum = expenditureSum == null ? 0L : expenditureSum;
+		incomeSum = getAmountZeroIfNull(incomeSum);
+		expenditureSum = getAmountZeroIfNull(expenditureSum);
 		return new FindSumResponse(incomeSum, expenditureSum);
+	}
+
+	private List<MonthDetail> getMonthDetails(MonthCondition monthCondition, Set<Integer> monthSet,
+		Map<Integer, Long> expenditureMap, Map<Integer, Long> incomeMap) {
+		List<MonthDetail> results = new ArrayList<>();
+
+		boolean isFuture = monthCondition.isFuture();
+		if (isFuture) {
+			Iterator<Integer> iter = monthSet.iterator();
+			while (iter.hasNext()) {
+				int month = iter.next();
+				Long incomeSum = getAmountZeroIfNull(incomeMap.get(month));
+				Long expenditureSum = getAmountZeroIfNull(expenditureMap.get(month));
+				results.add(new MonthDetail(incomeSum, expenditureSum, month));
+			}
+			return results.stream()
+				.sorted((d1, d2) -> d1.getMonth() > d2.getMonth() ? -1 : 1)
+				.collect(Collectors.toList());
+		}
+
+		Set<Integer> notFutureMonthSet = monthCondition.getNotFutureMonthSet(monthSet);
+
+		Iterator<Integer> iter = notFutureMonthSet.iterator();
+		while (iter.hasNext()) {
+			int month = iter.next();
+			Long incomeSum = getAmountZeroIfNull(incomeMap.get(month));
+			Long expenditureSum = getAmountZeroIfNull(expenditureMap.get(month));
+			results.add(new MonthDetail(incomeSum, expenditureSum, month));
+		}
+		return results.stream()
+			.sorted((d1, d2) -> d1.getMonth() > d2.getMonth() ? -1 : 1)
+			.collect(Collectors.toList());
 	}
 
 	private List<LocalDate> getPageDate(PageCustomRequest pageCustomRequest, Long userId, LocalDate date) {
@@ -227,4 +271,7 @@ public class AccountBookQueryRepository {
 		return dates.subList(((int)offset), end);
 	}
 
+	private Long getAmountZeroIfNull(Long amount) {
+		return amount == null ? 0 : amount;
+	}
 }

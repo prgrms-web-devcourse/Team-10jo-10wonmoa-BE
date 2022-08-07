@@ -8,7 +8,6 @@ import lombok.Getter;
 
 @Getter
 public class FindMonthAccountResponse extends ChunksCustom<MonthDetail> {
-	
 	public FindMonthAccountResponse(List<MonthDetail> results) {
 		super(results);
 	}

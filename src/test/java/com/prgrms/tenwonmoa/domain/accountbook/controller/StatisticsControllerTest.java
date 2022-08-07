@@ -13,9 +13,10 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.FilterType;
 import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -23,13 +24,20 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.prgrms.tenwonmoa.common.annotation.WithMockCustomUser;
 import com.prgrms.tenwonmoa.common.documentdto.FindStatisticsDataDoc;
 import com.prgrms.tenwonmoa.common.documentdto.FindStatisticsResponseDoc;
+import com.prgrms.tenwonmoa.config.JwtConfigure;
+import com.prgrms.tenwonmoa.config.WebSecurityConfig;
 import com.prgrms.tenwonmoa.domain.accountbook.dto.statistics.FindStatisticsData;
 import com.prgrms.tenwonmoa.domain.accountbook.dto.statistics.FindStatisticsResponse;
 import com.prgrms.tenwonmoa.domain.accountbook.service.StatisticsService;
 import com.prgrms.tenwonmoa.domain.user.security.jwt.filter.JwtAuthenticationFilter;
 
-@WebMvcTest(controllers = StatisticsController.class)
-@AutoConfigureMockMvc(addFilters = false)
+@WebMvcTest(controllers = StatisticsController.class,
+	excludeFilters = {
+		@ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = WebSecurityConfig.class),
+		@ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = JwtConfigure.class),
+		@ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = JwtAuthenticationFilter.class)
+	}
+)
 @AutoConfigureRestDocs
 @MockBean(JpaMetamodelMappingContext.class)
 @DisplayName("통계 컨트롤러 테스트")
@@ -40,8 +48,6 @@ class StatisticsControllerTest {
 	private MockMvc mockMvc;
 	@Autowired
 	private ObjectMapper objectMapper;
-	@MockBean
-	private JwtAuthenticationFilter jwtAuthenticationFilter;
 	@MockBean
 	private StatisticsService statisticsService;
 

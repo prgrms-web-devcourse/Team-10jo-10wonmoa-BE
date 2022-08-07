@@ -25,8 +25,8 @@ public class StatisticsController {
 	@GetMapping
 	public ResponseEntity<FindStatisticsResponse> findStatistics(
 		@AuthenticationPrincipal Long userId,
-		@RequestParam @NotBlank @Min(1000) Integer year,
-		@RequestParam(required = false) @Min(1) @Max(31) Integer month
+		@RequestParam @NotBlank @Min(1900) Integer year,
+		@RequestParam(required = false) @Min(1) @Max(12) Integer month
 	) {
 		return ResponseEntity.ok(statisticsService.searchStatistics(userId,
 			year,

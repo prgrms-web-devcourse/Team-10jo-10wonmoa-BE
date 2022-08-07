@@ -19,7 +19,7 @@ public final class FindCategoryResponse {
 		List<SingleCategoryResponse> categoryResults = categories.stream()
 			.map(userCategory -> new SingleCategoryResponse(
 				userCategory.getId(), userCategory.getCategoryName(),
-				userCategory.getCategoryType().name()))
+				userCategory.getCategoryTypeName()))
 			.collect(Collectors.toList());
 
 		return new FindCategoryResponse(categoryResults);

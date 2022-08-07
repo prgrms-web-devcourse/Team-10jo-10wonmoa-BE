@@ -30,7 +30,7 @@ public class StatisticsQueryRepository {
 	private final JPAQueryFactory queryFactory;
 
 	public List<FindStatisticsData> searchIncomeByRegisterDate(Long userId, Integer year, Integer month) {
-		return queryFactory.select(Projections.fields(FindStatisticsData.class,
+		return queryFactory.select(Projections.constructor(FindStatisticsData.class,
 				category.name.coalesce(income.categoryName).as(NAME),
 				income.amount.sum().as(TOTAL)
 			))
@@ -43,7 +43,7 @@ public class StatisticsQueryRepository {
 	}
 
 	public List<FindStatisticsData> searchExpenditureByRegisterDate(Long userId, Integer year, Integer month) {
-		return queryFactory.select(Projections.fields(FindStatisticsData.class,
+		return queryFactory.select(Projections.constructor(FindStatisticsData.class,
 				category.name.coalesce(expenditure.categoryName).as(NAME),
 				expenditure.amount.sum().as(TOTAL)
 			))

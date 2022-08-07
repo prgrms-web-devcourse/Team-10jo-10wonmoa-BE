@@ -25,7 +25,7 @@ public class TokenProvider {
 		builder.withIssuer(jwt.getIssuer());
 		builder.withIssuedAt(now);
 		if (jwt.getExpirySeconds() > 0) {
-			builder.withExpiresAt(new Date(now.getTime() + jwt.getExpirySeconds() * 1000L));
+			builder.withExpiresAt(new Date(now.getTime() + jwt.getExpirySeconds()));
 		}
 		builder.withClaim("userId", userId)
 			.withClaim("email", email);

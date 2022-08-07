@@ -44,7 +44,7 @@ public class AccountBookQueryController {
 		return ResponseEntity.ok().body(response);
 	}
 
-	@GetMapping("/sum/{date}")
+	@GetMapping("/sum/month/{date}")
 	public ResponseEntity<FindSumResponse> findMonthSum(
 		@AuthenticationPrincipal Long userId,
 		@PathVariable
@@ -55,7 +55,7 @@ public class AccountBookQueryController {
 		return ResponseEntity.ok(response);
 	}
 
-	@GetMapping("/sum/{year}")
+	@GetMapping("/sum/year/{year}")
 	public ResponseEntity<FindSumResponse> findYearSum(
 		@AuthenticationPrincipal Long userId,
 		@PathVariable int year

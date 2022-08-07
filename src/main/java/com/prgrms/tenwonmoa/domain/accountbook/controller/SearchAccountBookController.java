@@ -25,6 +25,7 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/api/v1/account-book")
 public class SearchAccountBookController {
 
+	private static final String CATEGORY_DELIMITER = ",";
 	private final SearchAccountBookService accountBookService;
 
 	private final FindUserCategoryService userCategoryService;
@@ -54,7 +55,7 @@ public class SearchAccountBookController {
 	private String getAllCategories(Long userId) {
 		List<Long> allUserCategories = userCategoryService.findAllUserCategoryIds(userId);
 
-		return String.join(",", allUserCategories.stream()
+		return String.join(CATEGORY_DELIMITER, allUserCategories.stream()
 			.map(String::valueOf)
 			.collect(Collectors.toList())
 			.toArray(String[]::new));

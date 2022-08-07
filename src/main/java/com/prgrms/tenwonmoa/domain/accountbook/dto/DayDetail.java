@@ -31,7 +31,7 @@ public class DayDetail implements Comparable<DayDetail> {
 
 	/**
 	 * 날짜별 상세 정렬 기준
-	 * 1.type: INCOME, EXPENDITURE 순으로 정렬
+	 * 1.type: EXPENDITURE, INCOME 순으로 정렬
 	 * 2.type이 같으면 등록한 최신 순으로
 	 * */
 	@Override

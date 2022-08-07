@@ -172,7 +172,7 @@ public class AccountBookQueryRepository {
 		List<Integer> monthList = new ArrayList<>(expenditureMonthMap.keySet());
 		monthList.addAll(incomeMonthMap.keySet());
 
-		List<MonthDetail> results = getMonthDetails(condition, new HashSet<>(monthList), expenditureMonthMap,
+		List<MonthDetail> results = getMonthAccountResults(condition, new HashSet<>(monthList), expenditureMonthMap,
 			incomeMonthMap);
 
 		return new FindMonthAccountResponse(results);
@@ -201,27 +201,24 @@ public class AccountBookQueryRepository {
 		return new FindSumResponse(incomeSum, expenditureSum);
 	}
 
-	private List<MonthDetail> getMonthDetails(MonthCondition monthCondition, Set<Integer> monthSet,
+	private List<MonthDetail> getMonthAccountResults(MonthCondition monthCondition, Set<Integer> monthSet,
 		Map<Integer, Long> expenditureMap, Map<Integer, Long> incomeMap) {
-		List<MonthDetail> results = new ArrayList<>();
 
 		boolean isFuture = monthCondition.isFuture();
 		if (isFuture) {
-			Iterator<Integer> iter = monthSet.iterator();
-			while (iter.hasNext()) {
-				int month = iter.next();
-				Long incomeSum = getAmountZeroIfNull(incomeMap.get(month));
-				Long expenditureSum = getAmountZeroIfNull(expenditureMap.get(month));
-				results.add(new MonthDetail(incomeSum, expenditureSum, month));
-			}
-			return results.stream()
-				.sorted((d1, d2) -> d1.getMonth() > d2.getMonth() ? -1 : 1)
-				.collect(Collectors.toList());
+			return getMonthDetails(monthSet, expenditureMap, incomeMap);
 		}
 
 		Set<Integer> notFutureMonthSet = monthCondition.getNotFutureMonthSet(monthSet);
 
-		Iterator<Integer> iter = notFutureMonthSet.iterator();
+		return getMonthDetails(notFutureMonthSet, expenditureMap, incomeMap);
+	}
+
+	private List<MonthDetail> getMonthDetails(Set<Integer> monthSet, Map<Integer, Long> expenditureMap,
+		Map<Integer, Long> incomeMap) {
+
+		List<MonthDetail> results = new ArrayList<>();
+		Iterator<Integer> iter = monthSet.iterator();
 		while (iter.hasNext()) {
 			int month = iter.next();
 			Long incomeSum = getAmountZeroIfNull(incomeMap.get(month));
@@ -273,5 +270,9 @@ public class AccountBookQueryRepository {
 
 	private Long getAmountZeroIfNull(Long amount) {
 		return amount == null ? 0 : amount;
+	}
+
+	private List<MonthDetail> getResults() {
+
 	}
 }

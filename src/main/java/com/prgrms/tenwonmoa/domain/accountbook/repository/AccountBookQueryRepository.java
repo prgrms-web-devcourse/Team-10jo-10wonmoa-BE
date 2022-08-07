@@ -271,8 +271,5 @@ public class AccountBookQueryRepository {
 	private Long getAmountZeroIfNull(Long amount) {
 		return amount == null ? 0 : amount;
 	}
-
-	private List<MonthDetail> getResults() {
-
-	}
 }
+

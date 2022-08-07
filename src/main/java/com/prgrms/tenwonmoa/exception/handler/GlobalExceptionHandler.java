@@ -8,9 +8,9 @@ import java.util.stream.Collectors;
 
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -57,8 +57,8 @@ public class GlobalExceptionHandler {
 			.body(errorResponse);
 	}
 
-	@ExceptionHandler(MethodArgumentNotValidException.class)
-	public ResponseEntity<ErrorResponse> handleAlreadyExistException(MethodArgumentNotValidException exception) {
+	@ExceptionHandler(BindException.class)
+	public ResponseEntity<ErrorResponse> handleAlreadyExistException(BindException exception) {
 		BindingResult bindingResult = exception.getBindingResult();
 		List<String> errors = bindingResult.getAllErrors()
 			.stream()

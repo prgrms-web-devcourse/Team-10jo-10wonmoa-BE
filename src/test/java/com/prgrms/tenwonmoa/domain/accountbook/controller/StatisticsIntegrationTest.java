@@ -3,7 +3,6 @@ package com.prgrms.tenwonmoa.domain.accountbook.controller;
 import static com.prgrms.tenwonmoa.common.fixture.Fixture.*;
 import static java.time.LocalDateTime.*;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import java.time.LocalDateTime;
@@ -58,6 +57,7 @@ class StatisticsIntegrationTest extends BaseControllerIntegrationTest {
 			new Income(registerDate, amount, "content", userCategory.getCategoryName(), userCategory.getUser(),
 				userCategory));
 	}
+
 	public Expenditure saveExpenditure(UserCategory userCategory, Long amount, LocalDateTime registerDate) {
 		return expenditureRepository.saveAndFlush(
 			new Expenditure(registerDate, amount, "content", userCategory.getCategoryName(), userCategory.getUser(),
@@ -70,7 +70,7 @@ class StatisticsIntegrationTest extends BaseControllerIntegrationTest {
 		loginUser = userRepository.findByEmail("testuser@gmail.com").get();
 		category = categoryRepository.save(createIncomeCategory());
 		userCategory = userCategoryRepository.save(createUserCategory(loginUser, category));
-		saveSampleData();
+		initData();
 	}
 
 	@AfterEach
@@ -84,7 +84,9 @@ class StatisticsIntegrationTest extends BaseControllerIntegrationTest {
 
 	@Test
 	void 통계_년별조회_성공() throws Exception {
-		mvc.perform(get(LOCATION_PREFIX).param(YEAR, "2021").header(HttpHeaders.AUTHORIZATION, accessToken))
+		mvc.perform(get(LOCATION_PREFIX)
+				.param(YEAR, "2021")
+				.header(HttpHeaders.AUTHORIZATION, accessToken))
 			.andExpect(status().isOk())
 			.andExpect(jsonPath("year").value(2021))
 			.andExpect(jsonPath("month").isEmpty())
@@ -97,7 +99,10 @@ class StatisticsIntegrationTest extends BaseControllerIntegrationTest {
 	@Test
 	void 통계_월별조회_성공() throws Exception {
 		mvc.perform(
-				get(LOCATION_PREFIX).param(YEAR, "2021").param(MONTH, "7").header(HttpHeaders.AUTHORIZATION, accessToken))
+				get(LOCATION_PREFIX)
+					.param(YEAR, "2021")
+					.param(MONTH, "7")
+					.header(HttpHeaders.AUTHORIZATION, accessToken))
 			.andExpect(status().isOk())
 			.andExpect(jsonPath("year").value(2021))
 			.andExpect(jsonPath("month").value(7))
@@ -109,8 +114,10 @@ class StatisticsIntegrationTest extends BaseControllerIntegrationTest {
 
 	@Test
 	void 통계_월앞에0붙였을때_성공() throws Exception {
-		mvc.perform(
-				get(LOCATION_PREFIX).param(YEAR, "2021").param(MONTH, "07").header(HttpHeaders.AUTHORIZATION, accessToken))
+		mvc.perform(get(LOCATION_PREFIX)
+				.param(YEAR, "2021")
+				.param(MONTH, "07")
+				.header(HttpHeaders.AUTHORIZATION, accessToken))
 			.andExpect(status().isOk())
 			.andExpect(jsonPath("year").value(2021))
 			.andExpect(jsonPath("month").value(07))
@@ -140,14 +147,15 @@ class StatisticsIntegrationTest extends BaseControllerIntegrationTest {
 	}
 
 	private void validateSearchStatistics(String year, String month, String expectMessage) throws Exception {
-		mvc.perform(
-				get(LOCATION_PREFIX).param(YEAR, year).param(MONTH, month).header(HttpHeaders.AUTHORIZATION, accessToken))
-			.andDo(print())
+		mvc.perform(get(LOCATION_PREFIX)
+				.param(YEAR, year)
+				.param(MONTH, month)
+				.header(HttpHeaders.AUTHORIZATION, accessToken))
 			.andExpect(status().isBadRequest())
 			.andExpect(jsonPath("messages").value(expectMessage));
 	}
 
-	private void saveSampleData() {
+	private void initData() {
 		saveIncome(userCategory, 100L, of(2021, 7, 1, 0, 0, 0));
 		saveIncome(userCategory, 200L, of(2021, 6, 5, 0, 0, 0));
 		saveIncome(userCategory, 700L, of(2021, 5, 13, 0, 0, 0));

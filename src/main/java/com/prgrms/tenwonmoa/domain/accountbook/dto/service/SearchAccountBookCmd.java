@@ -29,7 +29,7 @@ public final class SearchAccountBookCmd {
 	public static SearchAccountBookCmd of(String categoryString, Long minPrice, Long maxPrice, LocalDate start,
 		LocalDate end, String content) {
 		String[] categoryIds = categoryString.split(",");
-		List<Long> categories = Arrays.stream(categoryIds).map(Long::getLong).collect(Collectors.toList());
+		List<Long> categories = Arrays.stream(categoryIds).map(Long::valueOf).collect(Collectors.toList());
 
 		minPrice = minPrice == null ? AccountBookConst.AMOUNT_MIN : minPrice;
 		maxPrice = maxPrice == null ? AccountBookConst.AMOUNT_MAX : maxPrice;

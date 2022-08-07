@@ -40,16 +40,9 @@ class ExpenditureRepositoryTest extends RepositoryTest {
 	@Test
 	void 해당하는_유저카테고리_아이디를_가진_지출의_유저카테고리를_null_로_업데이트() {
 		//given
-		Expenditure expenditure = new Expenditure(
-			LocalDateTime.now(), 10000L, "내용", category.getName(), user, userCategory);
-
-		Expenditure expenditure2 = new Expenditure(
-			LocalDateTime.now(), 10000L, "내용", category.getName(), user, userCategory);
-
-		Expenditure expenditure3 = new Expenditure(
-			LocalDateTime.now(), 10000L, "내용", category.getName(), user, userCategory);
-
-		expenditureRepository.saveAll(List.of(expenditure, expenditure2, expenditure3));
+		save(createExpenditure(userCategory));
+		save(createExpenditure(userCategory));
+		save(createExpenditure(userCategory));
 
 		//when
 		expenditureRepository.updateUserCategoryAsNull(userCategory.getId());

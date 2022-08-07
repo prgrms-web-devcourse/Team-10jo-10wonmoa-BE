@@ -17,4 +17,6 @@ public interface UserCategoryRepository extends JpaRepository<UserCategory, Long
 		+ "where uc.user.id = :userId "
 		+ "and c.categoryType = :categoryType")
 	List<UserCategory> findByUserIdAndCategoryType(Long userId, CategoryType categoryType);
+
+	List<UserCategory> findByUserId(Long userId);
 }

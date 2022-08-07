@@ -69,7 +69,7 @@ dependencies {
     implementation 'org.flywaydb:flyway-mysql:8.5.12'
 
 
-//test
+    //test
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
 

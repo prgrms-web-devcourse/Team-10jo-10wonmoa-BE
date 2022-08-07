@@ -1,6 +1,7 @@
 package com.prgrms.tenwonmoa.domain.accountbook.controller;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
@@ -12,7 +13,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.prgrms.tenwonmoa.domain.accountbook.dto.FindDayAccountResponse;
+import com.prgrms.tenwonmoa.domain.accountbook.dto.FindMonthAccountResponse;
 import com.prgrms.tenwonmoa.domain.accountbook.dto.FindSumResponse;
+import com.prgrms.tenwonmoa.domain.accountbook.dto.MonthCondition;
 import com.prgrms.tenwonmoa.domain.accountbook.service.AccountBookQueryService;
 import com.prgrms.tenwonmoa.domain.common.page.PageCustomImpl;
 import com.prgrms.tenwonmoa.domain.common.page.PageCustomRequest;
@@ -41,7 +44,7 @@ public class AccountBookQueryController {
 		return ResponseEntity.ok().body(response);
 	}
 
-	@GetMapping("/sum/{date}")
+	@GetMapping("/sum/month/{date}")
 	public ResponseEntity<FindSumResponse> findMonthSum(
 		@AuthenticationPrincipal Long userId,
 		@PathVariable
@@ -51,5 +54,25 @@ public class AccountBookQueryController {
 		FindSumResponse response = accountBookQueryService.findMonthSum(userId, date);
 		return ResponseEntity.ok(response);
 	}
+
+	@GetMapping("/sum/year/{year}")
+	public ResponseEntity<FindSumResponse> findYearSum(
+		@AuthenticationPrincipal Long userId,
+		@PathVariable int year
+	) {
+		FindSumResponse response = accountBookQueryService.findYearSum(userId, year);
+		return ResponseEntity.ok(response);
+	}
+
+	@GetMapping("/month/{year}")
+	public ResponseEntity<FindMonthAccountResponse> findMonthAccount(
+		@AuthenticationPrincipal Long userId,
+		@PathVariable int year
+	) {
+		MonthCondition condition = new MonthCondition(LocalDateTime.now(), year);
+		FindMonthAccountResponse response = accountBookQueryService.findMonthAccount(userId, condition);
+		return ResponseEntity.ok(response);
+	}
+
 }
 

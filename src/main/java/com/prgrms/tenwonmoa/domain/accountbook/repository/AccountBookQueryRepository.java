@@ -7,8 +7,11 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Repository;
@@ -17,10 +20,14 @@ import com.prgrms.tenwonmoa.domain.accountbook.Expenditure;
 import com.prgrms.tenwonmoa.domain.accountbook.Income;
 import com.prgrms.tenwonmoa.domain.accountbook.dto.DayDetail;
 import com.prgrms.tenwonmoa.domain.accountbook.dto.FindDayAccountResponse;
+import com.prgrms.tenwonmoa.domain.accountbook.dto.FindMonthAccountResponse;
 import com.prgrms.tenwonmoa.domain.accountbook.dto.FindSumResponse;
+import com.prgrms.tenwonmoa.domain.accountbook.dto.MonthCondition;
+import com.prgrms.tenwonmoa.domain.accountbook.dto.MonthDetail;
 import com.prgrms.tenwonmoa.domain.category.CategoryType;
 import com.prgrms.tenwonmoa.domain.common.page.PageCustomImpl;
 import com.prgrms.tenwonmoa.domain.common.page.PageCustomRequest;
+import com.querydsl.core.group.GroupBy;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
 import lombok.RequiredArgsConstructor;
@@ -140,6 +147,89 @@ public class AccountBookQueryRepository {
 		return new FindSumResponse(incomeSum, expenditureSum);
 	}
 
+	public FindMonthAccountResponse findMonthAccount(Long userId, MonthCondition condition) {
+
+		int year = condition.getConditionYear();
+
+		Map<Integer, Long> expenditureMonthMap = queryFactory.from(expenditure)
+			.where(
+				expenditure.user.id.eq(userId),
+				expenditure.registerDate.year().eq(year)
+			)
+			.transform(GroupBy.groupBy(expenditure.registerDate.month())
+				.as(GroupBy.sum(expenditure.amount))
+			);
+
+		Map<Integer, Long> incomeMonthMap = queryFactory.from(income)
+			.where(
+				income.registerDate.year().eq(year),
+				income.user.id.eq(userId)
+			)
+			.transform(GroupBy.groupBy(income.registerDate.month())
+				.as(GroupBy.sum(income.amount))
+			);
+
+		List<Integer> monthList = new ArrayList<>(expenditureMonthMap.keySet());
+		monthList.addAll(incomeMonthMap.keySet());
+
+		List<MonthDetail> results = getMonthAccountResults(condition, new HashSet<>(monthList), expenditureMonthMap,
+			incomeMonthMap);
+
+		return new FindMonthAccountResponse(results);
+	}
+
+	public FindSumResponse findYearSum(Long userId, int year) {
+
+		Long incomeSum = queryFactory.select(income.amount.sum())
+			.from(income)
+			.groupBy(income.registerDate.year())
+			.where(income.registerDate.year().eq(year),
+				income.user.id.eq(userId)
+			)
+			.fetchOne();
+
+		Long expenditureSum = queryFactory.select(expenditure.amount.sum())
+			.from(expenditure)
+			.groupBy(expenditure.registerDate.year())
+			.where(expenditure.registerDate.year().eq(year),
+				expenditure.user.id.eq(userId)
+			)
+			.fetchOne();
+
+		incomeSum = getAmountZeroIfNull(incomeSum);
+		expenditureSum = getAmountZeroIfNull(expenditureSum);
+		return new FindSumResponse(incomeSum, expenditureSum);
+	}
+
+	private List<MonthDetail> getMonthAccountResults(MonthCondition monthCondition, Set<Integer> monthSet,
+		Map<Integer, Long> expenditureMap, Map<Integer, Long> incomeMap) {
+
+		boolean isFuture = monthCondition.isFuture();
+		if (isFuture) {
+			return getMonthDetails(monthSet, expenditureMap, incomeMap);
+		}
+
+		Set<Integer> notFutureMonthSet = monthCondition.getNotFutureMonthSet(monthSet);
+
+		return getMonthDetails(notFutureMonthSet, expenditureMap, incomeMap);
+	}
+
+	private List<MonthDetail> getMonthDetails(Set<Integer> monthSet, Map<Integer, Long> expenditureMap,
+		Map<Integer, Long> incomeMap) {
+
+		List<MonthDetail> results = new ArrayList<>();
+		Iterator<Integer> iter = monthSet.iterator();
+		while (iter.hasNext()) {
+			int month = iter.next();
+			Long incomeSum = getAmountZeroIfNull(incomeMap.get(month));
+			Long expenditureSum = getAmountZeroIfNull(expenditureMap.get(month));
+			results.add(new MonthDetail(incomeSum, expenditureSum, month));
+		}
+		return results.stream()
+			.sorted((d1, d2) -> d1.getMonth() > d2.getMonth() ? -1 : 1)
+			.collect(Collectors.toList());
+	}
+
 	private List<LocalDate> getPageDate(PageCustomRequest pageCustomRequest, Long userId, LocalDate date) {
 
 		long offset = pageCustomRequest.getOffset();
@@ -178,4 +268,8 @@ public class AccountBookQueryRepository {
 		return dates.subList(((int)offset), end);
 	}
 
+	private Long getAmountZeroIfNull(Long amount) {
+		return amount == null ? 0 : amount;
+	}
 }
+

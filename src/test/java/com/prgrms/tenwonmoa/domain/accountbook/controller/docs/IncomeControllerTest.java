@@ -1,4 +1,4 @@
-package com.prgrms.tenwonmoa.domain.accountbook.controller;
+package com.prgrms.tenwonmoa.domain.accountbook.controller.docs;
 
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.*;
 import static com.prgrms.tenwonmoa.exception.message.Message.*;
@@ -28,6 +28,7 @@ import com.prgrms.tenwonmoa.common.documentdto.CreateIncomeRequestDoc;
 import com.prgrms.tenwonmoa.common.documentdto.ErrorResponseDoc;
 import com.prgrms.tenwonmoa.common.documentdto.FindIncomeResponseDoc;
 import com.prgrms.tenwonmoa.common.documentdto.UpdateIncomeRequestDoc;
+import com.prgrms.tenwonmoa.domain.accountbook.controller.IncomeController;
 import com.prgrms.tenwonmoa.domain.accountbook.dto.income.CreateIncomeRequest;
 import com.prgrms.tenwonmoa.domain.accountbook.dto.income.FindIncomeResponse;
 import com.prgrms.tenwonmoa.domain.accountbook.dto.income.UpdateIncomeRequest;

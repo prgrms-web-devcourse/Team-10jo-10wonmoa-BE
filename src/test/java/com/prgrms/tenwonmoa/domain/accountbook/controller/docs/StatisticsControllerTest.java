@@ -1,4 +1,4 @@
-package com.prgrms.tenwonmoa.domain.accountbook.controller;
+package com.prgrms.tenwonmoa.domain.accountbook.controller.docs;
 
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.*;
 import static org.mockito.BDDMockito.*;
@@ -26,6 +26,7 @@ import com.prgrms.tenwonmoa.common.documentdto.FindStatisticsDataDoc;
 import com.prgrms.tenwonmoa.common.documentdto.FindStatisticsResponseDoc;
 import com.prgrms.tenwonmoa.config.JwtConfigure;
 import com.prgrms.tenwonmoa.config.WebSecurityConfig;
+import com.prgrms.tenwonmoa.domain.accountbook.controller.StatisticsController;
 import com.prgrms.tenwonmoa.domain.accountbook.dto.statistics.FindStatisticsData;
 import com.prgrms.tenwonmoa.domain.accountbook.dto.statistics.FindStatisticsResponse;
 import com.prgrms.tenwonmoa.domain.accountbook.service.StatisticsService;

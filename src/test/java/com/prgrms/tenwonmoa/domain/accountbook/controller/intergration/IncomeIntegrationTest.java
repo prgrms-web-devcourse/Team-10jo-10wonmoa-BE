@@ -1,4 +1,4 @@
-package com.prgrms.tenwonmoa.domain.accountbook.controller;
+package com.prgrms.tenwonmoa.domain.accountbook.controller.intergration;
 
 import static com.prgrms.tenwonmoa.common.fixture.Fixture.*;
 import static com.prgrms.tenwonmoa.domain.category.CategoryType.*;
@@ -140,7 +140,8 @@ class IncomeIntegrationTest extends BaseControllerIntegrationTest {
 		UpdateIncomeRequest updateIncomeRequest = new UpdateIncomeRequest(LocalDateTime.now(), 2000L, "updateContent",
 			otherUserCategory.getId());
 
-		mvc.perform(put(LOCATION_PREFIX + "/{incomeId}", income.getId()).contentType(MediaType.APPLICATION_JSON)
+		mvc.perform(put(LOCATION_PREFIX + "/{incomeId}", income.getId())
+			.contentType(MediaType.APPLICATION_JSON)
 			.content(objectMapper.writeValueAsString(updateIncomeRequest))
 			.header(HttpHeaders.AUTHORIZATION, accessToken)).andExpect(status().isNoContent());
 

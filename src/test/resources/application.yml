@@ -26,5 +26,5 @@ jwt:
   header: testToken
   issuer: testIssuer
   client-secret: lsuvomkeoiotkbzdjrejfgdsfngusviykzsvjoriyukscpmxiijmpfsdwveljsml
-  expiry-seconds: 100
-  refresh-expiry-seconds: 10000
+  expiry-seconds-millis: 3600000
+  refresh-expiry-seconds-millis: 1209600000

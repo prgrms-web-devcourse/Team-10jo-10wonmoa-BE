@@ -46,6 +46,10 @@ public class UserCategory extends BaseEntity {
 		return this.category.getCategoryType().name();
 	}
 
+	public CategoryType getCategoryType() {
+		return this.category.getCategoryType();
+	}
+
 	public void updateCategoryAsNull() {
 		this.category = null;
 	}

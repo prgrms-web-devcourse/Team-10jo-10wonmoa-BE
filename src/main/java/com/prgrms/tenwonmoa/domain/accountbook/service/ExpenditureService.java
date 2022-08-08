@@ -6,12 +6,15 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.prgrms.tenwonmoa.domain.accountbook.Expenditure;
+import com.prgrms.tenwonmoa.domain.accountbook.Income;
 import com.prgrms.tenwonmoa.domain.accountbook.dto.expenditure.CreateExpenditureRequest;
 import com.prgrms.tenwonmoa.domain.accountbook.dto.expenditure.CreateExpenditureResponse;
 import com.prgrms.tenwonmoa.domain.accountbook.dto.expenditure.FindExpenditureResponse;
 import com.prgrms.tenwonmoa.domain.accountbook.dto.expenditure.UpdateExpenditureRequest;
 import com.prgrms.tenwonmoa.domain.accountbook.repository.ExpenditureRepository;
+import com.prgrms.tenwonmoa.domain.accountbook.repository.IncomeRepository;
 import com.prgrms.tenwonmoa.domain.category.Category;
+import com.prgrms.tenwonmoa.domain.category.CategoryType;
 import com.prgrms.tenwonmoa.domain.category.UserCategory;
 import com.prgrms.tenwonmoa.domain.category.repository.CategoryRepository;
 import com.prgrms.tenwonmoa.domain.category.repository.UserCategoryRepository;
@@ -27,6 +30,7 @@ public class ExpenditureService {
 	private final UserCategoryRepository userCategoryRepository;
 	private final CategoryRepository categoryRepository;
 	private final ExpenditureRepository expenditureRepository;
+	private final IncomeRepository incomeRepository;
 
 	public CreateExpenditureResponse createExpenditure(Long authenticatedUserId,
 		CreateExpenditureRequest createExpenditureRequest) {
@@ -46,14 +50,17 @@ public class ExpenditureService {
 		UpdateExpenditureRequest updateExpenditureRequest) {
 
 		Expenditure expenditure = getExpenditure(expenditureId);
-		User expenditureUser = expenditure.getUser();
-
-		expenditureUser.validateLoginUser(authenticatedUserId);
-
-		// 변경하려는 userCategory
+		expenditure.validateOwner(authenticatedUserId);
 		UserCategory userCategory = getUserCategory(updateExpenditureRequest.getUserCategoryId());
 
-		expenditure.update(userCategory, updateExpenditureRequest);
+		if (CategoryType.isIncome(expenditure.getCategoryType())) {
+			expenditureRepository.delete(expenditure);
+			Income income = updateExpenditureRequest.toEntity(expenditure.getUser(), userCategory,
+				userCategory.getCategoryName());
+			incomeRepository.save(income);
+		} else {
+			expenditure.update(userCategory, updateExpenditureRequest);
+		}
 	}
 
 	public FindExpenditureResponse findExpenditure(Long authenticatedUserId, Long expenditureId) {

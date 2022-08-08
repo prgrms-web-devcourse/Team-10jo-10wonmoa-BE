@@ -14,6 +14,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.prgrms.tenwonmoa.exception.message.Message;
 import com.prgrms.tenwonmoa.exception.response.ErrorResponse;
 
 public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint {
@@ -23,6 +24,9 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
 		AuthenticationException authException) throws IOException, ServletException {
 
 		String errorMessage = (String)request.getAttribute("exception");
+		if (errorMessage == null) {
+			errorMessage = Message.NOT_NULL_TOKEN.getMessage();
+		}
 
 		ErrorResponse errorResponse =
 			new ErrorResponse(List.of(errorMessage), HttpStatus.UNAUTHORIZED.value());

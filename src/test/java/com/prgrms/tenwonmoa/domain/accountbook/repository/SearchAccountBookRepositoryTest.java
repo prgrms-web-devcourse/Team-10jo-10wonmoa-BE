@@ -15,6 +15,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.prgrms.tenwonmoa.common.RepositoryTest;
 import com.prgrms.tenwonmoa.domain.accountbook.Expenditure;
+import com.prgrms.tenwonmoa.domain.accountbook.Income;
+import com.prgrms.tenwonmoa.domain.accountbook.dto.AccountBookItem;
 import com.prgrms.tenwonmoa.domain.category.Category;
 import com.prgrms.tenwonmoa.domain.category.CategoryType;
 import com.prgrms.tenwonmoa.domain.category.UserCategory;
@@ -32,8 +34,12 @@ class SearchAccountBookRepositoryTest extends RepositoryTest {
 	private Category expenditureCategory;
 	private Category expenditureCategory2;
 
+	private Category incomeCategory;
+
 	private UserCategory expenditureUserCategory;
 	private UserCategory expenditureUserCategory2;
+
+	private UserCategory incomeUserCategory;
 
 	@BeforeEach
 	void setup() {
@@ -42,12 +48,17 @@ class SearchAccountBookRepositoryTest extends RepositoryTest {
 		expenditureCategory = save(new Category("식비", CategoryType.EXPENDITURE));
 		expenditureCategory2 = save(new Category("문화생활", CategoryType.EXPENDITURE));
 
+		incomeCategory = save(new Category("월급", CategoryType.INCOME));
+
 		expenditureUserCategory = save(new UserCategory(user, expenditureCategory));
 		expenditureUserCategory2 = save(new UserCategory(user, expenditureCategory2));
+
+		incomeUserCategory = save(new UserCategory(user, incomeCategory));
 	}
 
 	@Test
-	void 금액_검색_조건으로_지출_조회() {
+	void 금액_검색_조건으로_조회() {
+		//given
 		save(new Expenditure(
 			LocalDateTime.now().minusDays(2), 1000L, "점심식사",
 			expenditureCategory.getName(), user, expenditureUserCategory));
@@ -60,22 +71,30 @@ class SearchAccountBookRepositoryTest extends RepositoryTest {
 			LocalDateTime.now().minusDays(1), 10000L, "영화관람",
 			expenditureCategory2.getName(), user, expenditureUserCategory2));
 
-		List<Long> allUserCategoryIds = List.of(expenditureUserCategory.getId(), expenditureUserCategory2.getId());
+		save(new Income(
+			LocalDateTime.now().minusDays(3), 50000L, "월급1",
+			incomeCategory.getName(), user, incomeUserCategory));
 
-		List<Expenditure> firstPage = repository.searchExpenditures(
-			1000L, 20000L, LEFT_MOST_REGISTER_DATE, RIGHT_MOST_REGISTER_DATE,
-			"", allUserCategoryIds, user.getId(), new PageCustomRequest(1, 2));
+		save(new Income(
+			LocalDateTime.now(), 100000L, "월급2",
+			incomeCategory.getName(), user, incomeUserCategory));
 
-		List<Expenditure> secondPage = repository.searchExpenditures(
-			1000L, 20000L, LEFT_MOST_REGISTER_DATE, RIGHT_MOST_REGISTER_DATE,
-			"", allUserCategoryIds, user.getId(), new PageCustomRequest(2, 2));
+		List<Long> allUserCategoryIds = List.of(expenditureUserCategory.getId(),
+			expenditureUserCategory2.getId(), incomeUserCategory.getId());
 
-		assertThat(firstPage).extracting(Expenditure::getAmount).containsExactly(10000L, 10000L);
-		assertThat(secondPage).extracting(Expenditure::getAmount).containsExactly(1000L);
+		//when
+		List<AccountBookItem> firstPage = repository.searchAccountBook(
+			1000L, 50000L, LEFT_MOST_REGISTER_DATE, RIGHT_MOST_REGISTER_DATE,
+			"", allUserCategoryIds, user.getId(), new PageCustomRequest(1, 10));
+
+		//then
+		assertThat(firstPage).extracting(AccountBookItem::getAmount)
+			.containsExactlyInAnyOrder(1000L, 10000L, 10000L, 50000L);
 	}
 
 	@Test
-	void 내용_조건으로_지출_조회() {
+	void 내용_조건으로_조회() {
+		//given
 		save(new Expenditure(
 			LocalDateTime.now().minusDays(2), 1000L, "점심식사",
 			expenditureCategory.getName(), user, expenditureUserCategory));
@@ -92,22 +111,26 @@ class SearchAccountBookRepositoryTest extends RepositoryTest {
 			LocalDateTime.now().minusDays(1), 10000L, "문화 영화 관람",
 			expenditureCategory2.getName(), user, expenditureUserCategory2));
 
-		List<Long> allUserCategoryIds = List.of(expenditureUserCategory.getId(), expenditureUserCategory2.getId());
+		save(new Income(
+			LocalDateTime.now().minusDays(1), 10000L, "문화 영화 관람",
+			incomeCategory.getName(), user, incomeUserCategory));
 
-		List<Expenditure> firstPage = repository.searchExpenditures(
+		List<Long> allUserCategoryIds = List.of(expenditureUserCategory.getId(), expenditureUserCategory2.getId(),
+			incomeUserCategory.getId());
+
+		//when
+		List<AccountBookItem> firstPage = repository.searchAccountBook(
 			AMOUNT_MIN, AMOUNT_MAX, LEFT_MOST_REGISTER_DATE,
-			RIGHT_MOST_REGISTER_DATE, "영화", allUserCategoryIds, user.getId(), new PageCustomRequest(1, 2));
+			RIGHT_MOST_REGISTER_DATE, "영화", allUserCategoryIds, user.getId(), new PageCustomRequest(1, 10));
 
-		List<Expenditure> secondPage = repository.searchExpenditures(
-			AMOUNT_MIN, AMOUNT_MAX, LEFT_MOST_REGISTER_DATE,
-			RIGHT_MOST_REGISTER_DATE, "영화", allUserCategoryIds, user.getId(), new PageCustomRequest(2, 2));
-
-		assertThat(firstPage).extracting(Expenditure::getContent).containsExactly("문화 영화 관람", "영화관람");
-		assertThat(secondPage).extracting(Expenditure::getContent).containsExactly("영화");
+		//then
+		assertThat(firstPage).extracting(AccountBookItem::getContent)
+			.containsExactly("문화 영화 관람", "문화 영화 관람", "영화관람", "영화");
 	}
 
 	@Test
-	void 등록날짜_조건으로_지출_조회() {
+	void 등록날짜_조건으로_조회() {
+		//given
 		LocalDateTime registerDate = LocalDateTime.now().minusDays(10);
 		LocalDateTime registerDate2 = LocalDateTime.now().minusDays(5);
 		LocalDateTime registerDate3 = LocalDateTime.now().minusDays(2);
@@ -131,16 +154,19 @@ class SearchAccountBookRepositoryTest extends RepositoryTest {
 
 		List<Long> allUserCategoryIds = List.of(expenditureUserCategory.getId(), expenditureUserCategory2.getId());
 
-		List<Expenditure> results = repository.searchExpenditures(
+		//when
+		List<AccountBookItem> results = repository.searchAccountBook(
 			AMOUNT_MIN, AMOUNT_MAX, LocalDate.now().minusDays(6),
 			LocalDate.now(), "", allUserCategoryIds, user.getId(), new PageCustomRequest(1, 10));
 
-		assertThat(results).extracting(Expenditure::getRegisterDate)
+		//then
+		assertThat(results).extracting(AccountBookItem::getRegisterTime)
 			.containsExactly(registerDate4, registerDate3, registerDate2);
 	}
 
 	@Test
-	void 카테고리_아이디로_지출_조회() {
+	void 카테고리_아이디로_조회() {
+		//given
 		save(new Expenditure(
 			LocalDateTime.now().minusDays(10), 1000L, "점심식사",
 			expenditureCategory.getName(), user, expenditureUserCategory));
@@ -156,17 +182,18 @@ class SearchAccountBookRepositoryTest extends RepositoryTest {
 		save(new Expenditure(
 			LocalDateTime.now().minusDays(1), 10000L, "문화 영화 관람",
 			expenditureCategory2.getName(), user, expenditureUserCategory2));
-
-		List<Expenditure> results = repository.searchExpenditures(
+		//when
+		List<AccountBookItem> results = repository.searchAccountBook(
 			AMOUNT_MIN, AMOUNT_MAX, LEFT_MOST_REGISTER_DATE,
 			RIGHT_MOST_REGISTER_DATE, "", List.of(expenditureUserCategory.getId()), user.getId(),
 			new PageCustomRequest(1, 10));
 
-		List<Expenditure> results2 = repository.searchExpenditures(
+		List<AccountBookItem> results2 = repository.searchAccountBook(
 			AMOUNT_MIN, AMOUNT_MAX, LEFT_MOST_REGISTER_DATE,
 			RIGHT_MOST_REGISTER_DATE, "", List.of(expenditureUserCategory2.getId()), user.getId(),
 			new PageCustomRequest(1, 10));
 
+		//then
 		assertThat(results).hasSize(1);
 		assertThat(results2).hasSize(3);
 	}

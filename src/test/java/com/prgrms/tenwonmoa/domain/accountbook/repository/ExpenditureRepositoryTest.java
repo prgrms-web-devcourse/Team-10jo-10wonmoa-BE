@@ -55,6 +55,27 @@ class ExpenditureRepositoryTest extends RepositoryTest {
 		assertThat(categories).containsExactly(null, null, null);
 	}
 
+	@Test
+	void 해당하는_유저카테고리를_가지는_지출의_카테고리_이름_필드_업데이트() {
+		//given
+		save(createExpenditure(userCategory));
+		save(createExpenditure(userCategory));
+		save(createExpenditure(userCategory));
+
+		//when
+		// Expenditure의 categoryName 필드 접근 위해 가지고 있는 카테고리를 null 로 변경
+		userCategory.updateCategoryAsNull();
+		merge(userCategory);
+
+		expenditureRepository.updateCategoryName(userCategory.getId(), "업데이트된카테고리이름");
+
+		//then
+		List<Expenditure> expenditures = expenditureRepository.findAll();
+
+		assertThat(expenditures).extracting(Expenditure::getCategoryName)
+			.containsExactlyInAnyOrder("업데이트된카테고리이름", "업데이트된카테고리이름", "업데이트된카테고리이름");
+	}
+
 	private void createExpenditures(int count) {
 		for (int i = 0; i < count; i++) {
 			expenditureRepository.save(

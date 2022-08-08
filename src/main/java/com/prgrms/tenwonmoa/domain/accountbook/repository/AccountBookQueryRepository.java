@@ -18,7 +18,7 @@ import org.springframework.stereotype.Repository;
 
 import com.prgrms.tenwonmoa.domain.accountbook.Expenditure;
 import com.prgrms.tenwonmoa.domain.accountbook.Income;
-import com.prgrms.tenwonmoa.domain.accountbook.dto.DayDetail;
+import com.prgrms.tenwonmoa.domain.accountbook.dto.AccountBookItem;
 import com.prgrms.tenwonmoa.domain.accountbook.dto.FindDayAccountResponse;
 import com.prgrms.tenwonmoa.domain.accountbook.dto.FindMonthAccountResponse;
 import com.prgrms.tenwonmoa.domain.accountbook.dto.FindSumResponse;
@@ -93,10 +93,10 @@ public class AccountBookQueryRepository {
 		// pageDate 가져 온 것을 iterator 돌려서 날짜에 해단하는 response 만들기.
 		dates.iterator().forEachRemaining(
 			d -> {
-				List<DayDetail> dayDetails = monthExpenditure.stream()
+				List<AccountBookItem> dayDetails = monthExpenditure.stream()
 					.filter(e -> e.getDate().isEqual(d))
 					.map(
-						e -> new DayDetail(e.getId(), CategoryType.EXPENDITURE.toString(), e.getAmount(),
+						e -> new AccountBookItem(e.getId(), CategoryType.EXPENDITURE.toString(), e.getAmount(),
 							e.getContent(), e.getCategoryName(),
 							e.getRegisterDate()))
 					.collect(Collectors.toList());
@@ -105,7 +105,8 @@ public class AccountBookQueryRepository {
 					monthIncome.stream()
 						.filter(i -> i.getDate().isEqual(d))
 						.map(
-							i -> new DayDetail(i.getId(), CategoryType.INCOME.toString(), i.getAmount(), i.getContent(),
+							i -> new AccountBookItem(i.getId(), CategoryType.INCOME.toString(), i.getAmount(),
+								i.getContent(),
 								i.getCategoryName(), i.getRegisterDate()))
 						.collect(Collectors.toList())
 				);

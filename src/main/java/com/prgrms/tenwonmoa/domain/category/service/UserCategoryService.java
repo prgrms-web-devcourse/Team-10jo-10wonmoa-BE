@@ -7,6 +7,8 @@ import java.util.NoSuchElementException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.prgrms.tenwonmoa.domain.accountbook.service.ExpenditureService;
+import com.prgrms.tenwonmoa.domain.accountbook.service.IncomeService;
 import com.prgrms.tenwonmoa.domain.category.Category;
 import com.prgrms.tenwonmoa.domain.category.UserCategory;
 import com.prgrms.tenwonmoa.domain.category.repository.UserCategoryRepository;
@@ -23,6 +25,10 @@ public class UserCategoryService {
 	private final UserCategoryRepository userCategoryRepository;
 
 	private final CategoryService categoryService;
+
+	private final ExpenditureService expenditureService;
+
+	private final IncomeService incomeService;
 
 	public Long createUserCategory(User user, String catgoryType, String name) {
 		Category savedCategory = categoryService.createCategory(catgoryType, name);
@@ -61,9 +67,16 @@ public class UserCategoryService {
 		Category category = userCategory.getCategory();
 		userCategory.updateCategoryAsNull();
 
+		makeCategoryNameUpToDate(userCategoryId, category.getName());
+
 		checkNotNull(category, String.format(
 			"삭제된 카테고리는 다시 삭제할 수 없습니다, 유저 아이디 : %d, 유저 카테고리 아이디 : %d",
 			authenticatedUser.getId(), userCategoryId));
 		categoryService.deleteCategory(category.getId());
+	}
+
+	private void makeCategoryNameUpToDate(Long userCategoryId, String categoryName) {
+		incomeService.updateCategoryNameField(userCategoryId, categoryName);
+		expenditureService.updateCategoryNameField(userCategoryId, categoryName);
 	}
 }

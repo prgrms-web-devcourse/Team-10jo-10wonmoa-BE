@@ -7,6 +7,30 @@ servers:
 - url: http://3.39.184.232:8080
 tags: []
 paths:
+  /api/v1/budgets:
+    post:
+      tags:
+      - api
+      operationId: budget-create
+      requestBody:
+        content:
+          application/json;charset=UTF-8:
+            schema:
+              $ref: '#/components/schemas/api-v1-budgets1364090725'
+            examples:
+              budget-create:
+                value: "{\"amount\":1000,\"registerDate\":\"2022-08-09\",\"userCategoryId\"\
+                  :1}"
+      responses:
+        "201":
+          description: "201"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/api-v1-budgets-640988555'
+              examples:
+                budget-create:
+                  value: "{\"id\":1}"
   /api/v1/statistics:
     get:
       tags:
@@ -36,6 +60,91 @@ paths:
                     :\"교통/차량\",\"total\":45,\"percent\":34.09},{\"name\":\"문화생활\"\
                     ,\"total\":44,\"percent\":33.33},{\"name\":\"마트/편의점\",\"total\"\
                     :43,\"percent\":32.58}]}"
+  /api/v1/account-book/search:
+    get:
+      tags:
+      - api
+      operationId: search-account-book
+      parameters:
+      - name: categories
+        in: query
+        description: 유저카테고리 아이디
+        required: true
+        schema:
+          type: string
+      - name: minprice
+        in: query
+        description: 최소 가격
+        required: true
+        schema:
+          type: string
+      - name: maxprice
+        in: query
+        description: 최대 가격
+        required: true
+        schema:
+          type: string
+      - name: start
+        in: query
+        description: 시작 등록일
+        required: true
+        schema:
+          type: string
+      - name: end
+        in: query
+        description: 종료 등록일
+        required: true
+        schema:
+          type: string
+      - name: content
+        in: query
+        description: "지출, 수입의 내용"
+        required: true
+        schema:
+          type: string
+      - name: size
+        in: query
+        description: 페이지의 사이즈
+        required: true
+        schema:
+          type: string
+      - name: page
+        in: query
+        description: 페이지 번호
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: "200"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/api-v1-account-book-search-1060074379'
+              examples:
+                search-account-book:
+                  value: |-
+                    {
+                      "results" : [ {
+                        "registerDate" : "2022-08-09",
+                        "amount" : 10000,
+                        "content" : "점심",
+                        "id" : 1,
+                        "type" : "EXPENDITURE",
+                        "categoryName" : "식비"
+                      }, {
+                        "registerDate" : "2022-08-09",
+                        "amount" : 50000,
+                        "content" : "용돈",
+                        "id" : 1,
+                        "type" : "INCOME",
+                        "categoryName" : "용돈"
+                      } ],
+                      "currentPage" : 1,
+                      "nextPage" : 2,
+                      "incomeSum" : 50000,
+                      "expenditureSum" : 10000
+                    }
   /api/v1/incomes/:
     post:
       tags:
@@ -45,13 +154,13 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/api-v1-incomes-1988379506'
+              $ref: '#/components/schemas/api-v1-incomes-incomeId1988379506'
             examples:
               income-create:
-                value: "{\"registerDate\":\"2022-08-07T01:25:20.769897\",\"amount\"\
+                value: "{\"registerDate\":\"2022-08-09T04:14:00.916932\",\"amount\"\
                   :1000,\"content\":\"content\",\"userCategoryId\":1}"
               income-create-fail:
-                value: "{\"registerDate\":\"2022-08-07T01:25:20.802016\",\"amount\"\
+                value: "{\"registerDate\":\"2022-08-09T04:14:00.953506\",\"amount\"\
                   :1000,\"content\":\"content\",\"userCategoryId\":1}"
       responses:
         "201":
@@ -68,7 +177,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/api-v1-incomes--940438351'
+                $ref: '#/components/schemas/api-v1-incomes-incomeId-940438351'
               examples:
                 income-create-fail:
                   value: "{\"messages\":[\"해당 사용자 카테고리는 존재하지 않습니다.\"],\"status\":400}"
@@ -90,7 +199,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/api-v1-incomes--940438351'
+                $ref: '#/components/schemas/api-v1-incomes-incomeId-940438351'
               examples:
                 income-find-by-id-fail:
                   value: "{\"messages\":[\"수입 정보가 존재하지 않습니다.\"],\"status\":400}"
@@ -102,7 +211,7 @@ paths:
                 $ref: '#/components/schemas/api-v1-incomes-incomeId-1674408626'
               examples:
                 income-find-by-id:
-                  value: "{\"id\":1,\"registerDate\":\"2022-08-07T01:25:20.819858\"\
+                  value: "{\"id\":1,\"registerDate\":\"2022-08-09T04:14:00.973877\"\
                     ,\"amount\":1000,\"content\":\"content\",\"userCategoryId\":1,\"\
                     categoryName\":\"용돈\"}"
         "403":
@@ -110,7 +219,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/api-v1-incomes--940438351'
+                $ref: '#/components/schemas/api-v1-incomes-incomeId-940438351'
               examples:
                 income-forbidden:
                   value: "{\"messages\":[\"권한이 없습니다.\"],\"status\":403}"
@@ -129,13 +238,13 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/api-v1-incomes-1988379506'
+              $ref: '#/components/schemas/api-v1-incomes-incomeId1988379506'
             examples:
               income-update:
-                value: "{\"registerDate\":\"2022-08-07T01:25:19.84052\",\"amount\"\
+                value: "{\"registerDate\":\"2022-08-09T04:13:59.708878\",\"amount\"\
                   :2000,\"content\":\"updateContent\",\"userCategoryId\":2}"
               income-update-fail:
-                value: "{\"registerDate\":\"2022-08-07T01:25:20.737036\",\"amount\"\
+                value: "{\"registerDate\":\"2022-08-09T04:14:00.876518\",\"amount\"\
                   :2000,\"content\":\"updateContent\",\"userCategoryId\":2}"
       responses:
         "204":
@@ -145,7 +254,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/api-v1-incomes--940438351'
+                $ref: '#/components/schemas/api-v1-incomes-incomeId-940438351'
               examples:
                 income-update-fail:
                   value: "{\"messages\":[\"수입 정보가 존재하지 않습니다.\"],\"status\":400}"
@@ -165,7 +274,7 @@ paths:
           description: "204"
 components:
   schemas:
-    api-v1-incomes--940438351:
+    api-v1-incomes-incomeId-940438351:
       type: object
       properties:
         messages:
@@ -225,7 +334,46 @@ components:
         expenditureTotalSum:
           type: number
           description: 지출 총 합계
-    api-v1-incomes-1988379506:
+    api-v1-account-book-search-1060074379:
+      type: object
+      properties:
+        nextPage:
+          type: number
+          description: 다음 페이지
+        incomeSum:
+          type: number
+          description: 수입의 총합
+        currentPage:
+          type: number
+          description: 현재 페이지
+        results:
+          type: array
+          description: "검색된 지출, 수입 데이터"
+          items:
+            type: object
+            properties:
+              amount:
+                type: number
+                description: 금액
+              id:
+                type: number
+                description: 지출 or 수입의 아이디
+              type:
+                type: string
+                description: 지출 or 수입 종류
+              categoryName:
+                type: string
+                description: 카테고리 이름
+              content:
+                type: string
+                description: 내용
+              registerDate:
+                type: string
+                description: 등록일
+        expenditureSum:
+          type: number
+          description: 지출의 총합
+    api-v1-incomes-incomeId1988379506:
       type: object
       properties:
         amount:
@@ -246,6 +394,18 @@ components:
         id:
           type: number
           description: 생성된 수입 아이디
+    api-v1-budgets1364090725:
+      type: object
+      properties:
+        amount:
+          type: number
+          description: 예산 금액
+        userCategoryId:
+          type: number
+          description: 유저 카테고리 ID
+        registerDate:
+          type: string
+          description: 예산 등록 날짜
     api-v1-incomes-incomeId-1674408626:
       type: object
       properties:
@@ -267,3 +427,9 @@ components:
         registerDate:
           type: string
           description: 수입 등록 날짜
+    api-v1-budgets-640988555:
+      type: object
+      properties:
+        id:
+          type: number
+          description: 생성된 예산 아이디

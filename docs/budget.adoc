@@ -1,0 +1,14 @@
+:hardbreaks:
+ifndef::snippets[]
+:snippets: ../../../target/generated-snippets
+endif::[]
+
+== 예산
+
+=== 예산 등록
+
+.Request
+include::{snippets}/budget-create/http-request.adoc[]
+
+.Response
+include::{snippets}/budget-create/http-response.adoc[]

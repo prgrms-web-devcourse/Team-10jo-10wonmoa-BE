@@ -27,8 +27,8 @@ class JwtTest {
 		assertAll(
 			() -> assertThat(jwtConfigure.getHeader()).isEqualTo("testToken"),
 			() -> assertThat(jwtConfigure.getIssuer()).isEqualTo("testIssuer"),
-			() -> assertThat(jwtConfigure.getExpirySeconds()).isEqualTo(6000),
-			() -> assertThat(jwtConfigure.getRefreshExpirySeconds()).isEqualTo(600000)
+			() -> assertThat(jwtConfigure.getExpirySecondsMillis()).isEqualTo(6000),
+			() -> assertThat(jwtConfigure.getRefreshExpirySecondsMillis()).isEqualTo(600000)
 		);
 	}
 

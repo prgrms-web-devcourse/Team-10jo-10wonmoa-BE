@@ -34,8 +34,8 @@ public final class Jwt {
 		this.jwtConfigure = jwtConfigure;
 		this.issuer = jwtConfigure.getIssuer();
 		this.clientSecret = jwtConfigure.getClientSecret();
-		this.expirySeconds = jwtConfigure.getExpirySeconds();
-		this.refreshExpirySeconds = jwtConfigure.getRefreshExpirySeconds();
+		this.expirySeconds = jwtConfigure.getExpirySecondsMillis();
+		this.refreshExpirySeconds = jwtConfigure.getRefreshExpirySecondsMillis();
 		this.algorithm = Algorithm.HMAC512(clientSecret);
 		this.jwtVerifier = com.auth0.jwt.JWT.require(algorithm)
 			.withIssuer(issuer)

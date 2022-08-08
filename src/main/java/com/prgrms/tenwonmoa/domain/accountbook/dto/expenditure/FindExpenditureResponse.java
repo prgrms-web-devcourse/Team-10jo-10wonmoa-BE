@@ -17,6 +17,8 @@ public class FindExpenditureResponse {
 
 	private final String content;
 
+	private final Long userCategoryId;
+
 	private final String categoryName;
 
 	private FindExpenditureResponse(
@@ -24,12 +26,14 @@ public class FindExpenditureResponse {
 		LocalDateTime registerDate,
 		Long amount,
 		String content,
+		Long userCategoryId,
 		String categoryName
 	) {
 		this.id = id;
 		this.registerDate = registerDate;
 		this.amount = amount;
 		this.content = content;
+		this.userCategoryId = userCategoryId;
 		this.categoryName = categoryName;
 	}
 
@@ -39,6 +43,7 @@ public class FindExpenditureResponse {
 			expenditure.getRegisterDate(),
 			expenditure.getAmount(),
 			expenditure.getContent(),
+			expenditure.getUserCategoryId(),
 			expenditure.getCategoryName()
 		);
 	}

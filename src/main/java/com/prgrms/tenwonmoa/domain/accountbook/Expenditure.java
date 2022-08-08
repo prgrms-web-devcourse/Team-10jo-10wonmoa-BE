@@ -109,6 +109,10 @@ public class Expenditure extends BaseEntity {
 		return this.userCategory.getCategoryName();
 	}
 
+	public Long getUserCategoryId() {
+		return this.userCategory.getId();
+	}
+
 	public LocalDate getDate() {
 		return this.registerDate.toLocalDate();
 	}

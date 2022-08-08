@@ -19,6 +19,7 @@ import javax.persistence.Table;
 
 import com.prgrms.tenwonmoa.domain.accountbook.dto.expenditure.UpdateExpenditureRequest;
 import com.prgrms.tenwonmoa.domain.category.Category;
+import com.prgrms.tenwonmoa.domain.category.CategoryType;
 import com.prgrms.tenwonmoa.domain.category.UserCategory;
 import com.prgrms.tenwonmoa.domain.common.BaseEntity;
 import com.prgrms.tenwonmoa.domain.user.User;
@@ -69,6 +70,14 @@ public class Expenditure extends BaseEntity {
 		this.categoryName = categoryName;
 		this.user = user;
 		this.userCategory = userCategory;
+	}
+
+	public void validateOwner(Long authId) {
+		this.user.validateLoginUser(authId);
+	}
+
+	public CategoryType getCategoryType() {
+		return this.userCategory.getCategoryType();
 	}
 
 	public void update(UserCategory userCategory, UpdateExpenditureRequest request) {

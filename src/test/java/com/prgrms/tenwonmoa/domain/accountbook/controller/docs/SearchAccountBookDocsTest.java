@@ -1,4 +1,4 @@
-package com.prgrms.tenwonmoa.domain.accountbook.controller;
+package com.prgrms.tenwonmoa.domain.accountbook.controller.docs;
 
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.*;
 import static com.prgrms.tenwonmoa.domain.accountbook.dto.FindAccountBookResponse.*;
@@ -29,6 +29,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import com.prgrms.tenwonmoa.common.annotation.WithMockCustomUser;
 import com.prgrms.tenwonmoa.config.JwtConfigure;
 import com.prgrms.tenwonmoa.config.WebSecurityConfig;
+import com.prgrms.tenwonmoa.domain.accountbook.controller.SearchAccountBookController;
 import com.prgrms.tenwonmoa.domain.accountbook.dto.FindAccountBookResponse;
 import com.prgrms.tenwonmoa.domain.accountbook.dto.service.SearchAccountBookCmd;
 import com.prgrms.tenwonmoa.domain.accountbook.service.SearchAccountBookService;
@@ -44,10 +45,10 @@ import com.prgrms.tenwonmoa.domain.user.security.jwt.filter.JwtAuthenticationFil
 	}
 )
 @MockBean(JpaMetamodelMappingContext.class)
-@DisplayName("가계부 검색 컨트롤러 테스트")
+@DisplayName("가계부 검색 DOCS 테스트")
 @AutoConfigureMockMvc
 @AutoConfigureRestDocs
-class SearchAccountBookControllerTest {
+class SearchAccountBookDocsTest {
 
 	@Autowired
 	private MockMvc mockMvc;

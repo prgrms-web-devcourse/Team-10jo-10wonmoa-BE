@@ -52,6 +52,28 @@ class IncomeRepositoryTest extends RepositoryFixture {
 	}
 
 	@Test
+	void 해당하는_유저카테고리를_가지는_수입의_카테고리_이름_필드_업데이트() {
+		//given
+		save(createIncome(userCategory));
+		save(createIncome(userCategory));
+		save(createIncome(userCategory));
+
+		//when
+		// Income의 categoryName 필드 접근 위해 가지고 있는 카테고리를 null 로 변경
+		userCategory.updateCategoryAsNull();
+		merge(userCategory);
+
+		incomeRepository.updateCategoryName(userCategory.getId(), "업데이트된카테고리이름");
+
+		//then
+		List<Income> incomes = incomeRepository.findAll();
+
+		assertThat(incomes).extracting(Income::getCategoryName)
+			.containsExactlyInAnyOrder("업데이트된카테고리이름", "업데이트된카테고리이름", "업데이트된카테고리이름");
+
+	}
+
+	@Test
 	void 수입정보_삭제_성공() {
 		Income income = saveIncome();
 		Long incomeId = income.getId();

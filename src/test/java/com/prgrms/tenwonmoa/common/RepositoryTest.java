@@ -19,4 +19,8 @@ public class RepositoryTest {
 		entityManager.clear();
 		return persist;
 	}
+
+	protected <T> T merge(T entity) {
+		return entityManager.merge(entity);
+	}
 }

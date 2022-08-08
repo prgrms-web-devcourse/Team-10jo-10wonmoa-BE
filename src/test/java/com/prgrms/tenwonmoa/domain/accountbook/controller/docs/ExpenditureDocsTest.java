@@ -6,6 +6,7 @@ import static org.mockito.BDDMockito.*;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.restdocs.payload.JsonFieldType.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import java.time.LocalDateTime;
@@ -17,9 +18,10 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.FilterType;
 import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.payload.FieldDescriptor;
@@ -28,6 +30,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.prgrms.tenwonmoa.common.annotation.WithMockCustomUser;
 import com.prgrms.tenwonmoa.common.documentdto.ErrorResponseDoc;
+import com.prgrms.tenwonmoa.config.JwtConfigure;
+import com.prgrms.tenwonmoa.config.WebSecurityConfig;
 import com.prgrms.tenwonmoa.domain.accountbook.controller.ExpenditureController;
 import com.prgrms.tenwonmoa.domain.accountbook.dto.expenditure.CreateExpenditureRequest;
 import com.prgrms.tenwonmoa.domain.accountbook.dto.expenditure.CreateExpenditureResponse;
@@ -36,8 +40,13 @@ import com.prgrms.tenwonmoa.domain.accountbook.service.ExpenditureService;
 import com.prgrms.tenwonmoa.domain.user.security.jwt.filter.JwtAuthenticationFilter;
 import com.prgrms.tenwonmoa.exception.UnauthorizedUserException;
 
-@WebMvcTest(controllers = ExpenditureController.class)
-@AutoConfigureMockMvc(addFilters = false)
+@WebMvcTest(controllers = ExpenditureController.class,
+	excludeFilters = {
+		@ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = WebSecurityConfig.class),
+		@ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = JwtConfigure.class),
+		@ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = JwtAuthenticationFilter.class)
+	}
+)
 @AutoConfigureRestDocs
 @MockBean(JpaMetamodelMappingContext.class)
 @DisplayName("지출 DOCS 테스트: ")
@@ -52,14 +61,7 @@ public class ExpenditureDocsTest {
 	private ObjectMapper objectMapper;
 
 	@MockBean
-	private JwtAuthenticationFilter jwtAuthenticationFilter;    // 테스트 실행을 위해 필요
-
-	@MockBean
 	private ExpenditureService expenditureService;
-
-	private final Long authId = 1L;
-
-	private final Long noAuthId = 2L;
 
 	private static final Long MAX_AMOUNT = 1000000000000L;
 
@@ -101,6 +103,7 @@ public class ExpenditureDocsTest {
 			mockMvc.perform(post(BASE_URL)
 					.contentType(MediaType.APPLICATION_JSON)
 					.content(objectMapper.writeValueAsString(wrongResult))
+					.with(csrf())
 				)
 				.andExpect(status().isBadRequest())
 				.andDo(document("expenditure-post-register-date-null",
@@ -123,6 +126,7 @@ public class ExpenditureDocsTest {
 			mockMvc.perform(post(BASE_URL)
 					.contentType(MediaType.APPLICATION_JSON)
 					.content(objectMapper.writeValueAsString(wrongResult))
+					.with(csrf())
 				)
 				.andExpect(status().isBadRequest())
 				.andDo(document("expenditure-post-amount-null",
@@ -146,6 +150,7 @@ public class ExpenditureDocsTest {
 			mockMvc.perform(post(BASE_URL)
 					.contentType(MediaType.APPLICATION_JSON)
 					.content(objectMapper.writeValueAsString(wrongResult))
+					.with(csrf())
 				)
 				.andExpect(status().isBadRequest())
 				.andDo(document("expenditure-post-amount-min-error",
@@ -169,6 +174,7 @@ public class ExpenditureDocsTest {
 			mockMvc.perform(post(BASE_URL)
 					.contentType(MediaType.APPLICATION_JSON)
 					.content(objectMapper.writeValueAsString(wrongResult))
+					.with(csrf())
 				)
 				.andExpect(status().isBadRequest())
 				.andDo(document("expenditure-post-amount-max-error",
@@ -191,6 +197,7 @@ public class ExpenditureDocsTest {
 			mockMvc.perform(post(BASE_URL)
 					.contentType(MediaType.APPLICATION_JSON)
 					.content(objectMapper.writeValueAsString(wrongResult))
+					.with(csrf())
 				)
 				.andExpect(status().isBadRequest())
 				.andDo(document("expenditure-post-content-max-error",
@@ -214,6 +221,7 @@ public class ExpenditureDocsTest {
 			mockMvc.perform(post(BASE_URL)
 					.contentType(MediaType.APPLICATION_JSON)
 					.content(objectMapper.writeValueAsString(wrongResult))
+					.with(csrf())
 				)
 				.andExpect(status().isBadRequest())
 				.andDo(document("expenditure-post-user-category-id-null",
@@ -232,6 +240,7 @@ public class ExpenditureDocsTest {
 			mockMvc.perform(post(BASE_URL)
 					.contentType(MediaType.APPLICATION_JSON)
 					.content(objectMapper.writeValueAsString(request))
+					.with(csrf())
 				)
 				.andExpect(status().isForbidden())
 				.andDo(document("expenditure-create-forbidden",
@@ -250,6 +259,7 @@ public class ExpenditureDocsTest {
 			mockMvc.perform(post(BASE_URL)
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(objectMapper.writeValueAsString(request))
+				.with(csrf())
 			).andDo(document("expenditure-create",
 				requestFields(documentCreateExpenditureRequest()),
 				responseFields(documentCreateExpenditureResponse())
@@ -338,7 +348,5 @@ public class ExpenditureDocsTest {
 				fieldWithPath("categoryName").type(STRING).description("카테고리 이름")
 			);
 		}
-
 	}
-
 }

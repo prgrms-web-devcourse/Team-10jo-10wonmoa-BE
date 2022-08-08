@@ -14,7 +14,7 @@ paths:
       operationId: expenditure-
       requestBody:
         content:
-          application/json:
+          application/json;charset=UTF-8:
             schema:
               $ref: '#/components/schemas/api-v1-expenditures1023026241'
             examples:
@@ -67,7 +67,7 @@ paths:
                 expenditure-post-amount-null:
                   value: "{\"messages\":[\"must not be null\"],\"status\":400}"
                 expenditure-post-user-category-id-null:
-                  value: "{\"messages\":[\"최대값은 1조입니다\",\"유저 카테고리 아이디를 채워주세요\"],\"\
+                  value: "{\"messages\":[\"유저 카테고리 아이디를 채워주세요\",\"최대값은 1조입니다\"],\"\
                     status\":400}"
                 expenditure-post-content-max-error:
                   value: "{\"messages\":[\"내용의 최대 길이는 50입니다\"],\"status\":400}"
@@ -226,7 +226,7 @@ paths:
                 $ref: '#/components/schemas/api-v1-expenditures-expenditureId2033270015'
               examples:
                 expenditure-get:
-                  value: "{\"id\":1,\"registerDate\":\"2022-08-09T06:30:37.238187\"\
+                  value: "{\"id\":1,\"registerDate\":\"2022-08-09T06:51:11.361812\"\
                     ,\"amount\":20000,\"content\":\"돈까스마시써\",\"userCategoryId\":3,\"\
                     categoryName\":\"식비\"}"
   /api/v1/incomes/:
@@ -241,10 +241,10 @@ paths:
               $ref: '#/components/schemas/api-v1-incomes-1988379506'
             examples:
               income-create:
-                value: "{\"registerDate\":\"2022-08-09T06:30:44.830866\",\"amount\"\
+                value: "{\"registerDate\":\"2022-08-09T06:51:18.823947\",\"amount\"\
                   :1000,\"content\":\"content\",\"userCategoryId\":1}"
               income-create-fail:
-                value: "{\"registerDate\":\"2022-08-09T06:30:44.936218\",\"amount\"\
+                value: "{\"registerDate\":\"2022-08-09T06:51:18.965266\",\"amount\"\
                   :1000,\"content\":\"content\",\"userCategoryId\":1}"
       responses:
         "201":
@@ -295,7 +295,7 @@ paths:
                 $ref: '#/components/schemas/api-v1-incomes-incomeId-1674408626'
               examples:
                 income-find-by-id:
-                  value: "{\"id\":1,\"registerDate\":\"2022-08-09T06:30:44.994408\"\
+                  value: "{\"id\":1,\"registerDate\":\"2022-08-09T06:51:19.023668\"\
                     ,\"amount\":1000,\"content\":\"content\",\"userCategoryId\":1,\"\
                     categoryName\":\"용돈\"}"
         "403":
@@ -325,10 +325,10 @@ paths:
               $ref: '#/components/schemas/api-v1-incomes-1988379506'
             examples:
               income-update:
-                value: "{\"registerDate\":\"2022-08-09T06:30:42.47984\",\"amount\"\
+                value: "{\"registerDate\":\"2022-08-09T06:51:16.328775\",\"amount\"\
                   :2000,\"content\":\"updateContent\",\"userCategoryId\":2}"
               income-update-fail:
-                value: "{\"registerDate\":\"2022-08-09T06:30:44.733222\",\"amount\"\
+                value: "{\"registerDate\":\"2022-08-09T06:51:18.726127\",\"amount\"\
                   :2000,\"content\":\"updateContent\",\"userCategoryId\":2}"
       responses:
         "204":

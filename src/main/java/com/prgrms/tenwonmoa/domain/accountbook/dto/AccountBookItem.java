@@ -5,7 +5,7 @@ import java.time.LocalDateTime;
 import lombok.Getter;
 
 @Getter
-public class DayDetail implements Comparable<DayDetail> {
+public class AccountBookItem implements Comparable<AccountBookItem> {
 
 	private final Long id;
 
@@ -19,7 +19,7 @@ public class DayDetail implements Comparable<DayDetail> {
 
 	private final LocalDateTime registerTime;
 
-	public DayDetail(Long id, String type, Long amount, String content, String categoryName,
+	public AccountBookItem(Long id, String type, Long amount, String content, String categoryName,
 		LocalDateTime registerTime) {
 		this.id = id;
 		this.type = type;
@@ -35,7 +35,7 @@ public class DayDetail implements Comparable<DayDetail> {
 	 * 2.type이 같으면 등록한 최신 순으로
 	 * */
 	@Override
-	public int compareTo(DayDetail dayDetail) {
+	public int compareTo(AccountBookItem dayDetail) {
 		if (this.type.equals(dayDetail.type)) {
 			return this.registerTime.isAfter(dayDetail.registerTime) ? -1 : 1;
 		}

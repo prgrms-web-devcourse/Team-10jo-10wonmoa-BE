@@ -17,13 +17,13 @@ public class FindDayAccountResponse implements Comparable<FindDayAccountResponse
 
 	private final Long expenditureSum;
 
-	private final List<DayDetail> dayDetails;
+	private final List<AccountBookItem> dayDetails;
 
 	public FindDayAccountResponse(
 		LocalDate registerDate,
 		Long incomeSum,
 		Long expenditureSum,
-		List<DayDetail> dayDetails) {
+		List<AccountBookItem> dayDetails) {
 		this.registerDate = registerDate;
 		this.incomeSum = incomeSum;
 		this.expenditureSum = expenditureSum;

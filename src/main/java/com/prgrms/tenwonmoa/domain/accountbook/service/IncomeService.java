@@ -44,4 +44,9 @@ public class IncomeService {
 	public void setUserCategoryNull(Long userCategoryId) {
 		incomeRepository.updateUserCategoryAsNull(userCategoryId);
 	}
+
+	@Transactional
+	public void updateCategoryNameField(Long userCategoryId, String categoryName) {
+		incomeRepository.updateCategoryName(userCategoryId, categoryName);
+	}
 }

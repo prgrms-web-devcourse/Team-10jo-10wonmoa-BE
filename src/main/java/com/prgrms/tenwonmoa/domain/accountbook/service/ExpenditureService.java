@@ -85,6 +85,10 @@ public class ExpenditureService {
 		expenditureRepository.updateUserCategoryAsNull(userCategoryId);
 	}
 
+	public void updateCategoryNameField(Long userCategoryId, String categoryName) {
+		expenditureRepository.updateCategoryName(userCategoryId, categoryName);
+	}
+
 	private UserCategory getUserCategory(Long userCategoryId) {
 		return userCategoryRepository.findById(userCategoryId)
 			.orElseThrow(() -> new NoSuchElementException(Message.USER_CATEGORY_NOT_FOUND.getMessage()));

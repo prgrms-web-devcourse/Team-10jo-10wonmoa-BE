@@ -8,8 +8,10 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.web.filter.CorsFilter;
 
+import com.prgrms.tenwonmoa.domain.user.security.jwt.filter.CustomAuthenticationEntryPoint;
 import com.prgrms.tenwonmoa.domain.user.security.jwt.filter.JwtAuthenticationFilter;
 
 import lombok.RequiredArgsConstructor;
@@ -25,22 +27,30 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		return new BCryptPasswordEncoder();
 	}
 
+	@Bean
+	public AuthenticationEntryPoint authenticationEntryPoint() {
+		return new CustomAuthenticationEntryPoint();
+	}
+
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http
 			.cors()
-			.and()
+				.and()
 			.authorizeRequests()
-			.antMatchers("/api/v1/users", "/api/v1/users/login", "/api/v1/users/refresh", "/docs/**")
-			.permitAll()
-			.anyRequest().authenticated()
-			.and()
+				.antMatchers("/api/v1/users", "/api/v1/users/login", "/api/v1/users/refresh", "/docs/**")
+					.permitAll()
+				.anyRequest().authenticated()
+				.and()
 			.csrf()        // disable 하지 않으면 unauthorized
-			.disable()
+				.disable()
 			.httpBasic()    // 토큰을 사용하므로 basic 인증 disable
-			.disable()
+				.disable()
 			.sessionManagement()    // 토큰을 사용하므로 stateless
-			.sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+				.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+				.and()
+			.exceptionHandling()
+				.authenticationEntryPoint(authenticationEntryPoint());
 
 		// filter 등록
 		http.addFilterAfter(

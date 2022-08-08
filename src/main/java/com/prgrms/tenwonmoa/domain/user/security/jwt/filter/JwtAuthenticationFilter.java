@@ -1,8 +1,6 @@
 package com.prgrms.tenwonmoa.domain.user.security.jwt.filter;
 
 import java.io.IOException;
-import java.io.OutputStream;
-import java.util.List;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -10,8 +8,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.AuthorityUtils;
@@ -22,10 +18,8 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.auth0.jwt.exceptions.TokenExpiredException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.prgrms.tenwonmoa.domain.user.security.jwt.service.TokenProvider;
 import com.prgrms.tenwonmoa.exception.message.Message;
-import com.prgrms.tenwonmoa.exception.response.ErrorResponse;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -35,6 +29,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 	private static final String BEARER_PREFIX = "Bearer ";
+	private static final String ATTRIBUTE_EXCEPTION = "exception";
 	private final TokenProvider tokenProvider;
 
 	@Override
@@ -68,33 +63,19 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 				);
 				authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 				SecurityContextHolder.getContext().setAuthentication(authentication);
-				filterChain.doFilter(request, response);
-			} catch (TokenExpiredException te) {
-				// todo: Filter Exception 을 담당하는 클래스로 처리
-				responseExpiredTokenError(response);
+			} catch (TokenExpiredException te) {	// 예외 메시지를 entry point로 전달
+				request.setAttribute(ATTRIBUTE_EXCEPTION, Message.EXPIRED_ACCESS_TOKEN.getMessage());
 			} catch (Exception e) {
-				log.warn("Jwt processing 실패: {}", e.getMessage());
+				request.setAttribute(ATTRIBUTE_EXCEPTION, Message.INVALID_TOKEN.getMessage());
 			}
-		} else {
-			filterChain.doFilter(request, response);
 		}
-	}
 
-	private void responseExpiredTokenError(HttpServletResponse response) throws IOException {
-		response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-		response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-
-		OutputStream outputStream = response.getOutputStream();
-		ObjectMapper objectMapper = new ObjectMapper();
-		objectMapper.writeValue(outputStream,
-			new ErrorResponse(List.of(Message.EXPIRED_ACCESS_TOKEN.getMessage()), HttpStatus.UNAUTHORIZED.value()));
-		outputStream.flush();
+		filterChain.doFilter(request, response);
 	}
 
 	private String parseToken(HttpServletRequest request) {
 		// Http 요청의 헤더를 파싱해 Bearer 토큰 리턴
 		String bearerToken = request.getHeader(HttpHeaders.AUTHORIZATION);
-		log.info("Bearer Token: {}", bearerToken);
 
 		if (StringUtils.hasText(bearerToken) && bearerToken.startsWith(BEARER_PREFIX)) {
 			return bearerToken.substring(BEARER_PREFIX.length());

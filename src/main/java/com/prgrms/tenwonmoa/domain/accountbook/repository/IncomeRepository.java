@@ -15,4 +15,9 @@ public interface IncomeRepository extends JpaRepository<Income, Long> {
 	@Modifying(clearAutomatically = true)
 	@Query("DELETE FROM Income i WHERE i.id = :id")
 	void deleteById(Long id);
+
+	@Modifying(clearAutomatically = true, flushAutomatically = true)
+	@Query("update Income i set i.categoryName = :categoryName "
+		+ "where i.userCategory.id = :userCategoryId")
+	void updateCategoryName(Long userCategoryId, String categoryName);
 }

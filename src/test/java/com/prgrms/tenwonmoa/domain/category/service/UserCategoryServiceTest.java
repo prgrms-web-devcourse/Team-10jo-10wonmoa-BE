@@ -58,10 +58,10 @@ class UserCategoryServiceTest {
 
 	@AfterEach
 	void tearDown() {
-		userCategoryRepository.deleteAll();
-		expenditureRepository.deleteAll();
-		incomeRepository.deleteAll();
-		userRepository.deleteAll();
+		expenditureRepository.deleteAllInBatch();
+		incomeRepository.deleteAllInBatch();
+		userCategoryRepository.deleteAllInBatch();
+		userRepository.deleteAllInBatch();
 	}
 
 	@Test
@@ -209,5 +209,39 @@ class UserCategoryServiceTest {
 		//then
 		assertThatNullPointerException()
 			.isThrownBy(() -> userCategoryService.deleteUserCategory(user, userCategoryId));
+	}
+
+	@Test
+	@Transactional
+	void 유저카테고리_삭제시_수입_지출_카테고리_이름_최신화됨() {
+		//given
+		//카테고리 등록
+		String categoryType = "EXPENDITURE";
+		String categoryName = "예시지출카테고리";
+		Long userCategoryId = userCategoryService.createUserCategory(user, categoryType, categoryName);
+		UserCategory userCategory = userCategoryService.findById(userCategoryId);
+
+		// 해당 카테고리로, 지출, 수입 등록
+		String initCategoryName = "초기값";
+		Expenditure savedExpenditure = expenditureRepository.save(
+			new Expenditure(LocalDateTime.now(), 10000L,
+				"내용", initCategoryName, user, userCategory)
+		);
+
+		Income savedIncome = incomeRepository.save(
+			new Income(LocalDateTime.now(), 10000L,
+				"내용", initCategoryName, user, userCategory)
+		);
+
+		//when
+		userCategoryService.deleteUserCategory(user, userCategoryId);
+
+		//then
+		Expenditure expenditure = expenditureRepository.findById(savedExpenditure.getId()).orElseThrow();
+		Income income = incomeRepository.findById(savedIncome.getId()).orElseThrow();
+
+		assertThat(expenditure.getCategoryName()).isEqualTo(categoryName);
+		assertThat(income.getCategoryName()).isEqualTo(categoryName);
+
 	}
 }

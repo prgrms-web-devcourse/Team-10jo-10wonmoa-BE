@@ -9,6 +9,8 @@ import lombok.Getter;
 @Getter
 public enum Message {
 
+	WRONG_DATE_TIME_FORMAT("잘못된 날짜 양식으로 요청하였습니다"),
+
 	NO_AUTHENTICATION("권한이 없습니다."),
 
 	// 사용자

@@ -14,11 +14,14 @@ public final class FindAccountBookResponse<T> extends PageCustomImpl<T> {
 
 	private final Long expenditureSum;
 
+	private final Long totalSum;
+
 	private FindAccountBookResponse(PageCustomRequest pageRequest, List<T> results,
 		Long incomeSum, Long expenditureSum) {
 		super(pageRequest, results);
 		this.expenditureSum = expenditureSum;
 		this.incomeSum = incomeSum;
+		this.totalSum = incomeSum - expenditureSum;
 	}
 
 	public static <T> FindAccountBookResponse<T> of(PageCustomRequest pageRequest,

@@ -1,4 +1,4 @@
-package com.prgrms.tenwonmoa.domain.budget.typeconverter;
+package com.prgrms.tenwonmoa.domain.budget.converter;
 
 import java.time.YearMonth;
 

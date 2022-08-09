@@ -15,7 +15,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import com.prgrms.tenwonmoa.domain.budget.typeconverter.YearMonthIntegerAttributeConverter;
+import com.prgrms.tenwonmoa.domain.budget.converter.YearMonthIntegerAttributeConverter;
 import com.prgrms.tenwonmoa.domain.category.UserCategory;
 import com.prgrms.tenwonmoa.domain.common.BaseEntity;
 import com.prgrms.tenwonmoa.domain.user.User;
@@ -35,11 +35,11 @@ public class Budget extends BaseEntity {
 	@Convert(converter = YearMonthIntegerAttributeConverter.class)
 	private YearMonth registerDate;
 
-	@ManyToOne(fetch = LAZY)
+	@ManyToOne(fetch = LAZY, optional = false)
 	@JoinColumn(name = "user_id", nullable = false)
 	private User user;
 
-	@ManyToOne(fetch = LAZY)
+	@ManyToOne(fetch = LAZY, optional = false)
 	@JoinColumn(name = "user_category_id", nullable = false)
 	private UserCategory userCategory;
 	public Budget(Long amount, YearMonth registerDate, User user, UserCategory userCategory) {

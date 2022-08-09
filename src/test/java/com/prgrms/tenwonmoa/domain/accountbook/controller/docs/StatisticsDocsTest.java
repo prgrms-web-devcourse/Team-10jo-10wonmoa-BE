@@ -52,9 +52,10 @@ class StatisticsDocsTest {
 	@MockBean
 	private StatisticsService statisticsService;
 
-	private List<FindStatisticsData> incomes = List.of(new FindStatisticsData(INCOME_DEFAULT.get(0), 30L),
+	private final List<FindStatisticsData> incomes = List.of(new FindStatisticsData(INCOME_DEFAULT.get(0), 30L),
 		new FindStatisticsData(INCOME_DEFAULT.get(1), 20L), new FindStatisticsData(INCOME_DEFAULT.get(2), 10L));
-	private List<FindStatisticsData> expenditures = List.of(new FindStatisticsData(EXPENDITURE_DEFAULT.get(0), 45L),
+	private final List<FindStatisticsData> expenditures = List.of(
+		new FindStatisticsData(EXPENDITURE_DEFAULT.get(0), 45L),
 		new FindStatisticsData(EXPENDITURE_DEFAULT.get(1), 44L),
 		new FindStatisticsData(EXPENDITURE_DEFAULT.get(2), 43L));
 	FindStatisticsResponse yearResponse = new FindStatisticsResponse(2022, null, 60L, 132L, incomes, expenditures);

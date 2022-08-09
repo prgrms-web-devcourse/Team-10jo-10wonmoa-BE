@@ -8,7 +8,7 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.request.RequestDocumentation.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.junit.jupiter.api.DisplayName;
@@ -30,9 +30,11 @@ import com.prgrms.tenwonmoa.common.annotation.WithMockCustomUser;
 import com.prgrms.tenwonmoa.config.JwtConfigure;
 import com.prgrms.tenwonmoa.config.WebSecurityConfig;
 import com.prgrms.tenwonmoa.domain.accountbook.controller.SearchAccountBookController;
+import com.prgrms.tenwonmoa.domain.accountbook.dto.AccountBookItem;
 import com.prgrms.tenwonmoa.domain.accountbook.dto.FindAccountBookResponse;
 import com.prgrms.tenwonmoa.domain.accountbook.dto.service.SearchAccountBookCmd;
 import com.prgrms.tenwonmoa.domain.accountbook.service.SearchAccountBookService;
+import com.prgrms.tenwonmoa.domain.category.CategoryType;
 import com.prgrms.tenwonmoa.domain.category.service.FindUserCategoryService;
 import com.prgrms.tenwonmoa.domain.common.page.PageCustomRequest;
 import com.prgrms.tenwonmoa.domain.user.security.jwt.filter.JwtAuthenticationFilter;
@@ -63,11 +65,11 @@ class SearchAccountBookDocsTest {
 	@WithMockCustomUser
 	void 지출_수입_검색() throws Exception {
 		PageCustomRequest pageRequest = new PageCustomRequest(1, 1);
-		FindAccountBookResponse response = of(
+		FindAccountBookResponse<AccountBookItem> response = of(
 			pageRequest,
 			List.of(
-				new Result(LocalDate.now(), 10000L, "점심", 1L, "EXPENDITURE", "식비"),
-				new Result(LocalDate.now(), 50000L, "용돈", 1L, "INCOME", "용돈")),
+				new AccountBookItem(1L, CategoryType.EXPENDITURE.name(), 10000L, "점심", "식비", LocalDateTime.now()),
+				new AccountBookItem(1L, CategoryType.INCOME.name(), 50000L, "용돈", "용돈", LocalDateTime.now())),
 			50000L, 10000L);
 
 		given(accountBookService.searchAccountBooks(anyLong(), any(SearchAccountBookCmd.class), any(
@@ -103,7 +105,7 @@ class SearchAccountBookDocsTest {
 						fieldWithPath("currentPage").type(JsonFieldType.NUMBER).description("현재 페이지"),
 						fieldWithPath("nextPage").type(JsonFieldType.NUMBER).description("다음 페이지"),
 						fieldWithPath("results[]").type(JsonFieldType.ARRAY).description("검색된 지출, 수입 데이터"),
-						fieldWithPath("results[].registerDate").type(JsonFieldType.STRING).description("등록일"),
+						fieldWithPath("results[].registerTime").type(JsonFieldType.STRING).description("등록일"),
 						fieldWithPath("results[].amount").type(JsonFieldType.NUMBER).description("금액"),
 						fieldWithPath("results[].content").type(JsonFieldType.STRING).description("내용"),
 						fieldWithPath("results[].id").type(JsonFieldType.NUMBER).description("지출 or 수입의 아이디"),

@@ -48,6 +48,7 @@ class IncomeTotalServiceTest {
 	private final User user = income.getUser();
 	private final User mockUser = mock(User.class);
 	private final Income mockIncome = mock(Income.class);
+	private final UserCategory mockUserCategory = mock(UserCategory.class);
 
 	private final CreateIncomeRequest request = new CreateIncomeRequest(LocalDateTime.now(),
 		1000L,
@@ -58,14 +59,9 @@ class IncomeTotalServiceTest {
 		2000L,
 		"updateContent",
 		2L);
-
 	@Test
 	void 수입_생성_성공() {
-		UserCategory mockUserCategory = mock(UserCategory.class);
-		given(userCategoryService.findById(any())).willReturn(mockUserCategory);
-		given(mockUserCategory.getUser()).willReturn(mockUser);
-		given(mockUserCategory.getCategory()).willReturn(new Category("income", CategoryType.INCOME));
-		doNothing().when(mockUser).validateLoginUser(any());
+		validateUserCategoryMock();
 		given(userService.findById(anyLong())).willReturn(mockUser);
 		given(incomeService.save(income)).willReturn(userId);
 
@@ -75,6 +71,13 @@ class IncomeTotalServiceTest {
 			() -> verify(userService).findById(any()),
 			() -> verify(incomeService).save(income)
 		);
+	}
+
+	private void validateUserCategoryMock() {
+		given(userCategoryService.findById(any())).willReturn(mockUserCategory);
+		given(mockUserCategory.getUser()).willReturn(mockUser);
+		given(mockUserCategory.getCategory()).willReturn(new Category("income", CategoryType.INCOME));
+		doNothing().when(mockUser).validateLoginUser(any());
 	}
 
 	@Test
@@ -90,41 +93,19 @@ class IncomeTotalServiceTest {
 	void 수입_수정_성공() {
 		given(incomeService.findById(any())).willReturn(mockIncome);
 		given(mockIncome.getUser()).willReturn(mockUser);
+		validateUserCategoryMock();
 		doNothing().when(mockUser).validateLoginUser(anyLong());
 
-		given(userCategoryService.findById(any(Long.class))).willReturn(userCategory);
+		given(userCategoryService.findById(any(Long.class))).willReturn(mockUserCategory);
 		incomeTotalService.updateIncome(userId,
 			income.getId(),
 			updateIncomeRequest
 		);
-
 		assertAll(
 			() -> verify(incomeService, never()).deleteById(any()),
 			() -> verify(expenditureRepository, never()).save(any(Expenditure.class)),
 			() -> verify(incomeService).findById(any()),
 			() -> verify(userCategoryService).findById(any())
-		);
-	}
-
-	@Test
-	void 수입_수정_지출로_변경되는경우_성공() {
-		given(incomeService.findById(any())).willReturn(mockIncome);
-		given(mockIncome.getUser()).willReturn(mockUser);
-		doNothing().when(mockUser).validateLoginUser(anyLong());
-		UserCategory expenditureCategory = createUserCategory(income.getUser(), createExpenditureCategory());
-		given(userCategoryService.findById(anyLong())).willReturn(expenditureCategory);
-
-		// when
-		incomeTotalService.updateIncome(anyLong(),
-			income.getId(),
-			updateIncomeRequest
-		);
-
-		// then
-		assertAll(
-			() -> verify(incomeService).deleteById(any()),
-			() -> verify(expenditureRepository).save(any(Expenditure.class)),
-			() -> verify(mockIncome, never()).update(any(UserCategory.class), any(UpdateIncomeRequest.class))
 		);
 	}
 

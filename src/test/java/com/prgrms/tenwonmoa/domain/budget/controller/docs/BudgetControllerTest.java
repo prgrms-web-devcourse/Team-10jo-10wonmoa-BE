@@ -8,7 +8,7 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-import java.time.LocalDate;
+import java.time.YearMonth;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -20,16 +20,15 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
 import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
 import org.springframework.http.MediaType;
-import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.prgrms.tenwonmoa.common.annotation.WithMockCustomUser;
-import com.prgrms.tenwonmoa.common.documentdto.CreateBudgetRequestDoc;
+import com.prgrms.tenwonmoa.common.documentdto.CreateOrUpdateBudgetRequestDoc;
 import com.prgrms.tenwonmoa.config.JwtConfigure;
 import com.prgrms.tenwonmoa.config.WebSecurityConfig;
 import com.prgrms.tenwonmoa.domain.budget.controller.BudgetController;
-import com.prgrms.tenwonmoa.domain.budget.dto.CreateBudgetRequest;
+import com.prgrms.tenwonmoa.domain.budget.dto.CreateOrUpdateBudgetRequest;
 import com.prgrms.tenwonmoa.domain.budget.service.BudgetTotalService;
 import com.prgrms.tenwonmoa.domain.user.security.jwt.filter.JwtAuthenticationFilter;
 
@@ -53,27 +52,22 @@ class BudgetControllerTest {
 	@MockBean
 	private BudgetTotalService budgetTotalService;
 
-	private CreateBudgetRequest createBudgetRequest = new CreateBudgetRequest(
-		1000L, LocalDate.now(), 1L);
+	private CreateOrUpdateBudgetRequest createOrUpdateBudgetRequest = new CreateOrUpdateBudgetRequest(
+		1000L, YearMonth.now(), 1L);
 
 	@Test
 	@WithMockCustomUser
 	void 예산_등록_성공() throws Exception {
-		Long createdId = 1L;
-		given(budgetTotalService.createBudget(any(), any(CreateBudgetRequest.class)))
-			.willReturn(createdId);
+		doNothing().when(budgetTotalService).createOrUpdateBudget(any(), any(CreateOrUpdateBudgetRequest.class));
 
-		mockMvc.perform(post(LOCATION_PREFIX)
+		mockMvc.perform(put(LOCATION_PREFIX)
 				.contentType(MediaType.APPLICATION_JSON)
-				.content(objectMapper.writeValueAsString(createBudgetRequest))
+				.content(objectMapper.writeValueAsString(createOrUpdateBudgetRequest))
 				.with(csrf()))
-			.andExpect(status().isCreated())
+			.andExpect(status().isNoContent())
 			.andDo(document("budget-create",
 				requestFields(
-					CreateBudgetRequestDoc.fieldDescriptors()
-				),
-				responseFields(
-					fieldWithPath("id").type(JsonFieldType.NUMBER).description("생성된 예산 아이디")
+					CreateOrUpdateBudgetRequestDoc.fieldDescriptors()
 				)
 			));
 	}

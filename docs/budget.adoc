@@ -5,10 +5,13 @@ endif::[]
 
 == 예산
 
-=== 예산 등록
+=== 예산 등록 or 수정
 
 .Request
 include::{snippets}/budget-create/http-request.adoc[]
+
+Request Fields
+include::{snippets}/budget-create/request-fields.adoc[]
 
 .Response
 include::{snippets}/budget-create/http-response.adoc[]

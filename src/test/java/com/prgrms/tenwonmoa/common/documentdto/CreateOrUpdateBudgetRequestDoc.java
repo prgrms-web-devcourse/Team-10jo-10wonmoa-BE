@@ -13,7 +13,7 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @Getter
-public enum CreateBudgetRequestDoc {
+public enum CreateOrUpdateBudgetRequestDoc {
 	REGISTER_DATE(STRING, "registerDate", "예산 등록 날짜"),
 	AMOUNT(NUMBER, "amount", "예산 금액"),
 	USER_CATEGORY_ID(NUMBER, "userCategoryId", "유저 카테고리 ID");

@@ -1,18 +1,15 @@
 package com.prgrms.tenwonmoa.domain.budget.controller;
 
-import java.net.URI;
-import java.util.Map;
-
 import javax.validation.Valid;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.prgrms.tenwonmoa.domain.budget.dto.CreateBudgetRequest;
+import com.prgrms.tenwonmoa.domain.budget.dto.CreateOrUpdateBudgetRequest;
 import com.prgrms.tenwonmoa.domain.budget.service.BudgetTotalService;
 
 import lombok.RequiredArgsConstructor;
@@ -25,12 +22,11 @@ public class BudgetController {
 
 	private final BudgetTotalService budgetTotalService;
 
-	@PostMapping
-	public ResponseEntity<Map<String, Long>> createIncome(@RequestBody @Valid CreateBudgetRequest request,
+	@PutMapping
+	public ResponseEntity<Void> createIncome(@RequestBody @Valid CreateOrUpdateBudgetRequest request,
 		@AuthenticationPrincipal Long userId) {
-		Long createdId = budgetTotalService.createBudget(userId, request);
+		budgetTotalService.createOrUpdateBudget(userId, request);
 
-		String redirectUri = LOCATION_PREFIX + "/" + createdId;
-		return ResponseEntity.created(URI.create(redirectUri)).body(Map.of("id", createdId));
+		return ResponseEntity.noContent().build();
 	}
 }

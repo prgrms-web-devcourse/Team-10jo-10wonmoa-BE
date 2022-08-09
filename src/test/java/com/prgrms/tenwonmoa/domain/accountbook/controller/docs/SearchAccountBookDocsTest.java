@@ -4,6 +4,7 @@ import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.*;
 import static com.prgrms.tenwonmoa.domain.accountbook.dto.FindAccountBookResponse.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.*;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.request.RequestDocumentation.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -21,7 +22,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
 import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
-import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.restdocs.operation.preprocess.Preprocessors;
 import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.web.servlet.MockMvc;
@@ -75,7 +75,7 @@ class SearchAccountBookDocsTest {
 		given(accountBookService.searchAccountBooks(anyLong(), any(SearchAccountBookCmd.class), any(
 			PageCustomRequest.class))).willReturn(response);
 
-		mockMvc.perform(RestDocumentationRequestBuilders.get("/api/v1/account-book/search")
+		mockMvc.perform(get("/api/v1/account-book/search")
 				.param("categories", "1,2,3")
 				.param("minprice", "1000")
 				.param("maxprice", "50000")
@@ -102,6 +102,7 @@ class SearchAccountBookDocsTest {
 					responseFields(
 						fieldWithPath("incomeSum").type(JsonFieldType.NUMBER).description("수입의 총합"),
 						fieldWithPath("expenditureSum").type(JsonFieldType.NUMBER).description("지출의 총합"),
+						fieldWithPath("totalSum").type(JsonFieldType.NUMBER).description("수입,지출 포함 총합"),
 						fieldWithPath("currentPage").type(JsonFieldType.NUMBER).description("현재 페이지"),
 						fieldWithPath("nextPage").type(JsonFieldType.NUMBER).description("다음 페이지"),
 						fieldWithPath("results[]").type(JsonFieldType.ARRAY).description("검색된 지출, 수입 데이터"),

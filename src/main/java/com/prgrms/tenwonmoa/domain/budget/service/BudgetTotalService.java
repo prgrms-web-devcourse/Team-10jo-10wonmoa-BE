@@ -34,6 +34,7 @@ public class BudgetTotalService {
 			budgetRepository.save(createOrUpdateBudgetRequest.toEntity(authUser, userCategory));
 		} else {
 			Budget existBudget = budget.get();
+			existBudget.validateOwner(authUser.getId());
 			existBudget.changeAmount(createOrUpdateBudgetRequest.getAmount());
 		}
 	}

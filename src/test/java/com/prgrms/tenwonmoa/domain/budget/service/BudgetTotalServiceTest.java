@@ -66,12 +66,13 @@ class BudgetTotalServiceTest {
 
 	@Test
 	void 예산_생성_업데이트처리되는경우() {
+		Budget mockBudget = mock(Budget.class);
 		given(userCategoryService.findById(any())).willReturn(userCategory);
 		given(userService.findById(any())).willReturn(user);
 		given(budgetRepository.findByUserCategoryIdAndRegisterDate(
-			any(), any())).willReturn(Optional.of(budget));
+			any(), any())).willReturn(Optional.of(mockBudget));
 
-		budgetTotalService.createOrUpdateBudget(user.getId(), createOrUpdateBudgetRequest);
+		budgetTotalService.createOrUpdateBudget(1L, createOrUpdateBudgetRequest);
 		assertAll(
 			() -> verify(userCategoryService).findById(any()),
 			() -> verify(userService).findById(any()),

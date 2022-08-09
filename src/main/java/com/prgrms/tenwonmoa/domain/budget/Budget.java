@@ -58,6 +58,10 @@ public class Budget extends BaseEntity {
 		this.amount = amount;
 	}
 
+	public void validateOwner(Long authId) {
+		this.user.validateLoginUser(authId);
+	}
+
 	private void validateUserCategory(UserCategory userCategory) {
 		checkArgument(userCategory != null, "유저카테고리가 존재해야 합니다.");
 	}

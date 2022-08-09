@@ -1,4 +1,4 @@
-package com.prgrms.tenwonmoa.domain.accountbook.controller;
+package com.prgrms.tenwonmoa.domain.accountbook.controller.docs;
 
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.*;
 import static com.prgrms.tenwonmoa.exception.message.Message.*;
@@ -28,6 +28,7 @@ import com.prgrms.tenwonmoa.common.documentdto.CreateIncomeRequestDoc;
 import com.prgrms.tenwonmoa.common.documentdto.ErrorResponseDoc;
 import com.prgrms.tenwonmoa.common.documentdto.FindIncomeResponseDoc;
 import com.prgrms.tenwonmoa.common.documentdto.UpdateIncomeRequestDoc;
+import com.prgrms.tenwonmoa.domain.accountbook.controller.IncomeController;
 import com.prgrms.tenwonmoa.domain.accountbook.dto.income.CreateIncomeRequest;
 import com.prgrms.tenwonmoa.domain.accountbook.dto.income.FindIncomeResponse;
 import com.prgrms.tenwonmoa.domain.accountbook.dto.income.UpdateIncomeRequest;
@@ -41,8 +42,8 @@ import com.prgrms.tenwonmoa.exception.UnauthorizedUserException;
 @AutoConfigureMockMvc(addFilters = false)
 @AutoConfigureRestDocs
 @MockBean(JpaMetamodelMappingContext.class)
-@DisplayName("수입 컨트롤러 테스트")
-class IncomeControllerTest {
+@DisplayName("수입 DOCS 테스트")
+class IncomeDocsTest {
 	private static final String LOCATION_PREFIX = "/api/v1/incomes/";
 
 	private final CreateIncomeRequest createIncomeRequest = new CreateIncomeRequest(
@@ -103,9 +104,9 @@ class IncomeControllerTest {
 			.willReturn(createdId);
 
 		mockMvc.perform(post(LOCATION_PREFIX)
-			.contentType(MediaType.APPLICATION_JSON)
-			.content(objectMapper.writeValueAsString(createIncomeRequest))
-		)
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(createIncomeRequest))
+			)
 			.andExpect(status().isCreated())
 			.andExpect(redirectedUrl(LOCATION_PREFIX + createdId))
 			.andDo(document("income-create",
@@ -125,9 +126,9 @@ class IncomeControllerTest {
 			.willThrow(new NoSuchElementException(USER_CATEGORY_NOT_FOUND.getMessage()));
 
 		mockMvc.perform(post(LOCATION_PREFIX)
-			.contentType(MediaType.APPLICATION_JSON)
-			.content(objectMapper.writeValueAsString(createIncomeRequest))
-		)
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(createIncomeRequest))
+			)
 			.andExpect(status().isBadRequest())
 			.andDo(document("income-create-fail", responseFields(
 				ErrorResponseDoc.fieldDescriptors()
@@ -165,9 +166,9 @@ class IncomeControllerTest {
 	void 수입_수정_성공() throws Exception {
 		Long incomeId = 1L;
 		mockMvc.perform(put(LOCATION_PREFIX + "/{incomeId}", incomeId)
-			.contentType(MediaType.APPLICATION_JSON)
-			.content(objectMapper.writeValueAsString(updateIncomeRequest))
-		)
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(updateIncomeRequest))
+			)
 			.andExpect(status().isNoContent())
 			.andDo(document("income-update", requestFields(
 				UpdateIncomeRequestDoc.fieldDescriptors()
@@ -183,9 +184,9 @@ class IncomeControllerTest {
 
 		Long incomeId = 1L;
 		mockMvc.perform(put(LOCATION_PREFIX + "/{incomeId}", incomeId)
-			.contentType(MediaType.APPLICATION_JSON)
-			.content(objectMapper.writeValueAsString(updateIncomeRequest))
-		)
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(updateIncomeRequest))
+			)
 			.andExpect(status().isBadRequest())
 			.andDo(document("income-update-fail", responseFields(
 				ErrorResponseDoc.fieldDescriptors()
@@ -197,8 +198,8 @@ class IncomeControllerTest {
 	void 수입_삭제_성공() throws Exception {
 		Long incomeId = 1L;
 		mockMvc.perform(delete(LOCATION_PREFIX + "/{incomeId}", incomeId)
-			.contentType(MediaType.APPLICATION_JSON)
-		)
+				.contentType(MediaType.APPLICATION_JSON)
+			)
 			.andExpect(status().isNoContent())
 			.andDo(document("income-delete"));
 	}

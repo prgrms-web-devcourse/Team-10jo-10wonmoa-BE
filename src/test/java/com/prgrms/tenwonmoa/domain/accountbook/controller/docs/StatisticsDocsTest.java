@@ -1,4 +1,4 @@
-package com.prgrms.tenwonmoa.domain.accountbook.controller;
+package com.prgrms.tenwonmoa.domain.accountbook.controller.docs;
 
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.*;
 import static org.mockito.BDDMockito.*;
@@ -26,6 +26,7 @@ import com.prgrms.tenwonmoa.common.documentdto.FindStatisticsDataDoc;
 import com.prgrms.tenwonmoa.common.documentdto.FindStatisticsResponseDoc;
 import com.prgrms.tenwonmoa.config.JwtConfigure;
 import com.prgrms.tenwonmoa.config.WebSecurityConfig;
+import com.prgrms.tenwonmoa.domain.accountbook.controller.StatisticsController;
 import com.prgrms.tenwonmoa.domain.accountbook.dto.statistics.FindStatisticsData;
 import com.prgrms.tenwonmoa.domain.accountbook.dto.statistics.FindStatisticsResponse;
 import com.prgrms.tenwonmoa.domain.accountbook.service.StatisticsService;
@@ -40,8 +41,8 @@ import com.prgrms.tenwonmoa.domain.user.security.jwt.filter.JwtAuthenticationFil
 )
 @AutoConfigureRestDocs
 @MockBean(JpaMetamodelMappingContext.class)
-@DisplayName("통계 컨트롤러 테스트")
-class StatisticsControllerTest {
+@DisplayName("통계 DOCS 테스트")
+class StatisticsDocsTest {
 	private static final List<String> INCOME_DEFAULT = List.of("용돈", "상여", "금융소득");
 	private static final List<String> EXPENDITURE_DEFAULT = List.of("교통/차량", "문화생활", "마트/편의점");
 	@Autowired
@@ -51,9 +52,10 @@ class StatisticsControllerTest {
 	@MockBean
 	private StatisticsService statisticsService;
 
-	private List<FindStatisticsData> incomes = List.of(new FindStatisticsData(INCOME_DEFAULT.get(0), 30L),
+	private final List<FindStatisticsData> incomes = List.of(new FindStatisticsData(INCOME_DEFAULT.get(0), 30L),
 		new FindStatisticsData(INCOME_DEFAULT.get(1), 20L), new FindStatisticsData(INCOME_DEFAULT.get(2), 10L));
-	private List<FindStatisticsData> expenditures = List.of(new FindStatisticsData(EXPENDITURE_DEFAULT.get(0), 45L),
+	private final List<FindStatisticsData> expenditures = List.of(
+		new FindStatisticsData(EXPENDITURE_DEFAULT.get(0), 45L),
 		new FindStatisticsData(EXPENDITURE_DEFAULT.get(1), 44L),
 		new FindStatisticsData(EXPENDITURE_DEFAULT.get(2), 43L));
 	FindStatisticsResponse yearResponse = new FindStatisticsResponse(2022, null, 60L, 132L, incomes, expenditures);

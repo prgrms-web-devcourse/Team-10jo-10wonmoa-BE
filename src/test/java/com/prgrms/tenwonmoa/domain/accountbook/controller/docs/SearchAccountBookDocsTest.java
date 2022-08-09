@@ -47,10 +47,10 @@ import com.prgrms.tenwonmoa.domain.user.security.jwt.filter.JwtAuthenticationFil
 	}
 )
 @MockBean(JpaMetamodelMappingContext.class)
-@DisplayName("가계부 검색 컨트롤러 테스트")
+@DisplayName("가계부 검색 DOCS 테스트")
 @AutoConfigureMockMvc
 @AutoConfigureRestDocs
-class SearchAccountBookControllerTest {
+class SearchAccountBookDocsTest {
 
 	@Autowired
 	private MockMvc mockMvc;

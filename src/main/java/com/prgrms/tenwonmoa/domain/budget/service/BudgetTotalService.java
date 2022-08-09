@@ -1,11 +1,8 @@
 package com.prgrms.tenwonmoa.domain.budget.service;
 
-import java.util.Optional;
-
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.prgrms.tenwonmoa.domain.budget.Budget;
 import com.prgrms.tenwonmoa.domain.budget.dto.CreateOrUpdateBudgetRequest;
 import com.prgrms.tenwonmoa.domain.budget.repository.BudgetRepository;
 import com.prgrms.tenwonmoa.domain.category.UserCategory;
@@ -27,15 +24,10 @@ public class BudgetTotalService {
 		UserCategory userCategory = userCategoryService.findById(createOrUpdateBudgetRequest.getUserCategoryId());
 		User authUser = userService.findById(userId);
 
-		Optional<Budget> budget = budgetRepository.findByUserCategoryIdAndRegisterDate(
-			createOrUpdateBudgetRequest.getUserCategoryId(), createOrUpdateBudgetRequest.getRegisterDate());
-
-		if (budget.isEmpty()) {
-			budgetRepository.save(createOrUpdateBudgetRequest.toEntity(authUser, userCategory));
-		} else {
-			Budget existBudget = budget.get();
-			existBudget.validateOwner(authUser.getId());
-			existBudget.changeAmount(createOrUpdateBudgetRequest.getAmount());
-		}
+		budgetRepository.findByUserCategoryIdAndRegisterDate(createOrUpdateBudgetRequest.getUserCategoryId(),
+			createOrUpdateBudgetRequest.getRegisterDate()).ifPresentOrElse(existBudget -> {
+				existBudget.validateOwner(authUser.getId());
+				existBudget.changeAmount(createOrUpdateBudgetRequest.getAmount());
+			}, () -> budgetRepository.save(createOrUpdateBudgetRequest.toEntity(authUser, userCategory)));
 	}
 }

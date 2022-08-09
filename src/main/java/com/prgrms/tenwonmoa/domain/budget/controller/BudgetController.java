@@ -23,7 +23,7 @@ public class BudgetController {
 	private final BudgetTotalService budgetTotalService;
 
 	@PutMapping
-	public ResponseEntity<Void> createIncome(@RequestBody @Valid CreateOrUpdateBudgetRequest request,
+	public ResponseEntity<Void> createOrUpdate(@RequestBody @Valid CreateOrUpdateBudgetRequest request,
 		@AuthenticationPrincipal Long userId) {
 		budgetTotalService.createOrUpdateBudget(userId, request);
 

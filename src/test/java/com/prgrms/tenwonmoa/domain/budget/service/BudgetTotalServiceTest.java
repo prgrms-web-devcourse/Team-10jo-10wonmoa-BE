@@ -27,7 +27,7 @@ import com.prgrms.tenwonmoa.domain.category.service.UserCategoryService;
 import com.prgrms.tenwonmoa.domain.user.User;
 import com.prgrms.tenwonmoa.domain.user.service.UserService;
 
-@DisplayName("예산 통합 서비스 테스트")
+@DisplayName("예산 서비스 Total 테스트")
 @ExtendWith(MockitoExtension.class)
 class BudgetTotalServiceTest {
 

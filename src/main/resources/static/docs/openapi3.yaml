@@ -49,7 +49,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/api-v1-incomes--940438351'
+                $ref: '#/components/schemas/api-v1-expenditures-940438351'
               examples:
                 expenditure-create-forbidden:
                   value: "{\"messages\":[\"권한이 없습니다.\"],\"status\":403}"
@@ -58,7 +58,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/api-v1-incomes--940438351'
+                $ref: '#/components/schemas/api-v1-expenditures-940438351'
               examples:
                 expenditure-post-amount-max-error:
                   value: "{\"messages\":[\"최대값은 1조입니다\"],\"status\":400}"
@@ -120,49 +120,49 @@ paths:
         - name: categories
           in: query
           description: 유저카테고리 아이디
-          required: true
+          required: false
           schema:
             type: string
         - name: minprice
           in: query
           description: 최소 가격
-          required: true
+          required: false
           schema:
             type: string
         - name: maxprice
           in: query
           description: 최대 가격
-          required: true
+          required: false
           schema:
             type: string
         - name: start
           in: query
           description: 시작 등록일
-          required: true
+          required: false
           schema:
             type: string
         - name: end
           in: query
           description: 종료 등록일
-          required: true
+          required: false
           schema:
             type: string
         - name: content
           in: query
           description: "지출, 수입의 내용"
-          required: true
+          required: false
           schema:
             type: string
         - name: size
           in: query
           description: 페이지의 사이즈
-          required: true
+          required: false
           schema:
             type: string
         - name: page
           in: query
           description: 페이지 번호
-          required: true
+          required: false
           schema:
             type: string
       responses:
@@ -182,14 +182,14 @@ paths:
                         "amount" : 10000,
                         "content" : "점심",
                         "categoryName" : "식비",
-                        "registerTime" : "2022-08-09T11:55:34.539117"
+                        "registerTime" : "2022-08-09T15:14:11.149702"
                       }, {
                         "id" : 1,
                         "type" : "INCOME",
                         "amount" : 50000,
                         "content" : "용돈",
                         "categoryName" : "용돈",
-                        "registerTime" : "2022-08-09T11:55:34.539149"
+                        "registerTime" : "2022-08-09T15:14:11.149731"
                       } ],
                       "currentPage" : 1,
                       "nextPage" : 2,
@@ -215,7 +215,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/api-v1-incomes--940438351'
+                $ref: '#/components/schemas/api-v1-expenditures-940438351'
               examples:
                 expenditure-get-forbidden:
                   value: "{\"messages\":[\"해당 지출이 존재 하지 않습니다.\"],\"status\":400}"
@@ -227,7 +227,7 @@ paths:
                 $ref: '#/components/schemas/api-v1-expenditures-expenditureId2033270015'
               examples:
                 expenditure-get:
-                  value: "{\"id\":1,\"registerDate\":\"2022-08-09T11:55:33.132609\"\
+                  value: "{\"id\":1,\"registerDate\":\"2022-08-09T15:14:09.314411\"\
                     ,\"amount\":20000,\"content\":\"돈까스마시써\",\"userCategoryId\":3,\"\
                     categoryName\":\"식비\"}"
   /api/v1/incomes/:
@@ -239,13 +239,13 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/api-v1-incomes-1988379506'
+              $ref: '#/components/schemas/api-v1-incomes-incomeId1988379506'
             examples:
               income-create:
-                value: "{\"registerDate\":\"2022-08-09T11:55:34.237428\",\"amount\"\
+                value: "{\"registerDate\":\"2022-08-09T15:14:10.753524\",\"amount\"\
                   :1000,\"content\":\"content\",\"userCategoryId\":1}"
               income-create-fail:
-                value: "{\"registerDate\":\"2022-08-09T11:55:34.258165\",\"amount\"\
+                value: "{\"registerDate\":\"2022-08-09T15:14:10.779861\",\"amount\"\
                   :1000,\"content\":\"content\",\"userCategoryId\":1}"
       responses:
         "201":
@@ -262,7 +262,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/api-v1-incomes--940438351'
+                $ref: '#/components/schemas/api-v1-expenditures-940438351'
               examples:
                 income-create-fail:
                   value: "{\"messages\":[\"해당 사용자 카테고리는 존재하지 않습니다.\"],\"status\":400}"
@@ -284,7 +284,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/api-v1-incomes--940438351'
+                $ref: '#/components/schemas/api-v1-expenditures-940438351'
               examples:
                 income-find-by-id-fail:
                   value: "{\"messages\":[\"수입 정보가 존재하지 않습니다.\"],\"status\":400}"
@@ -296,7 +296,7 @@ paths:
                 $ref: '#/components/schemas/api-v1-incomes-incomeId-1674408626'
               examples:
                 income-find-by-id:
-                  value: "{\"id\":1,\"registerDate\":\"2022-08-09T11:55:34.271087\"\
+                  value: "{\"id\":1,\"registerDate\":\"2022-08-09T15:14:10.793295\"\
                     ,\"amount\":1000,\"content\":\"content\",\"userCategoryId\":1,\"\
                     categoryName\":\"용돈\"}"
         "403":
@@ -304,7 +304,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/api-v1-incomes--940438351'
+                $ref: '#/components/schemas/api-v1-expenditures-940438351'
               examples:
                 income-forbidden:
                   value: "{\"messages\":[\"권한이 없습니다.\"],\"status\":403}"
@@ -323,13 +323,13 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/api-v1-incomes-1988379506'
+              $ref: '#/components/schemas/api-v1-incomes-incomeId1988379506'
             examples:
               income-update:
-                value: "{\"registerDate\":\"2022-08-09T11:55:33.936586\",\"amount\"\
+                value: "{\"registerDate\":\"2022-08-09T15:14:10.310113\",\"amount\"\
                   :2000,\"content\":\"updateContent\",\"userCategoryId\":2}"
               income-update-fail:
-                value: "{\"registerDate\":\"2022-08-09T11:55:34.221795\",\"amount\"\
+                value: "{\"registerDate\":\"2022-08-09T15:14:10.732345\",\"amount\"\
                   :2000,\"content\":\"updateContent\",\"userCategoryId\":2}"
       responses:
         "204":
@@ -339,7 +339,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/api-v1-incomes--940438351'
+                $ref: '#/components/schemas/api-v1-expenditures-940438351'
               examples:
                 income-update-fail:
                   value: "{\"messages\":[\"수입 정보가 존재하지 않습니다.\"],\"status\":400}"
@@ -359,21 +359,6 @@ paths:
           description: "204"
 components:
   schemas:
-    api-v1-incomes--940438351:
-      type: object
-      properties:
-        messages:
-          type: array
-          description: 예외 메시지
-          items:
-            oneOf:
-              - type: object
-              - type: boolean
-              - type: string
-              - type: number
-        status:
-          type: number
-          description: 에러 코드
     api-v1-account-book-search-1099388757:
       type: object
       properties:
@@ -416,6 +401,21 @@ components:
         expenditureSum:
           type: number
           description: 지출의 총합
+    api-v1-expenditures-940438351:
+      type: object
+      properties:
+        messages:
+          type: array
+          description: 예외 메시지
+          items:
+            oneOf:
+              - type: object
+              - type: boolean
+              - type: string
+              - type: number
+        status:
+          type: number
+          description: 에러 코드
     api-v1-statistics-1753393928:
       type: object
       properties:
@@ -461,7 +461,7 @@ components:
         expenditureTotalSum:
           type: number
           description: 지출 총 합계
-    api-v1-incomes-1988379506:
+    api-v1-incomes-incomeId1988379506:
       type: object
       properties:
         amount:

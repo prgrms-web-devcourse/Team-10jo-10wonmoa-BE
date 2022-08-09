@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.prgrms.tenwonmoa.domain.accountbook.dto.CalendarCondition;
+import com.prgrms.tenwonmoa.domain.accountbook.dto.FindCalendarResponse;
 import com.prgrms.tenwonmoa.domain.accountbook.dto.FindDayAccountResponse;
 import com.prgrms.tenwonmoa.domain.accountbook.dto.FindMonthAccountResponse;
 import com.prgrms.tenwonmoa.domain.accountbook.dto.FindSumResponse;
@@ -71,6 +73,20 @@ public class AccountBookQueryController {
 	) {
 		MonthCondition condition = new MonthCondition(LocalDateTime.now(), year);
 		FindMonthAccountResponse response = accountBookQueryService.findMonthAccount(userId, condition);
+		return ResponseEntity.ok(response);
+	}
+
+	@GetMapping("/calendar/{date}")
+	public ResponseEntity<FindCalendarResponse> findCalendarAccount(
+		@AuthenticationPrincipal Long userId,
+		@PathVariable
+		@DateTimeFormat(pattern = "yyyy-MM-dd")
+			LocalDate date
+	) {
+		CalendarCondition condition = new CalendarCondition(date);
+
+		FindCalendarResponse response = accountBookQueryService.findCalendarAccount(userId, condition);
+
 		return ResponseEntity.ok(response);
 	}
 

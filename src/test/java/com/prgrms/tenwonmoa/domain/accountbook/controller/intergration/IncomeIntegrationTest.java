@@ -122,6 +122,21 @@ class IncomeIntegrationTest extends BaseControllerIntegrationTest {
 	}
 
 	@Test
+	void 수입_등록_다른유저의_카테고리_등록시도_실패() throws Exception {
+		User otherUser = userRepository.saveAndFlush(new User("other@email.com", "other1234", "other"));
+		Category category = categoryRepository.save(new Category("other", INCOME));
+		UserCategory otherUserCategory = userCategoryRepository.save(new UserCategory(otherUser, category));
+
+		CreateIncomeRequest request = new CreateIncomeRequest(LocalDateTime.now(), 2000L, "content2",
+			otherUserCategory.getId());
+
+		mvc.perform(post(LOCATION_PREFIX).contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(request))
+				.header(HttpHeaders.AUTHORIZATION, accessToken))
+			.andExpect(status().isForbidden());
+	}
+
+	@Test
 	void 수입_상세조회_성공() throws Exception {
 		mvc.perform(get(LOCATION_PREFIX + "/{incomeId}", income.getId()).header(HttpHeaders.AUTHORIZATION, accessToken))
 			.andExpect(status().isOk())

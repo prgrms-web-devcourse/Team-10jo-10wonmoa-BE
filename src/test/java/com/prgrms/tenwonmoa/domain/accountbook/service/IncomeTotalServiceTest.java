@@ -21,6 +21,8 @@ import com.prgrms.tenwonmoa.domain.accountbook.Income;
 import com.prgrms.tenwonmoa.domain.accountbook.dto.income.CreateIncomeRequest;
 import com.prgrms.tenwonmoa.domain.accountbook.dto.income.UpdateIncomeRequest;
 import com.prgrms.tenwonmoa.domain.accountbook.repository.ExpenditureRepository;
+import com.prgrms.tenwonmoa.domain.category.Category;
+import com.prgrms.tenwonmoa.domain.category.CategoryType;
 import com.prgrms.tenwonmoa.domain.category.UserCategory;
 import com.prgrms.tenwonmoa.domain.category.service.UserCategoryService;
 import com.prgrms.tenwonmoa.domain.user.User;
@@ -59,13 +61,18 @@ class IncomeTotalServiceTest {
 
 	@Test
 	void 수입_생성_성공() {
-		given(userCategoryService.findById(any())).willReturn(userCategory);
-		given(userService.findById(anyLong())).willReturn(user);
+		UserCategory mockUserCategory = mock(UserCategory.class);
+		given(userCategoryService.findById(any())).willReturn(mockUserCategory);
+		given(mockUserCategory.getUser()).willReturn(mockUser);
+		given(mockUserCategory.getCategory()).willReturn(new Category("income", CategoryType.INCOME));
+		doNothing().when(mockUser).validateLoginUser(any());
+		given(userService.findById(anyLong())).willReturn(mockUser);
 		given(incomeService.save(income)).willReturn(userId);
 
-		Long savedId = incomeTotalService.createIncome(userId, request);
+		incomeTotalService.createIncome(userId, request);
 		assertAll(
-			() -> assertThat(savedId).isEqualTo(userId),
+			() -> verify(userCategoryService).findById(any()),
+			() -> verify(userService).findById(any()),
 			() -> verify(incomeService).save(income)
 		);
 	}

@@ -444,9 +444,7 @@ class AccountBookQueryRepositoryTest extends RepositoryTest {
 			// 2020년 2월이 윤년인지
 			assertThat(calendarAccount.getMonth()).isEqualTo(2);
 			assertThat(results.size()).isEqualTo(29);
-			
 			for (int i = 0; i < results.size(); i++) {
-
 				DateDetail dateDetail = results.get(i);
 				int day = i + 1;
 
@@ -459,6 +457,7 @@ class AccountBookQueryRepositoryTest extends RepositoryTest {
 
 				if (day % 2 == 1) {
 
+					// 11일 이전에는 지출만 1000원
 					if (day < 11) {
 						assertThat(dateDetail.getIncomeSum()).isEqualTo(0L);
 						assertThat(dateDetail.getExpenditureSum()).isEqualTo(1000L);
@@ -466,6 +465,7 @@ class AccountBookQueryRepositoryTest extends RepositoryTest {
 						continue;
 					}
 
+					// 19일 이후에는 수입만 1000원
 					if (day > 19) {
 						assertThat(dateDetail.getIncomeSum()).isEqualTo(1000L);
 						assertThat(dateDetail.getExpenditureSum()).isEqualTo(0L);
@@ -473,6 +473,7 @@ class AccountBookQueryRepositoryTest extends RepositoryTest {
 						continue;
 					}
 
+					// 11~19일에는 수입 지출 모두 1000원
 					if (day >= 11 && day <= 19) {
 						assertThat(dateDetail.getExpenditureSum()).isEqualTo(1000L);
 						assertThat(dateDetail.getIncomeSum()).isEqualTo(1000L);

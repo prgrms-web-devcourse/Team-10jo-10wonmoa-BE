@@ -133,4 +133,19 @@ class SearchAccountBookIntegrationTest extends BaseControllerIntegrationTest {
 			.andExpect(jsonPath("$.nextPage").isEmpty())
 			.andExpect(jsonPath("$.results", hasSize(2)));
 	}
+
+	@Test
+	void 금액의_범위를_벗어나는_값_전송시_조회_실패() throws Exception {
+		validateRequest("minprice", "-1");
+		validateRequest("maxprice", "-1");
+		validateRequest("minprice", "1_000_000_000_001");
+		validateRequest("maxprice", "1_000_000_000_001");
+	}
+
+	private void validateRequest(String field, String value) throws Exception {
+		mvc.perform(get("/api/v1/account-book/search")
+				.header(HttpHeaders.AUTHORIZATION, accessToken)
+				.param(field, value))
+			.andExpect(status().isBadRequest());
+	}
 }

@@ -4,9 +4,13 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -24,6 +28,7 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/account-book")
+@Validated
 public class SearchAccountBookController {
 
 	private static final String CATEGORY_DELIMITER = ",";
@@ -38,9 +43,8 @@ public class SearchAccountBookController {
 		@RequestParam(defaultValue = "") String content,
 		@RequestParam(defaultValue = "10") int size,
 		@RequestParam(defaultValue = "1") int page,
-
-		@RequestParam(required = false, name = "minprice") Long minPrice,
-		@RequestParam(required = false, name = "maxprice") Long maxPrice,
+		@RequestParam(required = false, name = "minprice") @Min(0L) @Max(1_000_000_000_000L) Long minPrice,
+		@RequestParam(required = false, name = "maxprice") @Min(0L) @Max(1_000_000_000_000L) Long maxPrice,
 		@RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate start,
 		@RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate end
 	) {

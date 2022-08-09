@@ -21,7 +21,7 @@ public class FindExpenditureResponse {
 
 	private final String categoryName;
 
-	private FindExpenditureResponse(
+	public FindExpenditureResponse(
 		Long id,
 		LocalDateTime registerDate,
 		Long amount,

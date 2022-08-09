@@ -11,11 +11,15 @@ import com.prgrms.tenwonmoa.domain.accountbook.Expenditure;
 import com.prgrms.tenwonmoa.domain.category.UserCategory;
 import com.prgrms.tenwonmoa.domain.user.User;
 
+import lombok.Getter;
+
+@Getter
 public class CreateExpenditureRequest {
 
 	@NotNull(message = "등록일을 채워주세요")
 	private final LocalDateTime registerDate;
 
+	@NotNull
 	@Min(value = 0L, message = "최소값은 0입니다")
 	@Max(value = 1_000_000_000_000L, message = "최대값은 1조입니다")
 	private final Long amount;

@@ -1,7 +1,6 @@
 package com.prgrms.tenwonmoa.domain.accountbook.service;
 
 import static com.prgrms.tenwonmoa.common.fixture.Fixture.*;
-import static com.prgrms.tenwonmoa.domain.accountbook.dto.FindAccountBookResponse.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
 
@@ -16,8 +15,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.prgrms.tenwonmoa.domain.accountbook.AccountBookConst;
-import com.prgrms.tenwonmoa.domain.accountbook.Expenditure;
-import com.prgrms.tenwonmoa.domain.accountbook.Income;
+import com.prgrms.tenwonmoa.domain.accountbook.dto.AccountBookItem;
 import com.prgrms.tenwonmoa.domain.accountbook.dto.FindAccountBookResponse;
 import com.prgrms.tenwonmoa.domain.accountbook.dto.service.SearchAccountBookCmd;
 import com.prgrms.tenwonmoa.domain.accountbook.repository.SearchAccountBookRepository;
@@ -52,41 +50,37 @@ class SearchAccountBookServiceTest {
 	@Test
 	void 가계부_검색_성공() {
 		//given
-		Income latestIncome = new Income(LocalDateTime.now().minusHours(1L), 30000L,
-			"용돈", salaryCategory.getCategoryName(), user, salaryCategory);
+		AccountBookItem latestIncome = new AccountBookItem(1L, CategoryType.INCOME.name(), 30000L,
+			"용돈", salaryCategory.getCategoryName(), LocalDateTime.now().minusHours(1L));
 
-		Expenditure secondExpenditure = new Expenditure(LocalDateTime.now().minusHours(5L), 10000L,
-			"점심", foodCategory.getCategoryName(), user, foodCategory);
+		AccountBookItem secondExpenditure = new AccountBookItem(1L, CategoryType.EXPENDITURE.name(), 10000L,
+			"점심", foodCategory.getCategoryName(), LocalDateTime.now().minusHours(5L));
 
-		Expenditure thirdExpenditure = new Expenditure(LocalDateTime.now().minusDays(1L), 20000L,
-			"영화", cultureCategory.getCategoryName(), user, cultureCategory);
+		AccountBookItem thirdExpenditure = new AccountBookItem(2L, CategoryType.EXPENDITURE.name(), 20000L,
+			"영화", cultureCategory.getCategoryName(), LocalDateTime.now().minusDays(1L));
 
-		Expenditure fourthExpenditure = new Expenditure(LocalDateTime.now().minusDays(2L), 30000L,
-			"문화생활", cultureCategory.getCategoryName(), user, cultureCategory);
+		AccountBookItem fourthExpenditure = new AccountBookItem(3L, CategoryType.EXPENDITURE.name(), 30000L,
+			"문화생활", cultureCategory.getCategoryName(), LocalDateTime.now().minusDays(2L));
 
-		Income fifthIncome = new Income(LocalDateTime.now().minusDays(3L), 100000L,
-			"월급", salaryCategory.getCategoryName(), user, salaryCategory);
+		AccountBookItem fifthIncome = new AccountBookItem(2L, CategoryType.INCOME.name(), 100000L,
+			"월급", salaryCategory.getCategoryName(), LocalDateTime.now().minusDays(3L));
 
 		SearchAccountBookCmd cmd = SearchAccountBookCmd.of("1,2,3", 0L, 1_000_000_000L,
 			AccountBookConst.LEFT_MOST_REGISTER_DATE, AccountBookConst.RIGHT_MOST_REGISTER_DATE, "");
 		PageCustomRequest pageRequest = new PageCustomRequest(1, 3);
 
-		given(accountBookRepository.searchExpenditures(cmd.getMinPrice(), cmd.getMaxPrice(), cmd.getStart(),
+		given(accountBookRepository.searchAccountBook(cmd.getMinPrice(), cmd.getMaxPrice(), cmd.getStart(),
 			cmd.getEnd(), cmd.getContent(), cmd.getCategories(), userId, pageRequest))
-			.willReturn(List.of(secondExpenditure, thirdExpenditure, fourthExpenditure));
-
-		given(accountBookRepository.searchIncomes(cmd.getMinPrice(), cmd.getMaxPrice(), cmd.getStart(),
-			cmd.getEnd(), cmd.getContent(), cmd.getCategories(), userId, pageRequest))
-			.willReturn(List.of(latestIncome, fifthIncome));
+			.willReturn(List.of(latestIncome, secondExpenditure, thirdExpenditure));
 
 		//when
-		FindAccountBookResponse findAccountBookResponse =
+		FindAccountBookResponse<AccountBookItem> findAccountBookResponse =
 			accountBookService.searchAccountBooks(userId, cmd, pageRequest);
 
 		//then
 		assertThat(findAccountBookResponse.getResults().size()).isEqualTo(pageRequest.getSize());
 		assertThat(findAccountBookResponse.getResults())
-			.extracting(Result::getCategoryName)
+			.extracting(AccountBookItem::getCategoryName)
 			.containsExactlyInAnyOrder(
 				latestIncome.getCategoryName(),
 				secondExpenditure.getCategoryName(),

@@ -8,21 +8,50 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.prgrms.tenwonmoa.common.BaseControllerIntegrationTest;
+import com.prgrms.tenwonmoa.domain.accountbook.repository.ExpenditureRepository;
+import com.prgrms.tenwonmoa.domain.accountbook.repository.IncomeRepository;
+import com.prgrms.tenwonmoa.domain.category.repository.CategoryRepository;
+import com.prgrms.tenwonmoa.domain.category.repository.UserCategoryRepository;
+import com.prgrms.tenwonmoa.domain.user.repository.UserRepository;
 
 @DisplayName("검색 컨트롤러 통합 테스트")
-@Transactional
 class SearchAccountBookIntegrationTest extends BaseControllerIntegrationTest {
+
+	@Autowired
+	private ExpenditureRepository expenditureRepository;
+
+	@Autowired
+	private IncomeRepository incomeRepository;
+
+	@Autowired
+	private UserCategoryRepository userCategoryRepository;
+
+	@Autowired
+	private CategoryRepository categoryRepository;
+
+	@Autowired
+	private UserRepository userRepository;
 
 	@BeforeEach
 	void setup() throws Exception {
 		registerUserAndLogin();
+	}
+
+	@AfterEach
+	void tearDown() {
+		incomeRepository.deleteAllInBatch();
+		expenditureRepository.deleteAllInBatch();
+		userCategoryRepository.deleteAllInBatch();
+		categoryRepository.deleteAllInBatch();
+		userRepository.deleteAllInBatch();
 	}
 
 	@Test

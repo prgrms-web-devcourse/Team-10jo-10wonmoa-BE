@@ -1,7 +1,9 @@
 package com.prgrms.tenwonmoa.exception.handler;
 
+import static com.prgrms.tenwonmoa.exception.message.Message.*;
 import static org.springframework.http.HttpStatus.*;
 
+import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
@@ -42,6 +44,18 @@ public class GlobalExceptionHandler {
 	public ResponseEntity<ErrorResponse> handleClientBadRequest(RuntimeException exception) {
 		log.info(exception.getMessage(), exception);
 		ErrorResponse errorResponse = new ErrorResponse(List.of(exception.getMessage()), BAD_REQUEST.value());
+		return ResponseEntity
+			.status(BAD_REQUEST.value())
+			.body(errorResponse);
+	}
+
+	// 400 : Wrong Date Format - 잘못된 날짜 포맷 요청
+	// Client의 잘못된 요청으로 인한 에러 처리
+	@ExceptionHandler(DateTimeParseException.class)
+	public ResponseEntity<ErrorResponse> handleClientBadTimeFormatRequest(RuntimeException exception) {
+		log.info(exception.getMessage(), exception);
+		ErrorResponse errorResponse = new ErrorResponse(List.of(WRONG_DATE_TIME_FORMAT.getMessage()),
+			BAD_REQUEST.value());
 		return ResponseEntity
 			.status(BAD_REQUEST.value())
 			.body(errorResponse);

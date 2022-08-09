@@ -36,6 +36,7 @@ public class IncomeTotalService {
 		Income income = incomeService.findById(incomeId);
 		income.validateOwner(authId);
 		UserCategory userCategory = userCategoryService.findById(updateIncomeRequest.getUserCategoryId());
+		userCategory.getUser().validateLoginUser(authId);
 		if (CategoryType.isExpenditure(userCategory.getCategory().getCategoryType())) {
 			incomeService.deleteById(incomeId);
 			expenditureRepository.save(

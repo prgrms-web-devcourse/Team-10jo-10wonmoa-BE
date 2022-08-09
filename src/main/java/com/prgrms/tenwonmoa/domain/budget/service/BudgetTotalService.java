@@ -26,8 +26,8 @@ public class BudgetTotalService {
 
 		budgetRepository.findByUserCategoryIdAndRegisterDate(createOrUpdateBudgetRequest.getUserCategoryId(),
 			createOrUpdateBudgetRequest.getRegisterDate()).ifPresentOrElse(existBudget -> {
-			existBudget.validateOwner(authUser.getId());
-			existBudget.changeAmount(createOrUpdateBudgetRequest.getAmount());
-		}, () -> budgetRepository.save(createOrUpdateBudgetRequest.toEntity(authUser, userCategory)));
+				existBudget.validateOwner(authUser.getId());
+				existBudget.changeAmount(createOrUpdateBudgetRequest.getAmount());
+			}, () -> budgetRepository.save(createOrUpdateBudgetRequest.toEntity(authUser, userCategory)));
 	}
 }

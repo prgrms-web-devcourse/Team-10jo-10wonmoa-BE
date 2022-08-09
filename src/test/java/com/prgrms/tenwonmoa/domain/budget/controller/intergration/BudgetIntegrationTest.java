@@ -3,7 +3,6 @@ package com.prgrms.tenwonmoa.domain.budget.controller.intergration;
 import static com.prgrms.tenwonmoa.common.fixture.Fixture.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import java.time.YearMonth;
@@ -119,7 +118,6 @@ public class BudgetIntegrationTest extends BaseControllerIntegrationTest {
 				.contentType(MediaType.APPLICATION_JSON)
 				.header(HttpHeaders.AUTHORIZATION, accessToken)
 			)
-			.andDo(print())
 			.andExpect(status().isBadRequest());
 	}
 

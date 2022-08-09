@@ -5,6 +5,8 @@ import java.time.LocalDate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.prgrms.tenwonmoa.domain.accountbook.dto.CalendarCondition;
+import com.prgrms.tenwonmoa.domain.accountbook.dto.FindCalendarResponse;
 import com.prgrms.tenwonmoa.domain.accountbook.dto.FindDayAccountResponse;
 import com.prgrms.tenwonmoa.domain.accountbook.dto.FindMonthAccountResponse;
 import com.prgrms.tenwonmoa.domain.accountbook.dto.FindSumResponse;
@@ -37,5 +39,9 @@ public class AccountBookQueryService {
 
 	public FindMonthAccountResponse findMonthAccount(Long userId, MonthCondition condition) {
 		return accountBookQueryRepository.findMonthAccount(userId, condition);
+	}
+
+	public FindCalendarResponse findCalendarAccount(Long userId, CalendarCondition condition) {
+		return accountBookQueryRepository.findCalendarAccount(userId, condition);
 	}
 }

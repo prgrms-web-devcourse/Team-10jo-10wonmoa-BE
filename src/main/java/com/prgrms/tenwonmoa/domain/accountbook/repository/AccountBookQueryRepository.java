@@ -19,6 +19,9 @@ import org.springframework.stereotype.Repository;
 import com.prgrms.tenwonmoa.domain.accountbook.Expenditure;
 import com.prgrms.tenwonmoa.domain.accountbook.Income;
 import com.prgrms.tenwonmoa.domain.accountbook.dto.AccountBookItem;
+import com.prgrms.tenwonmoa.domain.accountbook.dto.CalendarCondition;
+import com.prgrms.tenwonmoa.domain.accountbook.dto.DateDetail;
+import com.prgrms.tenwonmoa.domain.accountbook.dto.FindCalendarResponse;
 import com.prgrms.tenwonmoa.domain.accountbook.dto.FindDayAccountResponse;
 import com.prgrms.tenwonmoa.domain.accountbook.dto.FindMonthAccountResponse;
 import com.prgrms.tenwonmoa.domain.accountbook.dto.FindSumResponse;
@@ -202,6 +205,43 @@ public class AccountBookQueryRepository {
 		return new FindSumResponse(incomeSum, expenditureSum);
 	}
 
+	public FindCalendarResponse findCalendarAccount(Long userId, CalendarCondition condition) {
+
+		int year = condition.getYear();
+		int month = condition.getMonth();
+		int lastDay = condition.getLastDayOfMonth();
+
+		Map<Integer, Long> incomeDateMap = queryFactory.from(income)
+			.where(
+				income.registerDate.year().eq(year),
+				income.registerDate.month().eq(month),
+				income.user.id.eq(userId)
+			)
+			.transform(GroupBy.groupBy(income.registerDate.dayOfMonth())
+				.as(GroupBy.sum(income.amount))
+			);
+
+		Map<Integer, Long> expenditureDateMap = queryFactory.from(expenditure)
+			.where(
+				expenditure.user.id.eq(userId),
+				expenditure.registerDate.year().eq(year),
+				expenditure.registerDate.month().eq(month)
+			)
+			.transform(GroupBy.groupBy(expenditure.registerDate.dayOfMonth())
+				.as(GroupBy.sum(expenditure.amount))
+			);
+
+		List<DateDetail> results = new ArrayList<>();
+
+		for (int day = 1; day <= lastDay; day++) {
+			Long incomeSum = getAmountZeroIfNull(incomeDateMap.get(day));
+			Long expenditureSum = getAmountZeroIfNull(expenditureDateMap.get(day));
+			results.add(new DateDetail(day, incomeSum, expenditureSum));
+		}
+
+		return new FindCalendarResponse(month, results);
+	}
+
 	private List<MonthDetail> getMonthAccountResults(MonthCondition monthCondition, Set<Integer> monthSet,
 		Map<Integer, Long> expenditureMap, Map<Integer, Long> incomeMap) {
 
@@ -273,4 +313,5 @@ public class AccountBookQueryRepository {
 		return amount == null ? 0 : amount;
 	}
 }
+
 

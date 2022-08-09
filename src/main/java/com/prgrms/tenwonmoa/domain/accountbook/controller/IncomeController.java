@@ -29,7 +29,7 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/api/v1/incomes")
 public class IncomeController {
 
-	private static final String LOCATION_PREFIX = "/api/v1/incomes/";
+	private static final String LOCATION_PREFIX = "/api/v1/incomes";
 
 	private final IncomeTotalService incomeTotalService;
 	private final IncomeService incomeService;
@@ -39,7 +39,7 @@ public class IncomeController {
 		@AuthenticationPrincipal Long userId) {
 		Long createdId = incomeTotalService.createIncome(userId, request);
 
-		String redirectUri = LOCATION_PREFIX + createdId;
+		String redirectUri = LOCATION_PREFIX + "/" + createdId;
 		return ResponseEntity.created(URI.create(redirectUri)).body(Map.of("id", createdId));
 	}
 

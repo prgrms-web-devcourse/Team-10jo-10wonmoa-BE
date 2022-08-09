@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.prgrms.tenwonmoa.domain.accountbook.dto.AccountBookItem;
 import com.prgrms.tenwonmoa.domain.accountbook.dto.FindAccountBookResponse;
 import com.prgrms.tenwonmoa.domain.accountbook.dto.service.SearchAccountBookCmd;
 import com.prgrms.tenwonmoa.domain.accountbook.service.SearchAccountBookService;
@@ -31,7 +32,7 @@ public class SearchAccountBookController {
 	private final FindUserCategoryService userCategoryService;
 
 	@GetMapping("/search")
-	public ResponseEntity<FindAccountBookResponse> searchAccountBooks(
+	public ResponseEntity<FindAccountBookResponse<AccountBookItem>> searchAccountBooks(
 		@AuthenticationPrincipal Long userId,
 		@RequestParam(defaultValue = "") String categories,
 		@RequestParam(name = "minprice", required = false) Long minPrice,
@@ -46,7 +47,7 @@ public class SearchAccountBookController {
 
 		PageCustomRequest pageRequest = new PageCustomRequest(page, size);
 
-		FindAccountBookResponse response = accountBookService.searchAccountBooks(userId,
+		FindAccountBookResponse<AccountBookItem> response = accountBookService.searchAccountBooks(userId,
 			SearchAccountBookCmd.of(categories, minPrice, maxPrice, start, end, content), pageRequest);
 
 		return ResponseEntity.ok(response);

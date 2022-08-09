@@ -13,6 +13,7 @@ import org.springframework.web.filter.CorsFilter;
 
 import com.prgrms.tenwonmoa.domain.user.security.jwt.filter.CustomAuthenticationEntryPoint;
 import com.prgrms.tenwonmoa.domain.user.security.jwt.filter.JwtAuthenticationFilter;
+import com.prgrms.tenwonmoa.domain.user.security.oauth2.OAuth2AuthenticationSuccessHandler;
 
 import lombok.RequiredArgsConstructor;
 
@@ -32,13 +33,19 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		return new CustomAuthenticationEntryPoint();
 	}
 
+	@Bean
+	public OAuth2AuthenticationSuccessHandler oauth2AuthenticationSuccessHandler() {
+		return new OAuth2AuthenticationSuccessHandler();
+	}
+
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http
 			.cors()
 				.and()
 			.authorizeRequests()
-				.antMatchers("/api/v1/users", "/api/v1/users/login", "/api/v1/users/refresh", "/docs/**")
+				.antMatchers("/api/v1/users", "/api/v1/users/login", "/api/v1/users/refresh", "/docs/**",
+					"api/v1/oauth2/**", "/login/**")
 					.permitAll()
 				.anyRequest().authenticated()
 				.and()
@@ -50,7 +57,16 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 				.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 				.and()
 			.exceptionHandling()
-				.authenticationEntryPoint(authenticationEntryPoint());
+				.authenticationEntryPoint(authenticationEntryPoint())
+				.and()
+			.oauth2Login()
+				.authorizationEndpoint()
+					.baseUri("/api/v1/oauth2/authorize")        // 구글 로그인 인증 하는 URL
+					.and()
+				.redirectionEndpoint()
+					.baseUri("/login/oauth2/code/google")    // redirect default 값
+					.and()
+				.successHandler(oauth2AuthenticationSuccessHandler());    // 로그인 성공 처리하는 handler
 
 		// filter 등록
 		http.addFilterAfter(

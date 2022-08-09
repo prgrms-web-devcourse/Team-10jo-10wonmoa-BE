@@ -35,13 +35,15 @@ public class SearchAccountBookController {
 	public ResponseEntity<FindAccountBookResponse<AccountBookItem>> searchAccountBooks(
 		@AuthenticationPrincipal Long userId,
 		@RequestParam(defaultValue = "") String categories,
-		@RequestParam(name = "minprice", required = false) Long minPrice,
-		@RequestParam(name = "maxprice", required = false) Long maxPrice,
-		@RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate start,
-		@RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate end,
 		@RequestParam(defaultValue = "") String content,
 		@RequestParam(defaultValue = "10") int size,
-		@RequestParam(defaultValue = "1") int page) {
+		@RequestParam(defaultValue = "1") int page,
+
+		@RequestParam(required = false, name = "minprice") Long minPrice,
+		@RequestParam(required = false, name = "maxprice") Long maxPrice,
+		@RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate start,
+		@RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate end
+	) {
 
 		categories = categories.isEmpty() ? getAllCategories(userId) : categories;
 

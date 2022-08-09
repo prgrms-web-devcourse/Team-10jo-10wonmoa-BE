@@ -1,4 +1,4 @@
-package com.prgrms.tenwonmoa.domain.accountbook.controller;
+package com.prgrms.tenwonmoa.domain.accountbook.controller.intergration;
 
 import static com.prgrms.tenwonmoa.common.fixture.Fixture.*;
 import static java.time.LocalDateTime.*;

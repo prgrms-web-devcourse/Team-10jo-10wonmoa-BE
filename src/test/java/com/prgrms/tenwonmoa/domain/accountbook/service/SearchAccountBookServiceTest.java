@@ -1,10 +1,11 @@
 package com.prgrms.tenwonmoa.domain.accountbook.service;
 
 import static com.prgrms.tenwonmoa.common.fixture.Fixture.*;
-import static com.prgrms.tenwonmoa.domain.accountbook.dto.FindAccountBookResponse.*;
+import static com.prgrms.tenwonmoa.domain.accountbook.AccountBookConst.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -15,9 +16,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.prgrms.tenwonmoa.domain.accountbook.AccountBookConst;
-import com.prgrms.tenwonmoa.domain.accountbook.Expenditure;
-import com.prgrms.tenwonmoa.domain.accountbook.Income;
+import com.prgrms.tenwonmoa.domain.accountbook.dto.AccountBookItem;
 import com.prgrms.tenwonmoa.domain.accountbook.dto.FindAccountBookResponse;
 import com.prgrms.tenwonmoa.domain.accountbook.dto.service.SearchAccountBookCmd;
 import com.prgrms.tenwonmoa.domain.accountbook.repository.SearchAccountBookRepository;
@@ -39,62 +38,74 @@ class SearchAccountBookServiceTest {
 
 	private final User user = createUser();
 
-	private final UserCategory foodCategory = new UserCategory(createUser(),
+	private final UserCategory foodCategory = new UserCategory(user,
 		new Category("식비", CategoryType.EXPENDITURE));
 
-	private final UserCategory cultureCategory = new UserCategory(createUser(),
+	private final UserCategory cultureCategory = new UserCategory(user,
 		new Category("문화생활", CategoryType.EXPENDITURE));
 
-	private final UserCategory salaryCategory = new UserCategory(createUser(), new Category("월급", CategoryType.INCOME));
+	private final UserCategory salaryCategory = new UserCategory(user,
+		new Category("월급", CategoryType.INCOME));
 
 	private final Long userId = 1L;
 
 	@Test
 	void 가계부_검색_성공() {
 		//given
-		Income latestIncome = new Income(LocalDateTime.now().minusHours(1L), 30000L,
-			"용돈", salaryCategory.getCategoryName(), user, salaryCategory);
+		AccountBookItem latestIncome = new AccountBookItem(1L, CategoryType.INCOME.name(), 30000L,
+			"용돈", salaryCategory.getCategoryName(), LocalDateTime.now().minusHours(1L));
 
-		Expenditure secondExpenditure = new Expenditure(LocalDateTime.now().minusHours(5L), 10000L,
-			"점심", foodCategory.getCategoryName(), user, foodCategory);
+		AccountBookItem secondExpenditure = new AccountBookItem(1L, CategoryType.EXPENDITURE.name(), 10000L,
+			"점심", foodCategory.getCategoryName(), LocalDateTime.now().minusHours(5L));
 
-		Expenditure thirdExpenditure = new Expenditure(LocalDateTime.now().minusDays(1L), 20000L,
-			"영화", cultureCategory.getCategoryName(), user, cultureCategory);
+		AccountBookItem thirdExpenditure = new AccountBookItem(2L, CategoryType.EXPENDITURE.name(), 20000L,
+			"영화", cultureCategory.getCategoryName(), LocalDateTime.now().minusDays(1L));
 
-		Expenditure fourthExpenditure = new Expenditure(LocalDateTime.now().minusDays(2L), 30000L,
-			"문화생활", cultureCategory.getCategoryName(), user, cultureCategory);
-
-		Income fifthIncome = new Income(LocalDateTime.now().minusDays(3L), 100000L,
-			"월급", salaryCategory.getCategoryName(), user, salaryCategory);
-
-		SearchAccountBookCmd cmd = SearchAccountBookCmd.of("1,2,3", 0L, 1_000_000_000L,
-			AccountBookConst.LEFT_MOST_REGISTER_DATE, AccountBookConst.RIGHT_MOST_REGISTER_DATE, "");
+		SearchAccountBookCmd cmd = SearchAccountBookCmd.of("1,2,3", AMOUNT_MIN, AMOUNT_MAX,
+			LEFT_MOST_REGISTER_DATE, RIGHT_MOST_REGISTER_DATE, "");
 		PageCustomRequest pageRequest = new PageCustomRequest(1, 3);
 
-		given(accountBookRepository.searchExpenditures(cmd.getMinPrice(), cmd.getMaxPrice(), cmd.getStart(),
+		given(accountBookRepository.searchAccountBook(cmd.getMinPrice(), cmd.getMaxPrice(), cmd.getStart(),
 			cmd.getEnd(), cmd.getContent(), cmd.getCategories(), userId, pageRequest))
-			.willReturn(List.of(secondExpenditure, thirdExpenditure, fourthExpenditure));
-
-		given(accountBookRepository.searchIncomes(cmd.getMinPrice(), cmd.getMaxPrice(), cmd.getStart(),
-			cmd.getEnd(), cmd.getContent(), cmd.getCategories(), userId, pageRequest))
-			.willReturn(List.of(latestIncome, fifthIncome));
+			.willReturn(List.of(latestIncome, secondExpenditure, thirdExpenditure));
 
 		//when
-		FindAccountBookResponse findAccountBookResponse =
+		FindAccountBookResponse<AccountBookItem> findAccountBookResponse =
 			accountBookService.searchAccountBooks(userId, cmd, pageRequest);
 
 		//then
-		assertThat(findAccountBookResponse.getResults().size()).isEqualTo(pageRequest.getSize());
-		assertThat(findAccountBookResponse.getResults())
-			.extracting(Result::getCategoryName)
-			.containsExactlyInAnyOrder(
-				latestIncome.getCategoryName(),
-				secondExpenditure.getCategoryName(),
-				thirdExpenditure.getCategoryName());
-
 		assertThat(findAccountBookResponse.getIncomeSum()).isEqualTo(latestIncome.getAmount());
 		assertThat(findAccountBookResponse.getExpenditureSum())
 			.isEqualTo(secondExpenditure.getAmount() + thirdExpenditure.getAmount());
+		assertThat(findAccountBookResponse.getTotalSum())
+			.isEqualTo(latestIncome.getAmount() - secondExpenditure.getAmount() - thirdExpenditure.getAmount());
 	}
 
+	@Test
+	void 금액_최소값이_최대값보다_크면_검색_실패() {
+		Long minPrice = AMOUNT_MAX;
+		Long maxPrice = AMOUNT_MIN;
+
+		SearchAccountBookCmd cmd = SearchAccountBookCmd.of("1,2,3", minPrice, maxPrice,
+			LEFT_MOST_REGISTER_DATE, RIGHT_MOST_REGISTER_DATE, "");
+		PageCustomRequest pageRequest = new PageCustomRequest(1, 3);
+
+		assertThatIllegalArgumentException().isThrownBy(
+			() -> accountBookService.searchAccountBooks(userId, cmd, pageRequest)
+		);
+	}
+
+	@Test
+	void 시작일이_종료일보다_뒤이면_검색_실패() {
+		LocalDate start = RIGHT_MOST_REGISTER_DATE;
+		LocalDate end = LEFT_MOST_REGISTER_DATE;
+
+		SearchAccountBookCmd cmd = SearchAccountBookCmd.of("1,2,3", AMOUNT_MIN, AMOUNT_MAX,
+			start, end, "");
+		PageCustomRequest pageRequest = new PageCustomRequest(1, 3);
+
+		assertThatIllegalArgumentException().isThrownBy(
+			() -> accountBookService.searchAccountBooks(userId, cmd, pageRequest)
+		);
+	}
 }

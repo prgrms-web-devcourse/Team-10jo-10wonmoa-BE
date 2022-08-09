@@ -126,7 +126,6 @@ jacocoTestReport {
                         'com/prgrms/tenwonmoa/config/*',
                         'com/prgrms/tenwonmoa/exception/*',
                         'com/prgrms/tenwonmoa/filter/*',
-                        'com/prgrms/tenwonmoa/domain/budget/*',
                         'com/prgrms/tenwonmoa/domain/common/*',
                         'com/prgrms/tenwonmoa/domain/**/dto/*'
                 ] + Qdomains)
@@ -152,7 +151,7 @@ jacocoTestCoverageVerification {
             limit {
                 counter = 'LINE'
                 value = 'COVEREDRATIO'
-                minimum = 0.00
+                minimum = 0.80
             }
 
             excludes = [
@@ -162,7 +161,6 @@ jacocoTestCoverageVerification {
                     'com/prgrms/tenwonmoa/config/*',
                     'com/prgrms/tenwonmoa/exception/*',
                     'com/prgrms/tenwonmoa/filter/*',
-                    'com/prgrms/tenwonmoa/domain/budget/*',
                     'com/prgrms/tenwonmoa/domain/common/*',
                     'com/prgrms/tenwonmoa/domain/**/dto/*'
             ] + Qdomains

@@ -440,13 +440,13 @@ class AccountBookQueryRepositoryTest extends RepositoryTest {
 				condition);
 
 			List<DateDetail> results = calendarAccount.getResults();
+			int lastDay = results.size();
 
 			// 2020년 2월이 윤년인지
 			assertThat(calendarAccount.getMonth()).isEqualTo(2);
-			assertThat(results.size()).isEqualTo(29);
-			for (int i = 0; i < results.size(); i++) {
-				DateDetail dateDetail = results.get(i);
-				int day = i + 1;
+			assertThat(lastDay).isEqualTo(29);
+			for (int day = 1; day <= lastDay; day++) {
+				DateDetail dateDetail = results.get(day - 1);
 
 				if (day % 2 == 0) {
 					assertThat(dateDetail.getIncomeSum()).isEqualTo(0L);

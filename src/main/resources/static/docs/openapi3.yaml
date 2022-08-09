@@ -10,7 +10,7 @@ paths:
   /api/v1/budgets:
     put:
       tags:
-      - api
+        - api
       operationId: budget-create
       requestBody:
         content:
@@ -27,7 +27,7 @@ paths:
   /api/v1/expenditures:
     post:
       tags:
-      - api
+        - api
       operationId: expenditure-
       requestBody:
         content:
@@ -102,7 +102,7 @@ paths:
   /api/v1/statistics:
     get:
       tags:
-      - api
+        - api
       operationId: statistics-find-
       responses:
         "200":
@@ -131,57 +131,57 @@ paths:
   /api/v1/account-book/search:
     get:
       tags:
-      - api
+        - api
       operationId: search-account-book
       parameters:
-      - name: categories
-        in: query
-        description: 유저카테고리 아이디
-        required: true
-        schema:
-          type: string
-      - name: minprice
-        in: query
-        description: 최소 가격
-        required: true
-        schema:
-          type: string
-      - name: maxprice
-        in: query
-        description: 최대 가격
-        required: true
-        schema:
-          type: string
-      - name: start
-        in: query
-        description: 시작 등록일
-        required: true
-        schema:
-          type: string
-      - name: end
-        in: query
-        description: 종료 등록일
-        required: true
-        schema:
-          type: string
-      - name: content
-        in: query
-        description: "지출, 수입의 내용"
-        required: true
-        schema:
-          type: string
-      - name: size
-        in: query
-        description: 페이지의 사이즈
-        required: true
-        schema:
-          type: string
-      - name: page
-        in: query
-        description: 페이지 번호
-        required: true
-        schema:
-          type: string
+        - name: categories
+          in: query
+          description: 유저카테고리 아이디
+          required: true
+          schema:
+            type: string
+        - name: minprice
+          in: query
+          description: 최소 가격
+          required: true
+          schema:
+            type: string
+        - name: maxprice
+          in: query
+          description: 최대 가격
+          required: true
+          schema:
+            type: string
+        - name: start
+          in: query
+          description: 시작 등록일
+          required: true
+          schema:
+            type: string
+        - name: end
+          in: query
+          description: 종료 등록일
+          required: true
+          schema:
+            type: string
+        - name: content
+          in: query
+          description: "지출, 수입의 내용"
+          required: true
+          schema:
+            type: string
+        - name: size
+          in: query
+          description: 페이지의 사이즈
+          required: true
+          schema:
+            type: string
+        - name: page
+          in: query
+          description: 페이지 번호
+          required: true
+          schema:
+            type: string
       responses:
         "200":
           description: "200"
@@ -217,15 +217,15 @@ paths:
   /api/v1/expenditures/{expenditureId}:
     get:
       tags:
-      - api
+        - api
       operationId: expenditure-get
       parameters:
-      - name: expenditureId
-        in: path
-        description: ""
-        required: true
-        schema:
-          type: string
+        - name: expenditureId
+          in: path
+          description: ""
+          required: true
+          schema:
+            type: string
       responses:
         "400":
           description: "400"
@@ -250,7 +250,7 @@ paths:
   /api/v1/incomes/:
     post:
       tags:
-      - api
+        - api
       operationId: income-create
       requestBody:
         content:
@@ -384,10 +384,10 @@ components:
           description: 예외 메시지
           items:
             oneOf:
-            - type: object
-            - type: boolean
-            - type: string
-            - type: number
+              - type: object
+              - type: boolean
+              - type: string
+              - type: number
         status:
           type: number
           description: 에러 코드

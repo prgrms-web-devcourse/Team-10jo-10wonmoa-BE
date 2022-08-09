@@ -1,9 +1,11 @@
 package com.prgrms.tenwonmoa.domain.accountbook.service;
 
 import static com.prgrms.tenwonmoa.common.fixture.Fixture.*;
+import static com.prgrms.tenwonmoa.domain.accountbook.AccountBookConst.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -14,7 +16,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.prgrms.tenwonmoa.domain.accountbook.AccountBookConst;
 import com.prgrms.tenwonmoa.domain.accountbook.dto.AccountBookItem;
 import com.prgrms.tenwonmoa.domain.accountbook.dto.FindAccountBookResponse;
 import com.prgrms.tenwonmoa.domain.accountbook.dto.service.SearchAccountBookCmd;
@@ -37,13 +38,14 @@ class SearchAccountBookServiceTest {
 
 	private final User user = createUser();
 
-	private final UserCategory foodCategory = new UserCategory(createUser(),
+	private final UserCategory foodCategory = new UserCategory(user,
 		new Category("식비", CategoryType.EXPENDITURE));
 
-	private final UserCategory cultureCategory = new UserCategory(createUser(),
+	private final UserCategory cultureCategory = new UserCategory(user,
 		new Category("문화생활", CategoryType.EXPENDITURE));
 
-	private final UserCategory salaryCategory = new UserCategory(createUser(), new Category("월급", CategoryType.INCOME));
+	private final UserCategory salaryCategory = new UserCategory(user,
+		new Category("월급", CategoryType.INCOME));
 
 	private final Long userId = 1L;
 
@@ -59,14 +61,8 @@ class SearchAccountBookServiceTest {
 		AccountBookItem thirdExpenditure = new AccountBookItem(2L, CategoryType.EXPENDITURE.name(), 20000L,
 			"영화", cultureCategory.getCategoryName(), LocalDateTime.now().minusDays(1L));
 
-		AccountBookItem fourthExpenditure = new AccountBookItem(3L, CategoryType.EXPENDITURE.name(), 30000L,
-			"문화생활", cultureCategory.getCategoryName(), LocalDateTime.now().minusDays(2L));
-
-		AccountBookItem fifthIncome = new AccountBookItem(2L, CategoryType.INCOME.name(), 100000L,
-			"월급", salaryCategory.getCategoryName(), LocalDateTime.now().minusDays(3L));
-
-		SearchAccountBookCmd cmd = SearchAccountBookCmd.of("1,2,3", 0L, 1_000_000_000L,
-			AccountBookConst.LEFT_MOST_REGISTER_DATE, AccountBookConst.RIGHT_MOST_REGISTER_DATE, "");
+		SearchAccountBookCmd cmd = SearchAccountBookCmd.of("1,2,3", AMOUNT_MIN, AMOUNT_MAX,
+			LEFT_MOST_REGISTER_DATE, RIGHT_MOST_REGISTER_DATE, "");
 		PageCustomRequest pageRequest = new PageCustomRequest(1, 3);
 
 		given(accountBookRepository.searchAccountBook(cmd.getMinPrice(), cmd.getMaxPrice(), cmd.getStart(),
@@ -78,17 +74,38 @@ class SearchAccountBookServiceTest {
 			accountBookService.searchAccountBooks(userId, cmd, pageRequest);
 
 		//then
-		assertThat(findAccountBookResponse.getResults().size()).isEqualTo(pageRequest.getSize());
-		assertThat(findAccountBookResponse.getResults())
-			.extracting(AccountBookItem::getCategoryName)
-			.containsExactlyInAnyOrder(
-				latestIncome.getCategoryName(),
-				secondExpenditure.getCategoryName(),
-				thirdExpenditure.getCategoryName());
-
 		assertThat(findAccountBookResponse.getIncomeSum()).isEqualTo(latestIncome.getAmount());
 		assertThat(findAccountBookResponse.getExpenditureSum())
 			.isEqualTo(secondExpenditure.getAmount() + thirdExpenditure.getAmount());
+		assertThat(findAccountBookResponse.getTotalSum())
+			.isEqualTo(latestIncome.getAmount() - secondExpenditure.getAmount() - thirdExpenditure.getAmount());
 	}
 
+	@Test
+	void 금액_최소값이_최대값보다_크면_검색_실패() {
+		Long minPrice = AMOUNT_MAX;
+		Long maxPrice = AMOUNT_MIN;
+
+		SearchAccountBookCmd cmd = SearchAccountBookCmd.of("1,2,3", minPrice, maxPrice,
+			LEFT_MOST_REGISTER_DATE, RIGHT_MOST_REGISTER_DATE, "");
+		PageCustomRequest pageRequest = new PageCustomRequest(1, 3);
+
+		assertThatIllegalArgumentException().isThrownBy(
+			() -> accountBookService.searchAccountBooks(userId, cmd, pageRequest)
+		);
+	}
+
+	@Test
+	void 시작일이_종료일보다_뒤이면_검색_실패() {
+		LocalDate start = RIGHT_MOST_REGISTER_DATE;
+		LocalDate end = LEFT_MOST_REGISTER_DATE;
+
+		SearchAccountBookCmd cmd = SearchAccountBookCmd.of("1,2,3", AMOUNT_MIN, AMOUNT_MAX,
+			start, end, "");
+		PageCustomRequest pageRequest = new PageCustomRequest(1, 3);
+
+		assertThatIllegalArgumentException().isThrownBy(
+			() -> accountBookService.searchAccountBooks(userId, cmd, pageRequest)
+		);
+	}
 }

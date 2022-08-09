@@ -6,13 +6,11 @@ import static com.prgrms.tenwonmoa.exception.message.Message.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 
-import java.time.LocalDate;
 import java.time.YearMonth;
 
 import org.junit.jupiter.api.Test;
 
 import com.prgrms.tenwonmoa.domain.category.Category;
-import com.prgrms.tenwonmoa.domain.category.CategoryType;
 import com.prgrms.tenwonmoa.domain.category.UserCategory;
 import com.prgrms.tenwonmoa.domain.user.User;
 

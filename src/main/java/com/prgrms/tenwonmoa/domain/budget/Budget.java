@@ -42,6 +42,7 @@ public class Budget extends BaseEntity {
 	@ManyToOne(fetch = LAZY, optional = false)
 	@JoinColumn(name = "user_category_id", nullable = false)
 	private UserCategory userCategory;
+
 	public Budget(Long amount, YearMonth registerDate, User user, UserCategory userCategory) {
 		validateRegisterDate(registerDate);
 		validateAmount(amount);

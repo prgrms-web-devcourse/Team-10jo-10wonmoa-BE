@@ -56,12 +56,16 @@ class SearchAccountBookIntegrationTest extends BaseControllerIntegrationTest {
 
 	@Test
 	void 검색_Api() throws Exception {
+		//given
 		Long incomeCategoryId = 카테고리_등록("INCOME", "월급");
 		Long expenditureCategoryId = 카테고리_등록("EXPENDITURE", "식비");
 		수입_등록(incomeCategoryId, 10000L, "용돈", LocalDateTime.now());
 		지출_등록(expenditureCategoryId, 5000L, "점심", LocalDateTime.now());
 
 		String categories = String.join(",", String.valueOf(incomeCategoryId), String.valueOf(expenditureCategoryId));
+
+		//when
+		//then
 		mvc.perform(get("/api/v1/account-book/search")
 				.header(HttpHeaders.AUTHORIZATION, accessToken)
 				.param("categories", categories)
@@ -77,18 +81,21 @@ class SearchAccountBookIntegrationTest extends BaseControllerIntegrationTest {
 			.andExpect(jsonPath("$.totalSum").value(-5000L))
 			.andExpect(jsonPath("$.currentPage").value(1))
 			.andExpect(jsonPath("$.nextPage").isEmpty())
-			.andExpect(jsonPath("$.results", hasSize(1))
-			);
+			.andExpect(jsonPath("$.results", hasSize(1)));
 	}
 
 	@Test
 	void 검색_Api_모든_카테고리로_조회() throws Exception {
+		//given
 		Long incomeCategoryId = 카테고리_등록("INCOME", "월급");
 		Long expenditureCategoryId = 카테고리_등록("EXPENDITURE", "식비");
 		수입_등록(incomeCategoryId, 10000L, "용돈", LocalDateTime.now());
 		지출_등록(expenditureCategoryId, 5000L, "점심", LocalDateTime.now());
 
 		String blankCategory = "";
+
+		//when
+		//then
 		mvc.perform(get("/api/v1/account-book/search")
 				.header(HttpHeaders.AUTHORIZATION, accessToken)
 				.param("categories", blankCategory)
@@ -108,12 +115,15 @@ class SearchAccountBookIntegrationTest extends BaseControllerIntegrationTest {
 	}
 
 	@Test
-	void 검색_Api_디폴트_조회() throws Exception {
+	void 검색_Api_쿼리파라미터_없이_조회시_모두_조회() throws Exception {
+		//given
 		Long incomeCategoryId = 카테고리_등록("INCOME", "월급");
 		Long expenditureCategoryId = 카테고리_등록("EXPENDITURE", "식비");
 		수입_등록(incomeCategoryId, 10000L, "용돈", LocalDateTime.now());
 		지출_등록(expenditureCategoryId, 5000L, "점심", LocalDateTime.now());
 
+		//when
+		//then
 		mvc.perform(get("/api/v1/account-book/search")
 				.header(HttpHeaders.AUTHORIZATION, accessToken))
 			.andExpect(jsonPath("$.incomeSum").value(10000L))
@@ -122,5 +132,20 @@ class SearchAccountBookIntegrationTest extends BaseControllerIntegrationTest {
 			.andExpect(jsonPath("$.currentPage").value(1))
 			.andExpect(jsonPath("$.nextPage").isEmpty())
 			.andExpect(jsonPath("$.results", hasSize(2)));
+	}
+
+	@Test
+	void 금액의_범위를_벗어나는_값_전송시_조회_실패() throws Exception {
+		validateRequest("minprice", "-1");
+		validateRequest("maxprice", "-1");
+		validateRequest("minprice", "1_000_000_000_001");
+		validateRequest("maxprice", "1_000_000_000_001");
+	}
+
+	private void validateRequest(String field, String value) throws Exception {
+		mvc.perform(get("/api/v1/account-book/search")
+				.header(HttpHeaders.AUTHORIZATION, accessToken)
+				.param(field, value))
+			.andExpect(status().isBadRequest());
 	}
 }

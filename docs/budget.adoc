@@ -11,6 +11,7 @@ endif::[]
 include::{snippets}/budget-create/http-request.adoc[]
 
 Request Fields
+
 include::{snippets}/budget-create/request-fields.adoc[]
 
 .Response

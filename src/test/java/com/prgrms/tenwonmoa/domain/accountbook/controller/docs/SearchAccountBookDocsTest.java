@@ -90,14 +90,14 @@ class SearchAccountBookDocsTest {
 					Preprocessors.preprocessRequest(Preprocessors.prettyPrint()),
 					Preprocessors.preprocessResponse(Preprocessors.prettyPrint()),
 					requestParameters(
-						parameterWithName("categories").description("유저카테고리 아이디"),
-						parameterWithName("minprice").description("최소 가격"),
-						parameterWithName("maxprice").description("최대 가격"),
-						parameterWithName("start").description("시작 등록일"),
-						parameterWithName("end").description("종료 등록일"),
-						parameterWithName("content").description("지출, 수입의 내용"),
-						parameterWithName("size").description("페이지의 사이즈"),
-						parameterWithName("page").description("페이지 번호")
+						parameterWithName("categories").description("유저카테고리 아이디").optional(),
+						parameterWithName("minprice").description("최소 가격").optional(),
+						parameterWithName("maxprice").description("최대 가격").optional(),
+						parameterWithName("start").description("시작 등록일").optional(),
+						parameterWithName("end").description("종료 등록일").optional(),
+						parameterWithName("content").description("지출, 수입의 내용").optional(),
+						parameterWithName("size").description("페이지의 사이즈").optional(),
+						parameterWithName("page").description("페이지 번호").optional()
 					),
 					responseFields(
 						fieldWithPath("incomeSum").type(JsonFieldType.NUMBER).description("수입의 총합"),

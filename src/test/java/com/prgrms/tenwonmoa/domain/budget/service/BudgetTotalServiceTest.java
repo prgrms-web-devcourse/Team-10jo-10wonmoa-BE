@@ -36,7 +36,7 @@ class BudgetTotalServiceTest {
 	@Mock
 	private UserService userService;
 	@Mock
-	private  UserCategoryService userCategoryService;
+	private UserCategoryService userCategoryService;
 	@InjectMocks
 	private BudgetTotalService budgetTotalService;
 

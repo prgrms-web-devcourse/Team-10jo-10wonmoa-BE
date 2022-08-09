@@ -17,6 +17,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.prgrms.tenwonmoa.common.RepositoryTest;
 import com.prgrms.tenwonmoa.domain.accountbook.Expenditure;
 import com.prgrms.tenwonmoa.domain.accountbook.Income;
+import com.prgrms.tenwonmoa.domain.accountbook.dto.CalendarCondition;
+import com.prgrms.tenwonmoa.domain.accountbook.dto.DateDetail;
+import com.prgrms.tenwonmoa.domain.accountbook.dto.FindCalendarResponse;
 import com.prgrms.tenwonmoa.domain.accountbook.dto.FindDayAccountResponse;
 import com.prgrms.tenwonmoa.domain.accountbook.dto.FindMonthAccountResponse;
 import com.prgrms.tenwonmoa.domain.accountbook.dto.FindSumResponse;
@@ -411,6 +414,75 @@ class AccountBookQueryRepositoryTest extends RepositoryTest {
 				checkMonthDetail(monthDetail, i, 2000L, 2000L, 0L);
 			}
 		}
+	}
+
+	@Nested
+	@DisplayName("달력 상세내역 조회")
+	class FindCalendarAccount {
+
+		@Test
+		public void 달력에서_2020년_2월은_윤년이다() {
+			/**
+			 * given 2020년 2월
+			 * 1 ~ 19 홀수일은 지출 1000원
+			 * 11 ~ 29 홀수일은 수입 1000원
+			 * 짝수일은 지출 수입 모두 0원
+			 * */
+			int year = 2020;
+			int month = 2;
+
+			CalendarCondition condition = new CalendarCondition(LocalDate.of(year, month, 1));
+
+			createExpenditures(10, year, month);
+			createIncomes(10, year, month);
+
+			FindCalendarResponse calendarAccount = accountBookQueryRepository.findCalendarAccount(user.getId(),
+				condition);
+
+			List<DateDetail> results = calendarAccount.getResults();
+
+			// 2020년 2월이 윤년인지
+			assertThat(calendarAccount.getMonth()).isEqualTo(2);
+			assertThat(results.size()).isEqualTo(29);
+			
+			for (int i = 0; i < results.size(); i++) {
+
+				DateDetail dateDetail = results.get(i);
+				int day = i + 1;
+
+				if (day % 2 == 0) {
+					assertThat(dateDetail.getIncomeSum()).isEqualTo(0L);
+					assertThat(dateDetail.getExpenditureSum()).isEqualTo(0L);
+					assertThat(dateDetail.getTotalSum()).isEqualTo(0L);
+					continue;
+				}
+
+				if (day % 2 == 1) {
+
+					if (day < 11) {
+						assertThat(dateDetail.getIncomeSum()).isEqualTo(0L);
+						assertThat(dateDetail.getExpenditureSum()).isEqualTo(1000L);
+						assertThat(dateDetail.getTotalSum()).isEqualTo(-1000L);
+						continue;
+					}
+
+					if (day > 19) {
+						assertThat(dateDetail.getIncomeSum()).isEqualTo(1000L);
+						assertThat(dateDetail.getExpenditureSum()).isEqualTo(0L);
+						assertThat(dateDetail.getTotalSum()).isEqualTo(1000L);
+						continue;
+					}
+
+					if (day >= 11 && day <= 19) {
+						assertThat(dateDetail.getExpenditureSum()).isEqualTo(1000L);
+						assertThat(dateDetail.getIncomeSum()).isEqualTo(1000L);
+						assertThat(dateDetail.getTotalSum()).isEqualTo(0L);
+						continue;
+					}
+				}
+			}
+		}
+
 	}
 
 	private void createExpenditures(int count, int year, int month) {

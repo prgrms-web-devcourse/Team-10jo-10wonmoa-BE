@@ -55,10 +55,11 @@ public class SearchAccountBookController {
 
 	private String getAllCategories(Long userId) {
 		List<Long> allUserCategories = userCategoryService.findAllUserCategoryIds(userId);
-
-		return String.join(CATEGORY_DELIMITER, allUserCategories.stream()
+		String[] userCategoryStringArr = allUserCategories.stream()
 			.map(String::valueOf)
 			.collect(Collectors.toList())
-			.toArray(String[]::new));
+			.toArray(String[]::new);
+
+		return String.join(CATEGORY_DELIMITER, userCategoryStringArr);
 	}
 }

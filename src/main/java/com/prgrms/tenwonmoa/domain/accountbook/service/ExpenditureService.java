@@ -54,9 +54,9 @@ public class ExpenditureService {
 		UserCategory userCategory = getUserCategory(updateExpenditureRequest.getUserCategoryId());
 
 		if (CategoryType.isIncome(userCategory.getCategoryType())) {
-			expenditureRepository.delete(expenditure);
 			Income income = updateExpenditureRequest.toEntity(expenditure.getUser(), userCategory,
 				userCategory.getCategoryName());
+			expenditureRepository.delete(expenditure);
 			incomeRepository.save(income);
 		} else {
 			expenditure.update(userCategory, updateExpenditureRequest);

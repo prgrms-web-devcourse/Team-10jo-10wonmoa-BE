@@ -28,16 +28,12 @@ import com.prgrms.tenwonmoa.domain.category.UserCategory;
 import com.prgrms.tenwonmoa.domain.category.repository.CategoryRepository;
 import com.prgrms.tenwonmoa.domain.category.repository.UserCategoryRepository;
 import com.prgrms.tenwonmoa.domain.user.User;
-import com.prgrms.tenwonmoa.domain.user.repository.UserRepository;
 import com.prgrms.tenwonmoa.exception.UnauthorizedUserException;
 import com.prgrms.tenwonmoa.exception.message.Message;
 
 @DisplayName("Expenditure(지출) 서비스 계층 단위 테스트")
 @ExtendWith(MockitoExtension.class)
 class ExpenditureServiceTest {
-
-	@Mock
-	private UserRepository userRepository;
 
 	@Mock
 	private UserCategoryRepository userCategoryRepository;
@@ -151,6 +147,15 @@ class ExpenditureServiceTest {
 		private final UpdateExpenditureRequest request = new UpdateExpenditureRequest(LocalDateTime.now(), 2000L,
 			"수정", userCategoryId);
 
+		@Mock
+		private UserCategory mockIncomeUserCategory;
+
+		@Mock
+		private UpdateExpenditureRequest mockExpenditureRequest;
+
+		@Mock
+		private Income mockIncome;
+
 		@Test
 		public void expenditureId_지출이_없는_경우() {
 			given(expenditureRepository.findById(any()))
@@ -189,15 +194,13 @@ class ExpenditureServiceTest {
 
 		@Test
 		public void 지출로_수정이_가능하다() {
-			given(expenditureRepository.findById(expenditureId))
+			given(expenditureRepository.findById(any()))
 				.willReturn(of(mockExpenditure));
 
-			willDoNothing().given(mockExpenditure).validateOwner(authenticatedUserId);
+			willDoNothing().given(mockExpenditure).validateOwner(anyLong());
 
-			given(userCategoryRepository.findById(userCategoryId))
+			given(userCategoryRepository.findById(any(Long.class)))
 				.willReturn(of(userCategory));
-
-			given(userCategory.getCategoryType()).willReturn(CategoryType.EXPENDITURE);
 
 			expenditureService.updateExpenditure(authenticatedUserId, expenditureId, request);
 
@@ -206,22 +209,22 @@ class ExpenditureServiceTest {
 
 		@Test
 		public void 수입으로_수정이_가능하다() {
-			given(expenditureRepository.findById(expenditureId))
+			given(expenditureRepository.findById(any()))
 				.willReturn(of(mockExpenditure));
 
-			willDoNothing().given(mockExpenditure).validateOwner(authenticatedUserId);
+			willDoNothing().given(mockExpenditure).validateOwner(anyLong());
 
-			given(userCategoryRepository.findById(userCategoryId))
-				.willReturn(of(userCategory));
+			given(userCategoryRepository.findById(any(Long.class)))
+				.willReturn(of(mockIncomeUserCategory));
 
-			given(userCategory.getCategoryType())
+			given(mockIncomeUserCategory.getCategoryType())
 				.willReturn(CategoryType.INCOME);
 
-			expenditureService.updateExpenditure(authenticatedUserId, expenditureId, request);
+			expenditureService.updateExpenditure(authenticatedUserId, expenditureId,
+				mockExpenditureRequest);
 
 			verify(expenditureRepository).delete(mockExpenditure);
-			Income income = request.toEntity(mockExpenditure.getUser(), userCategory, userCategory.getCategoryName());
-			verify(incomeRepository).save(income);
+			verify(incomeRepository).save(any());
 		}
 
 	}

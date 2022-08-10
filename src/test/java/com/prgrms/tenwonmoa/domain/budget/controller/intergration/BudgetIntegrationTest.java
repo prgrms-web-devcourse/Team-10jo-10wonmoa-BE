@@ -82,6 +82,23 @@ public class BudgetIntegrationTest extends BaseControllerIntegrationTest {
 	}
 
 	@Test
+	void 예산_등록_다른유저의_카테고리_등록시도_실패() throws Exception {
+		User otherUser = userRepository.saveAndFlush(new User("other@email.com", "other1234", "other"));
+		Category category = categoryRepository.save(new Category("other", INCOME));
+		UserCategory otherUserCategory = userCategoryRepository.save(new UserCategory(otherUser, category));
+
+		CreateOrUpdateBudgetRequest createOrUpdateBudgetRequest = new CreateOrUpdateBudgetRequest(
+			1000L, now, otherUserCategory.getId());
+
+		mvc.perform(put(LOCATION_PREFIX)
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(createOrUpdateBudgetRequest))
+				.header(HttpHeaders.AUTHORIZATION, accessToken)
+			)
+			.andExpect(status().isForbidden());
+	}
+
+	@Test
 	void 예산_등록_수정으로_처리되는_경우() throws Exception {
 		budgetRepository.saveAndFlush(new Budget(1000L, now, loginUser, userCategory));
 

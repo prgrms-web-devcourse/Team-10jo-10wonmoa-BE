@@ -43,14 +43,17 @@ class BudgetTotalServiceTest {
 	private User user = createUser();
 	private Category category = createExpenditureCategory();
 	private UserCategory userCategory = createUserCategory(user, category);
-	private Budget budget = new Budget(1000L, YearMonth.now(), user, userCategory);
 
 	private CreateOrUpdateBudgetRequest createOrUpdateBudgetRequest = new CreateOrUpdateBudgetRequest(
 		1000L, YearMonth.now(), userCategory.getId());
 
 	@Test
 	void 예산_생성_성공() {
-		given(userCategoryService.findById(any())).willReturn(userCategory);
+		UserCategory mockUserCategory = mock(UserCategory.class);
+		User mockUser = mock(User.class);
+		given(userCategoryService.findById(any())).willReturn(mockUserCategory);
+		given(mockUserCategory.getUser()).willReturn(mockUser);
+		doNothing().when(mockUser).validateLoginUser(any());
 		given(userService.findById(any())).willReturn(user);
 		given(budgetRepository.findByUserCategoryIdAndRegisterDate(
 			any(), any())).willReturn(Optional.empty());
@@ -67,8 +70,12 @@ class BudgetTotalServiceTest {
 	@Test
 	void 예산_생성_업데이트처리되는경우() {
 		Budget mockBudget = mock(Budget.class);
-		given(userCategoryService.findById(any())).willReturn(userCategory);
-		given(userService.findById(any())).willReturn(user);
+		UserCategory mockUserCategory = mock(UserCategory.class);
+		User mockUser = mock(User.class);
+		given(userCategoryService.findById(any())).willReturn(mockUserCategory);
+		given(mockUserCategory.getUser()).willReturn(mockUser);
+		doNothing().when(mockUser).validateLoginUser(any());
+		given(userService.findById(any())).willReturn(mockUser);
 		given(budgetRepository.findByUserCategoryIdAndRegisterDate(
 			any(), any())).willReturn(Optional.of(mockBudget));
 

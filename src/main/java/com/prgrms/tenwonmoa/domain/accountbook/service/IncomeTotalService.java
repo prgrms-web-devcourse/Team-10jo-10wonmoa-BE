@@ -26,7 +26,7 @@ public class IncomeTotalService {
 
 	public Long createIncome(Long userId, CreateIncomeRequest createIncomeRequest) {
 		UserCategory userCategory = userCategoryService.findById(createIncomeRequest.getUserCategoryId());
-
+		userCategory.getUser().validateLoginUser(userId);
 		User authUser = userService.findById(userId);
 		Income income = createIncomeRequest.toEntity(authUser, userCategory, userCategory.getCategory().getName());
 		return incomeService.save(income);
@@ -36,6 +36,7 @@ public class IncomeTotalService {
 		Income income = incomeService.findById(incomeId);
 		income.validateOwner(authId);
 		UserCategory userCategory = userCategoryService.findById(updateIncomeRequest.getUserCategoryId());
+		userCategory.getUser().validateLoginUser(authId);
 		if (CategoryType.isExpenditure(userCategory.getCategory().getCategoryType())) {
 			incomeService.deleteById(incomeId);
 			expenditureRepository.save(

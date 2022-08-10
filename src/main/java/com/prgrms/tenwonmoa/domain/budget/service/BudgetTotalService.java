@@ -22,6 +22,7 @@ public class BudgetTotalService {
 
 	public void createOrUpdateBudget(Long userId, CreateOrUpdateBudgetRequest createOrUpdateBudgetRequest) {
 		UserCategory userCategory = userCategoryService.findById(createOrUpdateBudgetRequest.getUserCategoryId());
+		userCategory.getUser().validateLoginUser(userId);
 		User authUser = userService.findById(userId);
 
 		budgetRepository.findByUserCategoryIdAndRegisterDate(createOrUpdateBudgetRequest.getUserCategoryId(),

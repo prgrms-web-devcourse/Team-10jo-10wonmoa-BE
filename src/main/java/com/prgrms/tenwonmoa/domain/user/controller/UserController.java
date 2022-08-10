@@ -4,12 +4,15 @@ import javax.validation.Valid;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.prgrms.tenwonmoa.domain.user.dto.CreateUserRequest;
+import com.prgrms.tenwonmoa.domain.user.dto.FindUserResponse;
 import com.prgrms.tenwonmoa.domain.user.dto.LoginUserRequest;
 import com.prgrms.tenwonmoa.domain.user.dto.RefreshTokenRequest;
 import com.prgrms.tenwonmoa.domain.user.dto.TokenResponse;
@@ -23,6 +26,11 @@ import lombok.RequiredArgsConstructor;
 public class UserController {
 
 	private final UserService userService;
+
+	@GetMapping
+	public ResponseEntity<FindUserResponse> getUserInfo(@AuthenticationPrincipal Long userId) {
+		return ResponseEntity.ok(FindUserResponse.of(userService.findById(userId)));
+	}
 
 	@PostMapping
 	public ResponseEntity<Void> signup(@Valid @RequestBody CreateUserRequest createUserRequest) {

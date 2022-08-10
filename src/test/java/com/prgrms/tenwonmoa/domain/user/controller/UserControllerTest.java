@@ -1,7 +1,7 @@
 package com.prgrms.tenwonmoa.domain.user.controller;
 
 import static org.mockito.BDDMockito.*;
-import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.*;
+import static org.springframework.restdocs.headers.HeaderDocumentation.*;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.*;
@@ -17,14 +17,17 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
 import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.web.servlet.MockMvc;
 
+import com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.prgrms.tenwonmoa.common.annotation.WithMockCustomUser;
 import com.prgrms.tenwonmoa.config.JwtConfigure;
 import com.prgrms.tenwonmoa.config.WebSecurityConfig;
+import com.prgrms.tenwonmoa.domain.user.User;
 import com.prgrms.tenwonmoa.domain.user.dto.CreateUserRequest;
 import com.prgrms.tenwonmoa.domain.user.security.jwt.filter.JwtAuthenticationFilter;
 import com.prgrms.tenwonmoa.domain.user.service.UserService;
@@ -65,7 +68,7 @@ class UserControllerTest {
 				.content(objectMapper.writeValueAsString(createUserRequest)))
 			.andExpect(status().isCreated())
 			.andDo(print())
-			.andDo(document("user-create",
+			.andDo(MockMvcRestDocumentationWrapper.document("user-create",
 				requestFields(
 					fieldWithPath("email").type(JsonFieldType.STRING).description("이메일"),
 					fieldWithPath("username").type(JsonFieldType.STRING).description("사용자이름"),
@@ -73,4 +76,22 @@ class UserControllerTest {
 			));
 	}
 
+	@Test
+	@WithMockCustomUser
+	void 회원_정보_조회_성공() throws Exception {
+		User user = new User("test@test.com", "lee", "12345678");
+		given(userService.findById(1L)).willReturn(user);
+
+		mockMvc.perform(get("/api/v1/users")
+				.header(HttpHeaders.AUTHORIZATION, "Bearer jwt.token.here"))
+			.andExpect(status().isOk())
+			.andDo(MockMvcRestDocumentationWrapper.document("user-info",
+				requestHeaders(
+					headerWithName(HttpHeaders.AUTHORIZATION).description("Jwt token")
+				),
+				responseFields(
+					fieldWithPath("email").type(JsonFieldType.STRING).description("이메일")
+				))
+			);
+	}
 }

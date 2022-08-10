@@ -135,6 +135,27 @@ class SearchAccountBookIntegrationTest extends BaseControllerIntegrationTest {
 	}
 
 	@Test
+	void 내용이_공백인_지출_수입_검색_성공() throws Exception {
+		//given
+		Long incomeCategoryId = 카테고리_등록("INCOME", "월급");
+		Long expenditureCategoryId = 카테고리_등록("EXPENDITURE", "식비");
+		수입_등록(incomeCategoryId, 10000L, "", LocalDateTime.now());
+		지출_등록(expenditureCategoryId, 5000L, "", LocalDateTime.now());
+
+		//when
+		//then
+		mvc.perform(get("/api/v1/account-book/search")
+				.header(HttpHeaders.AUTHORIZATION, accessToken))
+			.andExpect(jsonPath("$.incomeSum").value(10000L))
+			.andExpect(jsonPath("$.expenditureSum").value(5000L))
+			.andExpect(jsonPath("$.totalSum").value(5000L))
+			.andExpect(jsonPath("$.currentPage").value(1))
+			.andExpect(jsonPath("$.nextPage").isEmpty())
+			.andExpect(jsonPath("$.results", hasSize(2)));
+
+	}
+
+	@Test
 	void 금액의_범위를_벗어나는_값_전송시_조회_실패() throws Exception {
 		validateRequest("minprice", "-1");
 		validateRequest("maxprice", "-1");

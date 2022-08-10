@@ -269,4 +269,23 @@ class SearchAccountBookRepositoryTest extends RepositoryTest {
 				CategoryType.EXPENDITURE.name(), CategoryType.INCOME.name());
 
 	}
+
+	@Test
+	void 내용이_공백인_데이터_조회() {
+		//given
+		saveExpenditure(defaultTime, defaultAmount, "",
+			expenditureUserCategory.getCategoryName(), user, expenditureUserCategory);
+
+		saveIncome(defaultTime, defaultAmount, "",
+			incomeUserCategory.getCategoryName(), user, incomeUserCategory);
+
+		//when
+		List<AccountBookItem> items = repository.searchAccountBook(
+			AMOUNT_MIN, AMOUNT_MAX, LEFT_MOST_REGISTER_DATE,
+			RIGHT_MOST_REGISTER_DATE, "", allUserCategoryIds, user.getId(),
+			new PageCustomRequest(1, 10));
+
+		//then
+		assertThat(items).hasSize(2);
+	}
 }

@@ -51,7 +51,7 @@ public class RepositoryFixture extends RepositoryTest {
 	}
 
 	public Budget saveBudget(Long amount, YearMonth registerDate, User user, UserCategory userCategory) {
-		return save(new Budget(100L, registerDate, user, userCategory));
+		return save(new Budget(amount, registerDate, user, userCategory));
 	}
 
 	public void iterateFixture(int count, IntConsumer function) {

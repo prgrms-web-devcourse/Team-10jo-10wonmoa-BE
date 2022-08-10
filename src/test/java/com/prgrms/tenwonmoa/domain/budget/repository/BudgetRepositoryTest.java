@@ -5,18 +5,17 @@ import static com.prgrms.tenwonmoa.domain.category.CategoryType.*;
 import static org.assertj.core.api.Assertions.*;
 
 import java.time.YearMonth;
-import java.util.List;
 import java.util.Optional;
 
+import javax.persistence.EntityManager;
+
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.prgrms.tenwonmoa.common.fixture.RepositoryFixture;
 import com.prgrms.tenwonmoa.domain.budget.Budget;
-import com.prgrms.tenwonmoa.domain.budget.dto.FindBudgetData;
 import com.prgrms.tenwonmoa.domain.category.Category;
 import com.prgrms.tenwonmoa.domain.category.UserCategory;
 import com.prgrms.tenwonmoa.domain.user.User;
@@ -32,15 +31,18 @@ class BudgetRepositoryTest extends RepositoryFixture {
 	private UserCategory userCategory1;
 	private UserCategory userCategory2;
 	private User user;
-	private YearMonth now = YearMonth.now();
+	private YearMonth now = YearMonth.of(2020, 01);
+
+	@Autowired
+	EntityManager em;
 
 	@BeforeEach
 	void init() {
 		user = save(createUser());
-		Category category = save(createExpenditureCategory());
-		Category otherCategory = save(new Category("other", EXPENDITURE));
+		Category category = save(new Category("category1", EXPENDITURE));
+		Category category2 = save(new Category("category2", EXPENDITURE));
 		userCategory1 = save(createUserCategory(user, category));
-		userCategory2 = save(createUserCategory(user, otherCategory));
+		userCategory2 = save(createUserCategory(user, category2));
 
 		saveBudget(100L, now, user, userCategory1);
 	}
@@ -70,40 +72,5 @@ class BudgetRepositoryTest extends RepositoryFixture {
 			now);
 
 		assertThat(findBudget).isEmpty();
-	}
-
-	@Test
-	void 등록일로_조회_성공() {
-		Category category3 = save(new Category("other3", EXPENDITURE));
-		Category category4 = save(new Category("other4", EXPENDITURE));
-		UserCategory userCategory3 = save(createUserCategory(user, category3));
-		UserCategory userCategory4 = save(createUserCategory(user, category4));
-		saveBudget(200L, now, user, userCategory2);
-		saveBudget(300L, now, user, userCategory3);
-		saveBudget(400L, now.plusMonths(1), user, userCategory4);
-
-		List<Budget> findBudgets = budgetRepository.findByUserIdAndRegisterDate(user.getId(), now);
-		List<Budget> findBudgets2 = budgetRepository.findByUserIdAndRegisterDate(user.getId(), now.plusMonths(1));
-		List<Budget> findBudgets3 = budgetRepository.findByUserIdAndRegisterDate(user.getId(), now.plusMonths(2));
-
-		assertThat(findBudgets).hasSize(3);
-		assertThat(findBudgets2).hasSize(1);
-		assertThat(findBudgets3).isEmpty();
-	}
-
-	@Test
-	@Disabled
-	void 엔플러스일_확인() {
-		saveBudget(200L, now, user, userCategory2);
-
-		List<Budget> findBudgets = budgetRepository.findByUserIdAndRegisterDate(user.getId(), now);
-		log.info("=== findByRegisterDate의 Query를 지우면 of를 돌면서 쿼리가나간다. === ");
-		findBudgets.forEach(
-			(budget) -> {
-				log.info("=== start === ");
-				FindBudgetData.of(budget);
-				log.info("=== end === ");
-			}
-		);
 	}
 }

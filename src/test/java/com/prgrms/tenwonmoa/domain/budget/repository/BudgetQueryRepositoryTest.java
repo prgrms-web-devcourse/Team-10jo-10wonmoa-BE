@@ -109,5 +109,4 @@ class BudgetQueryRepositoryTest extends RepositoryFixture {
 		uc4 = save(createUserCategory(otherUser, category4));
 		uc5 = save(createUserCategory(otherUser, category5));
 	}
-
 }

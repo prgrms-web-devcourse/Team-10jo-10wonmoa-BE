@@ -49,8 +49,8 @@ public enum Message {
 	EXPIRED_REFRESH_TOKEN("만료된 refresh-token 입니다."),
 	NOT_EXPIRED_ACCESS_TOKEN("유효한 access token 입니다."),
 	NOT_NULL_TOKEN("토큰 값이 비었습니다."),
-
-	INVALID_TOKEN("잘못된 토큰 요청입니다.");
+	INVALID_TOKEN("잘못된 토큰 요청입니다."),
+	INVALID_REDIRECT_URL("잘못된 redirect url 요청입니다.");
 
 	private final String message;
 

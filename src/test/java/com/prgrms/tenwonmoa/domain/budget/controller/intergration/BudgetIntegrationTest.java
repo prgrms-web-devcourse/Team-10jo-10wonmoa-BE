@@ -11,8 +11,11 @@ import java.util.Optional;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -29,7 +32,7 @@ import com.prgrms.tenwonmoa.domain.category.repository.UserCategoryRepository;
 import com.prgrms.tenwonmoa.domain.user.User;
 import com.prgrms.tenwonmoa.domain.user.repository.UserRepository;
 
-@DisplayName("수입 컨트롤러 통합 테스트")
+@DisplayName("예산 컨트롤러 통합 테스트")
 public class BudgetIntegrationTest extends BaseControllerIntegrationTest {
 	private static final String LOCATION_PREFIX = "/api/v1/budgets";
 	@Autowired
@@ -128,6 +131,37 @@ public class BudgetIntegrationTest extends BaseControllerIntegrationTest {
 		validateCreateRequest(createBudgetRequest, "2022-07-01");
 	}
 
+	@Test
+	void 예산_월별_조회_성공() throws Exception {
+		budgetRepository.save(new Budget(1000L, now, loginUser, userCategory));
+
+		mvc.perform(get(LOCATION_PREFIX)
+				.param("registerDate", now.toString())
+				.header(HttpHeaders.AUTHORIZATION, accessToken))
+			.andExpect(status().isOk())
+			.andExpect(jsonPath("budgets").exists())
+			.andExpect(jsonPath("budgets[0].id").exists())
+			.andExpect(jsonPath("budgets[0].categoryName").exists())
+			.andExpect(jsonPath("budgets[0].amount").exists());
+	}
+
+	@Test
+	void 예산_월별_조회_잘못된_등록일포맷요청() throws Exception {
+		validateFindRequest("2022-13");
+		validateFindRequest("2022-00");
+		validateFindRequest("202211");
+		validateFindRequest("20220701");
+		validateFindRequest("2022-07-01");
+		validateFindRequest("2022-7");
+	}
+
+	private void validateFindRequest(String registerDate) throws Exception {
+		mvc.perform(put(LOCATION_PREFIX)
+				.param("registerDate", now.toString())
+				.header(HttpHeaders.AUTHORIZATION, accessToken))
+			.andExpect(status().isBadRequest());
+	}
+
 	private void validateCreateRequest(ObjectNode createBudgetRequest, String registerDate) throws Exception {
 		createBudgetRequest.put("registerDate", registerDate);
 
@@ -139,4 +173,12 @@ public class BudgetIntegrationTest extends BaseControllerIntegrationTest {
 			.andExpect(status().isBadRequest());
 	}
 
+	@Disabled
+	@CsvSource({"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"})
+	@ParameterizedTest(name = "{0}월 테스트")
+	void 예산_월별_조회_성공_모든월_돌려보기(int month) throws Exception {
+		mvc.perform(get(LOCATION_PREFIX)
+			.param("registerDate", YearMonth.of(2022, month).toString())
+			.header(HttpHeaders.AUTHORIZATION, accessToken)).andExpect(status().isOk());
+	}
 }

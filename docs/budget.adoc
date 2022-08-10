@@ -11,8 +11,16 @@ endif::[]
 include::{snippets}/budget-create/http-request.adoc[]
 
 Request Fields
-
 include::{snippets}/budget-create/request-fields.adoc[]
 
 .Response
 include::{snippets}/budget-create/http-response.adoc[]
+
+=== 월별 예산 조회
+
+.Request
+include::{snippets}/budget-findBy-registerDate/http-request.adoc[]
+.Response
+include::{snippets}/budget-findBy-registerDate/http-response.adoc[]
+Response Fields
+include::{snippets}/budget-findBy-registerDate/response-fields.adoc[]

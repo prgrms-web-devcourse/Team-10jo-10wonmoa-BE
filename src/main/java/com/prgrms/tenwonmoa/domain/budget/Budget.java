@@ -54,6 +54,10 @@ public class Budget extends BaseEntity {
 		this.userCategory = userCategory;
 	}
 
+	public String getCategoryName() {
+		return this.userCategory.getCategoryName();
+	}
+
 	public void changeAmount(Long amount) {
 		validateAmount(amount);
 		this.amount = amount;

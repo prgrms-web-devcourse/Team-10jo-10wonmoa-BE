@@ -9,6 +9,7 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import java.time.YearMonth;
+import java.util.List;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -25,10 +26,13 @@ import org.springframework.test.web.servlet.MockMvc;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.prgrms.tenwonmoa.common.annotation.WithMockCustomUser;
 import com.prgrms.tenwonmoa.common.documentdto.CreateOrUpdateBudgetRequestDoc;
+import com.prgrms.tenwonmoa.common.documentdto.FindBudgetDataDoc;
 import com.prgrms.tenwonmoa.config.JwtConfigure;
 import com.prgrms.tenwonmoa.config.WebSecurityConfig;
 import com.prgrms.tenwonmoa.domain.budget.controller.BudgetController;
 import com.prgrms.tenwonmoa.domain.budget.dto.CreateOrUpdateBudgetRequest;
+import com.prgrms.tenwonmoa.domain.budget.dto.FindBudgetData;
+import com.prgrms.tenwonmoa.domain.budget.service.BudgetService;
 import com.prgrms.tenwonmoa.domain.budget.service.BudgetTotalService;
 import com.prgrms.tenwonmoa.domain.user.security.jwt.filter.JwtAuthenticationFilter;
 
@@ -51,9 +55,17 @@ class BudgetControllerTest {
 	private ObjectMapper objectMapper;
 	@MockBean
 	private BudgetTotalService budgetTotalService;
+	@MockBean
+	private BudgetService budgetService;
 
 	private CreateOrUpdateBudgetRequest createOrUpdateBudgetRequest = new CreateOrUpdateBudgetRequest(
 		1000L, YearMonth.now(), 1L);
+
+	private List<FindBudgetData> findBudgets = List.of(
+		new FindBudgetData(1L, "교통/차량", 1000L),
+		new FindBudgetData(2L, "문화생활", 2000L),
+		new FindBudgetData(3L, "마트/편의점", 3000L)
+	);
 
 	@Test
 	@WithMockCustomUser
@@ -72,4 +84,17 @@ class BudgetControllerTest {
 			));
 	}
 
+	@Test
+	@WithMockCustomUser
+	void 월별_예산조회_성공() throws Exception {
+		given(budgetService.findByUserIdAndRegisterDate(any(), any()))
+			.willReturn(findBudgets);
+
+		mockMvc.perform(get(LOCATION_PREFIX)
+				.param("registerDate", "2022-07"))
+			.andExpect(status().isOk())
+			.andDo(document("budget-findBy-registerDate",
+				responseFields().andWithPrefix("budgets[].", FindBudgetDataDoc.fieldDescriptors())
+			));
+	}
 }

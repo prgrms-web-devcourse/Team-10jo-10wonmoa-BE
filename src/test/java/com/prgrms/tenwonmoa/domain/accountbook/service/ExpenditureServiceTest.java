@@ -197,7 +197,7 @@ class ExpenditureServiceTest {
 			given(userCategoryRepository.findById(userCategoryId))
 				.willReturn(of(userCategory));
 
-			given(mockExpenditure.getCategoryType()).willReturn(CategoryType.EXPENDITURE);
+			given(userCategory.getCategoryType()).willReturn(CategoryType.EXPENDITURE);
 
 			expenditureService.updateExpenditure(authenticatedUserId, expenditureId, request);
 
@@ -214,7 +214,8 @@ class ExpenditureServiceTest {
 			given(userCategoryRepository.findById(userCategoryId))
 				.willReturn(of(userCategory));
 
-			given(mockExpenditure.getCategoryType()).willReturn(CategoryType.INCOME);
+			given(userCategory.getCategoryType())
+				.willReturn(CategoryType.INCOME);
 
 			expenditureService.updateExpenditure(authenticatedUserId, expenditureId, request);
 

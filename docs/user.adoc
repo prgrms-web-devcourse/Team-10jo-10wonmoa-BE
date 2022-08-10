@@ -15,4 +15,13 @@ include::{snippets}/user-create/request-fields.adoc[]
 include::{snippets}/user-create/http-response.adoc[]
 
 
+=== 유저 정보 조회
+
+.Request
+include::{snippets}/user-info/http-request.adoc[]
+
+.Response
+include::{snippets}/user-info/http-response.adoc[]
+
+
 

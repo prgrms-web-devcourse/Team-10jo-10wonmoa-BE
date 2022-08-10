@@ -22,12 +22,12 @@ public class OAuth2UserPrincipal implements OAuth2User {
 		return OAuth2User.super.getAttribute(name);
 	}
 
-	@Override
+	@Override	// OAuth2User implements를 위해 강제화, 넘겨줄 속성이 id, email만 있으면 되서 사용 안함
 	public Map<String, Object> getAttributes() {
 		return null;
 	}
 
-	@Override
+	@Override	// OAuth2User implements를 위해 강제화, 우리는 user의 role이 없어서 사용 안함
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 		return null;
 	}

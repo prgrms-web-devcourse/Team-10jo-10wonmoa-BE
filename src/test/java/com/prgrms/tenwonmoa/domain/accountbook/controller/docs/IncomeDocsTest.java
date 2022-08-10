@@ -17,6 +17,8 @@ import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDoc
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.FilterType;
 import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.payload.JsonFieldType;
@@ -28,17 +30,26 @@ import com.prgrms.tenwonmoa.common.documentdto.CreateIncomeRequestDoc;
 import com.prgrms.tenwonmoa.common.documentdto.ErrorResponseDoc;
 import com.prgrms.tenwonmoa.common.documentdto.FindIncomeResponseDoc;
 import com.prgrms.tenwonmoa.common.documentdto.UpdateIncomeRequestDoc;
+import com.prgrms.tenwonmoa.config.JwtConfigure;
+import com.prgrms.tenwonmoa.config.WebSecurityConfig;
 import com.prgrms.tenwonmoa.domain.accountbook.controller.IncomeController;
 import com.prgrms.tenwonmoa.domain.accountbook.dto.income.CreateIncomeRequest;
 import com.prgrms.tenwonmoa.domain.accountbook.dto.income.FindIncomeResponse;
 import com.prgrms.tenwonmoa.domain.accountbook.dto.income.UpdateIncomeRequest;
 import com.prgrms.tenwonmoa.domain.accountbook.service.IncomeService;
 import com.prgrms.tenwonmoa.domain.accountbook.service.IncomeTotalService;
+import com.prgrms.tenwonmoa.domain.user.controller.UserController;
 import com.prgrms.tenwonmoa.domain.user.security.jwt.filter.JwtAuthenticationFilter;
 import com.prgrms.tenwonmoa.domain.user.service.UserService;
 import com.prgrms.tenwonmoa.exception.UnauthorizedUserException;
 
-@WebMvcTest(controllers = IncomeController.class)
+@WebMvcTest(controllers = IncomeController.class,
+	excludeFilters = {
+		@ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = WebSecurityConfig.class),
+		@ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = JwtConfigure.class),
+		@ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = JwtAuthenticationFilter.class)
+	}
+)
 @AutoConfigureMockMvc(addFilters = false)
 @AutoConfigureRestDocs
 @MockBean(JpaMetamodelMappingContext.class)

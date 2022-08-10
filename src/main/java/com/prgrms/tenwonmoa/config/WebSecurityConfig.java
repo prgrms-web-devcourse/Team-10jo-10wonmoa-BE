@@ -13,7 +13,8 @@ import org.springframework.web.filter.CorsFilter;
 
 import com.prgrms.tenwonmoa.domain.user.security.jwt.filter.CustomAuthenticationEntryPoint;
 import com.prgrms.tenwonmoa.domain.user.security.jwt.filter.JwtAuthenticationFilter;
-import com.prgrms.tenwonmoa.domain.user.security.oauth2.OAuth2AuthenticationSuccessHandler;
+import com.prgrms.tenwonmoa.domain.user.security.jwt.service.JwtService;
+import com.prgrms.tenwonmoa.domain.user.security.oauth2.handler.OAuth2AuthenticationSuccessHandler;
 
 import lombok.RequiredArgsConstructor;
 
@@ -22,6 +23,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	private final JwtAuthenticationFilter jwtAuthenticationFilter;
+	private final JwtService jwtService;
 
 	@Bean
 	public PasswordEncoder passwordEncoder() {
@@ -35,7 +37,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Bean
 	public OAuth2AuthenticationSuccessHandler oauth2AuthenticationSuccessHandler() {
-		return new OAuth2AuthenticationSuccessHandler();
+		return new OAuth2AuthenticationSuccessHandler(jwtService);
 	}
 
 	@Override

@@ -1,6 +1,7 @@
 package com.prgrms.tenwonmoa.domain.budget.controller.intergration;
 
 import static com.prgrms.tenwonmoa.common.fixture.Fixture.*;
+import static com.prgrms.tenwonmoa.domain.category.CategoryType.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -75,6 +76,23 @@ public class BudgetIntegrationTest extends BaseControllerIntegrationTest {
 
 		Optional<Budget> findBudget = budgetRepository.findByUserCategoryIdAndRegisterDate(userCategory.getId(), now);
 		assertThat(findBudget).isPresent();
+	}
+
+	@Test
+	void 예산_등록_다른유저의_카테고리_등록시도_실패() throws Exception {
+		User otherUser = userRepository.saveAndFlush(new User("other@email.com", "other1234", "other"));
+		Category category = categoryRepository.save(new Category("other", INCOME));
+		UserCategory otherUserCategory = userCategoryRepository.save(new UserCategory(otherUser, category));
+
+		CreateOrUpdateBudgetRequest createOrUpdateBudgetRequest = new CreateOrUpdateBudgetRequest(
+			1000L, now, otherUserCategory.getId());
+
+		mvc.perform(put(LOCATION_PREFIX)
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(createOrUpdateBudgetRequest))
+				.header(HttpHeaders.AUTHORIZATION, accessToken)
+			)
+			.andExpect(status().isForbidden());
 	}
 
 	@Test

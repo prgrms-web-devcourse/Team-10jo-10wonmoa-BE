@@ -11,6 +11,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import java.time.LocalDateTime;
 import java.util.Optional;
 
+import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -122,6 +123,19 @@ class IncomeIntegrationTest extends BaseControllerIntegrationTest {
 	}
 
 	@Test
+	void 수입_등록_다른유저의_카테고리_등록시도_실패() throws Exception {
+		UserCategory otherUserCategory = getOtherUserCategory();
+
+		CreateIncomeRequest request = new CreateIncomeRequest(LocalDateTime.now(), 2000L, "content2",
+			otherUserCategory.getId());
+
+		mvc.perform(post(LOCATION_PREFIX).contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(request))
+				.header(HttpHeaders.AUTHORIZATION, accessToken))
+			.andExpect(status().isForbidden());
+	}
+
+	@Test
 	void 수입_상세조회_성공() throws Exception {
 		mvc.perform(get(LOCATION_PREFIX + "/{incomeId}", income.getId()).header(HttpHeaders.AUTHORIZATION, accessToken))
 			.andExpect(status().isOk())
@@ -156,6 +170,20 @@ class IncomeIntegrationTest extends BaseControllerIntegrationTest {
 	}
 
 	@Test
+	void 수입_수정_다른유저카테고리_실패() throws Exception {
+		UserCategory otherUserCategory = getOtherUserCategory();
+
+		UpdateIncomeRequest updateIncomeRequest = new UpdateIncomeRequest(LocalDateTime.now(), 2000L, "updateContent",
+			otherUserCategory.getId());
+
+		mvc.perform(put(LOCATION_PREFIX + "/{incomeId}", income.getId())
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(updateIncomeRequest))
+				.header(HttpHeaders.AUTHORIZATION, accessToken))
+			.andExpect(status().isForbidden());
+	}
+
+	@Test
 	void 수입에서_지출로_변경() throws Exception {
 		Category otherCategory = categoryRepository.save(new Category("다른 카테고리", EXPENDITURE));
 		UserCategory otherUserCategory = userCategoryRepository.save(createUserCategory(loginUser, otherCategory));
@@ -169,6 +197,13 @@ class IncomeIntegrationTest extends BaseControllerIntegrationTest {
 
 		Optional<Income> findIncome = incomeRepository.findById(income.getId());
 		assertThat(findIncome).isEmpty();
+	}
+
+	private UserCategory getOtherUserCategory() {
+		User otherUser = userRepository.saveAndFlush(new User("other@email.com", "other1234", "other"));
+		Category category = categoryRepository.save(new Category("other", INCOME));
+		UserCategory otherUserCategory = userCategoryRepository.save(new UserCategory(otherUser, category));
+		return otherUserCategory;
 	}
 
 	private void validateCreateRequest(CreateIncomeRequest request, String expectMessage) throws Exception {

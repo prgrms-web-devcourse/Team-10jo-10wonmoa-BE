@@ -1,6 +1,7 @@
 package com.prgrms.tenwonmoa.domain.user.controller;
 
 import static org.mockito.BDDMockito.*;
+import static org.springframework.restdocs.headers.HeaderDocumentation.*;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
@@ -14,6 +15,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.web.servlet.MockMvc;
@@ -74,14 +76,15 @@ class UserControllerTest {
 		given(userService.findById(1L)).willReturn(user);
 
 		mockMvc.perform(get("/api/v1/users")
-				.accept(MediaType.APPLICATION_JSON))
+				.header(HttpHeaders.AUTHORIZATION, "mock-token"))
 			.andExpect(status().isOk())
-			.andDo(print())
 			.andDo(MockMvcRestDocumentationWrapper.document("user-info",
+				requestHeaders(
+					headerWithName(HttpHeaders.AUTHORIZATION).description("Jwt token")
+				),
 				responseFields(
-					fieldWithPath("email").type(JsonFieldType.STRING).description("이메일"),
-					fieldWithPath("username").type(JsonFieldType.STRING).description("사용자이름")
-				)));
-
+					fieldWithPath("email").type(JsonFieldType.STRING).description("이메일")
+				))
+			);
 	}
 }

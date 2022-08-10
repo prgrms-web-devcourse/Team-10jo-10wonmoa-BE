@@ -76,7 +76,7 @@ class UserControllerTest {
 		given(userService.findById(1L)).willReturn(user);
 
 		mockMvc.perform(get("/api/v1/users")
-				.header(HttpHeaders.AUTHORIZATION, "mock-token"))
+				.header(HttpHeaders.AUTHORIZATION, "Bearer jwt.token.here"))
 			.andExpect(status().isOk())
 			.andDo(MockMvcRestDocumentationWrapper.document("user-info",
 				requestHeaders(

@@ -12,7 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.prgrms.tenwonmoa.domain.user.User;
 import com.prgrms.tenwonmoa.domain.user.dto.CreateUserRequest;
 import com.prgrms.tenwonmoa.domain.user.repository.UserRepository;
-import com.prgrms.tenwonmoa.domain.user.security.oauth2.dto.OAuth2UserPrincipal;
+import com.prgrms.tenwonmoa.domain.user.security.oauth2.OAuth2UserPrincipal;
 import com.prgrms.tenwonmoa.domain.user.service.UserService;
 
 import lombok.RequiredArgsConstructor;

@@ -12,7 +12,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import com.prgrms.tenwonmoa.domain.user.dto.TokenResponse;
 import com.prgrms.tenwonmoa.domain.user.security.jwt.service.JwtService;
-import com.prgrms.tenwonmoa.domain.user.security.oauth2.dto.OAuth2UserPrincipal;
+import com.prgrms.tenwonmoa.domain.user.security.oauth2.OAuth2UserPrincipal;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,7 +21,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class OAuth2AuthenticationSuccessHandler extends SavedRequestAwareAuthenticationSuccessHandler {
 
-	private static final String DEFAULT_REDIRECT_URL = "http://localhost:3000/redirect"; // 추후 변경 필요
+	private static final String DEFAULT_REDIRECT_URL = "http://localhost:3000/redirect";
 	private final JwtService jwtService;
 
 	@Override

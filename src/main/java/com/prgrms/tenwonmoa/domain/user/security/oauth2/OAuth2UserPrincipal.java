@@ -1,4 +1,4 @@
-package com.prgrms.tenwonmoa.domain.user.security.oauth2.dto;
+package com.prgrms.tenwonmoa.domain.user.security.oauth2;
 
 import java.util.Collection;
 import java.util.Map;

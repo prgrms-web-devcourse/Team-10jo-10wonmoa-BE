@@ -1,9 +1,14 @@
 package com.prgrms.tenwonmoa.domain.budget.service;
 
+import java.time.YearMonth;
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.prgrms.tenwonmoa.domain.budget.dto.CreateOrUpdateBudgetRequest;
+import com.prgrms.tenwonmoa.domain.budget.dto.FindBudgetData;
+import com.prgrms.tenwonmoa.domain.budget.repository.BudgetQueryRepository;
 import com.prgrms.tenwonmoa.domain.budget.repository.BudgetRepository;
 import com.prgrms.tenwonmoa.domain.category.UserCategory;
 import com.prgrms.tenwonmoa.domain.category.service.UserCategoryService;
@@ -19,6 +24,7 @@ public class BudgetTotalService {
 	private final BudgetRepository budgetRepository;
 	private final UserService userService;
 	private final UserCategoryService userCategoryService;
+	private final BudgetQueryRepository budgetQueryRepository;
 
 	public void createOrUpdateBudget(Long userId, CreateOrUpdateBudgetRequest createOrUpdateBudgetRequest) {
 		UserCategory userCategory = userCategoryService.findById(createOrUpdateBudgetRequest.getUserCategoryId());
@@ -30,5 +36,10 @@ public class BudgetTotalService {
 				existBudget.validateOwner(authUser.getId());
 				existBudget.changeAmount(createOrUpdateBudgetRequest.getAmount());
 			}, () -> budgetRepository.save(createOrUpdateBudgetRequest.toEntity(authUser, userCategory)));
+	}
+
+	@Transactional(readOnly = true)
+	public List<FindBudgetData> searchUserCategoriesWithBudget(Long userId, YearMonth registerDate) {
+		return budgetQueryRepository.searchUserCategoriesWithBudget(userId, registerDate);
 	}
 }

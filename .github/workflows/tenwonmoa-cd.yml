@@ -1,8 +1,9 @@
 name: Tenwonmoa CI-CD with Gradle
 
 on:
-  pull_request:
+  push:
     branches: [ "main", "develop" ]
+
 
 # 변수 설정
 env:

@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.prgrms.tenwonmoa.domain.budget.dto.CreateOrUpdateBudgetRequest;
 import com.prgrms.tenwonmoa.domain.budget.dto.FindBudgetResponse;
-import com.prgrms.tenwonmoa.domain.budget.service.BudgetService;
 import com.prgrms.tenwonmoa.domain.budget.service.BudgetTotalService;
 
 import lombok.RequiredArgsConstructor;
@@ -26,8 +25,6 @@ import lombok.RequiredArgsConstructor;
 public class BudgetController {
 	private static final String LOCATION_PREFIX = "/api/v1/budgets";
 	private final BudgetTotalService budgetTotalService;
-	private final BudgetService budgetService;
-
 	@PutMapping
 	public ResponseEntity<Void> createOrUpdate(@RequestBody @Valid CreateOrUpdateBudgetRequest request,
 		@AuthenticationPrincipal Long userId) {
@@ -40,7 +37,7 @@ public class BudgetController {
 	public ResponseEntity<FindBudgetResponse> findBudgets(@AuthenticationPrincipal Long userId,
 		@RequestParam YearMonth registerDate) {
 		FindBudgetResponse findBudgetResponse = new FindBudgetResponse(
-			budgetService.findByUserIdAndRegisterDate(userId, registerDate)
+			budgetTotalService.searchUserCategoriesWithBudget(userId, registerDate)
 		);
 		return ResponseEntity.ok(findBudgetResponse);
 	}

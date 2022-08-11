@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.prgrms.tenwonmoa.domain.budget.dto.CreateOrUpdateBudgetRequest;
 import com.prgrms.tenwonmoa.domain.budget.dto.FindBudgetResponse;
+import com.prgrms.tenwonmoa.domain.budget.dto.FindBudgetWithExpenditureRequest;
+import com.prgrms.tenwonmoa.domain.budget.dto.FindBudgetWithExpenditureResponse;
 import com.prgrms.tenwonmoa.domain.budget.service.BudgetTotalService;
 
 import lombok.RequiredArgsConstructor;
@@ -25,6 +27,7 @@ import lombok.RequiredArgsConstructor;
 public class BudgetController {
 	private static final String LOCATION_PREFIX = "/api/v1/budgets";
 	private final BudgetTotalService budgetTotalService;
+
 	@PutMapping
 	public ResponseEntity<Void> createOrUpdate(@RequestBody @Valid CreateOrUpdateBudgetRequest request,
 		@AuthenticationPrincipal Long userId) {
@@ -40,5 +43,14 @@ public class BudgetController {
 			budgetTotalService.searchUserCategoriesWithBudget(userId, registerDate)
 		);
 		return ResponseEntity.ok(findBudgetResponse);
+	}
+
+	@GetMapping
+	public ResponseEntity<FindBudgetWithExpenditureResponse> findBudgetWithExpenditure(
+		@AuthenticationPrincipal Long userId,
+		@Valid FindBudgetWithExpenditureRequest request) {
+		return ResponseEntity.ok(budgetTotalService.searchBudgetWithExpenditure(userId,
+			request.getYear(),
+			request.getMonth()));
 	}
 }

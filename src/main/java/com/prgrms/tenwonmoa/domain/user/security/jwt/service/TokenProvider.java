@@ -71,6 +71,13 @@ public class TokenProvider {
 		return false;
 	}
 
+	public Long getRemainMilliSeconds(String token) {
+		Jwt.Claims claims = verifyAndGetClaims(token);
+		Date expiration = claims.getExp();
+		Date now = new Date();
+		return expiration.getTime() - now.getTime();
+	}
+
 	private Jwt.Claims verifyAndGetClaims(String token) {
 		DecodedJWT decodedJwt = jwt.getJwtVerifier().verify(token);
 		return new Jwt.Claims(decodedJwt);

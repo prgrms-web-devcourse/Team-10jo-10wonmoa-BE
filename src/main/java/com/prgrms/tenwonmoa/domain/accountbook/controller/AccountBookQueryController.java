@@ -85,9 +85,7 @@ public class AccountBookQueryController {
 		@RequestParam("month") int month
 	) {
 		CalendarCondition condition = new CalendarCondition(year, month);
-
 		FindCalendarResponse response = accountBookQueryService.findCalendarAccount(userId, condition);
-
 		return ResponseEntity.ok(response);
 	}
 

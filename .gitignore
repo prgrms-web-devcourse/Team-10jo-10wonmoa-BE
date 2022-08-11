@@ -42,4 +42,4 @@ out/
 
 ### Private ###
 /src/main/resources/application-dev.yml
-/src/main/resources/application-oauth.yml
+/src/main/resources/application-custom.yml

@@ -32,7 +32,6 @@ import com.prgrms.tenwonmoa.config.WebSecurityConfig;
 import com.prgrms.tenwonmoa.domain.budget.controller.BudgetController;
 import com.prgrms.tenwonmoa.domain.budget.dto.CreateOrUpdateBudgetRequest;
 import com.prgrms.tenwonmoa.domain.budget.dto.FindBudgetData;
-import com.prgrms.tenwonmoa.domain.budget.service.BudgetService;
 import com.prgrms.tenwonmoa.domain.budget.service.BudgetTotalService;
 import com.prgrms.tenwonmoa.domain.user.security.jwt.filter.JwtAuthenticationFilter;
 
@@ -55,8 +54,6 @@ class BudgetControllerTest {
 	private ObjectMapper objectMapper;
 	@MockBean
 	private BudgetTotalService budgetTotalService;
-	@MockBean
-	private BudgetService budgetService;
 
 	private CreateOrUpdateBudgetRequest createOrUpdateBudgetRequest = new CreateOrUpdateBudgetRequest(
 		1000L, YearMonth.now(), 1L);
@@ -87,7 +84,7 @@ class BudgetControllerTest {
 	@Test
 	@WithMockCustomUser
 	void 월별_예산조회_성공() throws Exception {
-		given(budgetService.findByUserIdAndRegisterDate(any(), any()))
+		given(budgetTotalService.searchUserCategoriesWithBudget(any(), any()))
 			.willReturn(findBudgets);
 
 		mockMvc.perform(get(LOCATION_PREFIX)

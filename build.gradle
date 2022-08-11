@@ -127,7 +127,8 @@ jacocoTestReport {
                         'com/prgrms/tenwonmoa/exception/*',
                         'com/prgrms/tenwonmoa/filter/*',
                         'com/prgrms/tenwonmoa/domain/common/*',
-                        'com/prgrms/tenwonmoa/domain/**/dto/*'
+                        'com/prgrms/tenwonmoa/domain/**/dto/*',
+                        'com/prgrms/tenwonmoa/domain/user/security/oauth2/*'
                 ] + Qdomains)
             }))
         }

@@ -13,7 +13,9 @@ import org.springframework.web.filter.CorsFilter;
 
 import com.prgrms.tenwonmoa.domain.user.security.jwt.filter.CustomAuthenticationEntryPoint;
 import com.prgrms.tenwonmoa.domain.user.security.jwt.filter.JwtAuthenticationFilter;
-import com.prgrms.tenwonmoa.domain.user.security.oauth2.OAuth2AuthenticationSuccessHandler;
+import com.prgrms.tenwonmoa.domain.user.security.oauth2.handler.OAuth2AuthenticationFailureHandler;
+import com.prgrms.tenwonmoa.domain.user.security.oauth2.handler.OAuth2AuthenticationSuccessHandler;
+import com.prgrms.tenwonmoa.domain.user.security.oauth2.repository.HttpCookieOAuth2AuthorizationRequestRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -22,6 +24,8 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	private final JwtAuthenticationFilter jwtAuthenticationFilter;
+	private final OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler;
+	private final OAuth2AuthenticationFailureHandler oAuth2AuthenticationFailureHandler;
 
 	@Bean
 	public PasswordEncoder passwordEncoder() {
@@ -34,8 +38,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	}
 
 	@Bean
-	public OAuth2AuthenticationSuccessHandler oauth2AuthenticationSuccessHandler() {
-		return new OAuth2AuthenticationSuccessHandler();
+	public HttpCookieOAuth2AuthorizationRequestRepository cookieAuthorizationRequestRepository() {
+		return new HttpCookieOAuth2AuthorizationRequestRepository();
 	}
 
 	@Override
@@ -62,11 +66,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 			.oauth2Login()
 				.authorizationEndpoint()
 					.baseUri("/api/v1/oauth2/authorize")        // 구글 로그인 인증 하는 URL
+					.authorizationRequestRepository(cookieAuthorizationRequestRepository())	// 인증 요청 정보를 저장하는 레포지토리
 					.and()
 				.redirectionEndpoint()
 					.baseUri("/login/oauth2/code/google")    // redirect default 값
 					.and()
-				.successHandler(oauth2AuthenticationSuccessHandler());    // 로그인 성공 처리하는 handler
+				.successHandler(oAuth2AuthenticationSuccessHandler)
+				.failureHandler(oAuth2AuthenticationFailureHandler);
 
 		// filter 등록
 		http.addFilterAfter(

@@ -8,6 +8,7 @@ import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.*;
 
 import java.time.YearMonth;
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
@@ -20,6 +21,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.prgrms.tenwonmoa.domain.budget.Budget;
 import com.prgrms.tenwonmoa.domain.budget.dto.CreateOrUpdateBudgetRequest;
+import com.prgrms.tenwonmoa.domain.budget.dto.FindBudgetData;
+import com.prgrms.tenwonmoa.domain.budget.repository.BudgetQueryRepository;
 import com.prgrms.tenwonmoa.domain.budget.repository.BudgetRepository;
 import com.prgrms.tenwonmoa.domain.category.Category;
 import com.prgrms.tenwonmoa.domain.category.UserCategory;
@@ -37,6 +40,8 @@ class BudgetTotalServiceTest {
 	private UserService userService;
 	@Mock
 	private UserCategoryService userCategoryService;
+	@Mock
+	private BudgetQueryRepository budgetQueryRepository;
 	@InjectMocks
 	private BudgetTotalService budgetTotalService;
 
@@ -45,7 +50,12 @@ class BudgetTotalServiceTest {
 	private UserCategory userCategory = createUserCategory(user, category);
 
 	private CreateOrUpdateBudgetRequest createOrUpdateBudgetRequest = new CreateOrUpdateBudgetRequest(
-		1000L, YearMonth.now(), userCategory.getId());
+		1000L, YearMonth.of(2020, 01), userCategory.getId());
+
+	private List<FindBudgetData> findBudgetDataList = List.of(
+		new FindBudgetData(1L, "ct1", 1000L),
+		new FindBudgetData(2L, "ct2", 2000L)
+	);
 
 	@Test
 	void 예산_생성_성공() {
@@ -97,4 +107,13 @@ class BudgetTotalServiceTest {
 			.hasMessage(USER_CATEGORY_NOT_FOUND.getMessage());
 	}
 
+	@Test
+	void 월별_유저카테고리별_예산조회() {
+		YearMonth now = YearMonth.now();
+		given(budgetQueryRepository.searchUserCategoriesWithBudget(any(), any())).willReturn(findBudgetDataList);
+		// when
+		budgetTotalService.searchUserCategoriesWithBudget(1L, now);
+		// then
+		verify(budgetQueryRepository).searchUserCategoriesWithBudget(1L, now);
+	}
 }

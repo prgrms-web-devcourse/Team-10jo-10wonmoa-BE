@@ -33,9 +33,6 @@ class BudgetRepositoryTest extends RepositoryFixture {
 	private User user;
 	private YearMonth now = YearMonth.of(2020, 01);
 
-	@Autowired
-	EntityManager em;
-
 	@BeforeEach
 	void init() {
 		user = save(createUser());

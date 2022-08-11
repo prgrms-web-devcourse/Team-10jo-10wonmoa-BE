@@ -8,6 +8,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -49,6 +50,13 @@ public class UserController {
 		TokenResponse refreshResponse = userService.refresh(refreshTokenRequest.getAccessToken(),
 			refreshTokenRequest.getRefreshToken());
 		return ResponseEntity.ok().body(refreshResponse);
+	}
+
+	@PostMapping("/logout")
+	public ResponseEntity<Void> logout(@AuthenticationPrincipal Long userId,
+		@RequestHeader("Authorization") String accessToken) {
+		userService.logout(userId, accessToken.substring(7));
+		return ResponseEntity.ok().build();
 	}
 
 }

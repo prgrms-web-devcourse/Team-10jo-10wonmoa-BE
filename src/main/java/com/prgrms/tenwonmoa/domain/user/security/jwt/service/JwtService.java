@@ -10,7 +10,9 @@ import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.prgrms.tenwonmoa.domain.user.User;
 import com.prgrms.tenwonmoa.domain.user.dto.TokenResponse;
 import com.prgrms.tenwonmoa.domain.user.repository.UserRepository;
+import com.prgrms.tenwonmoa.domain.user.security.jwt.LogoutAccessToken;
 import com.prgrms.tenwonmoa.domain.user.security.jwt.RefreshToken;
+import com.prgrms.tenwonmoa.domain.user.security.jwt.repository.LogoutAccessTokenRedisRepository;
 import com.prgrms.tenwonmoa.domain.user.security.jwt.repository.RefreshTokenRepository;
 import com.prgrms.tenwonmoa.exception.message.Message;
 
@@ -23,6 +25,7 @@ public class JwtService {
 	private final TokenProvider tokenProvider;
 	private final RefreshTokenRepository refreshTokenRepository;
 	private final UserRepository userRepository;
+	private final LogoutAccessTokenRedisRepository logoutAccessTokenRedisRepository;
 
 	@Transactional
 	public TokenResponse generateToken(Long userId, String email) {
@@ -71,5 +74,15 @@ public class JwtService {
 		if (!savedRefreshToken.getToken().equals(refreshToken)) {
 			throw new JWTVerificationException(Message.INVALID_TOKEN.getMessage());
 		}
+	}
+
+	@Transactional
+	public void generateLogoutAccessToken(String email, String accessToken) {
+		Long remainMilliSeconds = tokenProvider.getRemainMilliSeconds(accessToken);
+		logoutAccessTokenRedisRepository.save(new LogoutAccessToken(accessToken, email, remainMilliSeconds));
+	}
+
+	public void deleteRefreshToken(String email) {
+		refreshTokenRepository.deleteById(email);
 	}
 }

@@ -51,6 +51,7 @@ public enum Message {
 	NOT_NULL_TOKEN("토큰 값이 비었습니다."),
 	INVALID_TOKEN("잘못된 토큰 요청입니다."),
 	INVALID_REDIRECT_URL("잘못된 redirect url 요청입니다."),
+	LOGOUT_USER("이미 로그아웃된 회원입니다."),
 
 	// 달력 요청
 	INVALID_YEAR("년도는 1900년에서 3000년 이하입니다."),

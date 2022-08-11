@@ -18,7 +18,9 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.auth0.jwt.exceptions.TokenExpiredException;
+import com.prgrms.tenwonmoa.domain.user.security.jwt.repository.LogoutAccessTokenRedisRepository;
 import com.prgrms.tenwonmoa.domain.user.security.jwt.service.TokenProvider;
+import com.prgrms.tenwonmoa.exception.UnauthorizedUserException;
 import com.prgrms.tenwonmoa.exception.message.Message;
 
 import lombok.RequiredArgsConstructor;
@@ -31,6 +33,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 	private static final String BEARER_PREFIX = "Bearer ";
 	private static final String ATTRIBUTE_EXCEPTION = "exception";
 	private final TokenProvider tokenProvider;
+	private final LogoutAccessTokenRedisRepository logoutAccessTokenRedisRepository;
 
 	@Override
 	protected void doFilterInternal(
@@ -51,6 +54,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
 		if (StringUtils.hasText(token)) {
 			try {
+				checkLogout(token);
+
 				// userId 가져오기
 				Long userId = tokenProvider.validateAndGetUserId(token);
 				log.info("Authenticated user Id: {}", userId);
@@ -63,14 +68,22 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 				);
 				authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 				SecurityContextHolder.getContext().setAuthentication(authentication);
-			} catch (TokenExpiredException te) {	// 예외 메시지를 entry point로 전달
+			} catch (TokenExpiredException te) {    // 예외 메시지를 entry point로 전달
 				request.setAttribute(ATTRIBUTE_EXCEPTION, Message.EXPIRED_ACCESS_TOKEN.getMessage());
+			} catch (UnauthorizedUserException ue) {
+				request.setAttribute(ATTRIBUTE_EXCEPTION, Message.LOGOUT_USER.getMessage());
 			} catch (Exception e) {
 				request.setAttribute(ATTRIBUTE_EXCEPTION, Message.INVALID_TOKEN.getMessage());
 			}
 		}
 
 		filterChain.doFilter(request, response);
+	}
+
+	private void checkLogout(String accessToken) {
+		if (logoutAccessTokenRedisRepository.existsById(accessToken)) {
+			throw new UnauthorizedUserException(Message.LOGOUT_USER.getMessage());
+		}
 	}
 
 	private String parseToken(HttpServletRequest request) {

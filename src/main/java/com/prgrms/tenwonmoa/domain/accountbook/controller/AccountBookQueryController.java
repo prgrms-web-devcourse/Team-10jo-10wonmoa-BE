@@ -6,7 +6,6 @@ import java.time.LocalDateTime;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -80,8 +79,7 @@ public class AccountBookQueryController {
 	@GetMapping("/calendar")
 	public ResponseEntity<FindCalendarResponse> findCalendarAccount(
 		@AuthenticationPrincipal Long userId,
-		@RequestParam(value = "year")
-		@Validated int year,
+		@RequestParam(value = "year") int year,
 		@RequestParam("month") int month
 	) {
 		CalendarCondition condition = new CalendarCondition(year, month);

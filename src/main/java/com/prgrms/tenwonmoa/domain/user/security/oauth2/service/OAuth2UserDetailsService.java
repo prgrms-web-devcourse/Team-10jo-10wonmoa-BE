@@ -9,11 +9,10 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.prgrms.tenwonmoa.domain.category.service.CreateDefaultUserCategoryService;
 import com.prgrms.tenwonmoa.domain.user.User;
-import com.prgrms.tenwonmoa.domain.user.dto.CreateUserRequest;
 import com.prgrms.tenwonmoa.domain.user.repository.UserRepository;
 import com.prgrms.tenwonmoa.domain.user.security.oauth2.OAuth2UserPrincipal;
-import com.prgrms.tenwonmoa.domain.user.service.UserService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -22,8 +21,8 @@ import lombok.RequiredArgsConstructor;
 public class OAuth2UserDetailsService extends DefaultOAuth2UserService {
 
 	private static final String DEFAULT_OAUTH_PASSWORD = "oauthuser";
-	private final UserService userService;
 	private final UserRepository userRepository;
+	private final CreateDefaultUserCategoryService createDefaultUserCategoryService;
 
 	@Transactional
 	@Override
@@ -49,9 +48,10 @@ public class OAuth2UserDetailsService extends DefaultOAuth2UserService {
 			return findUser.get().getId();
 		}
 
-		CreateUserRequest createUserRequest = new CreateUserRequest(email, name, DEFAULT_OAUTH_PASSWORD);
-		Long userId = userService.createUser(createUserRequest);
+		User socialUser = new User(email, DEFAULT_OAUTH_PASSWORD, name, true);
+		User savedSocialUser = userRepository.save(socialUser);
+		createDefaultUserCategoryService.createDefaultUserCategory(savedSocialUser);
 
-		return userId;
+		return savedSocialUser.getId();
 	}
 }

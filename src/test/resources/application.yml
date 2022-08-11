@@ -27,6 +27,9 @@ spring:
             redirect-uri: "redirecturl"
             scope:
               - email
+  redis:
+    host: localhost
+    port: 6379
 
 logging:
   level:

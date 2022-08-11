@@ -431,7 +431,7 @@ class AccountBookQueryRepositoryTest extends RepositoryTest {
 			int year = 2020;
 			int month = 2;
 
-			CalendarCondition condition = new CalendarCondition(LocalDate.of(year, month, 1));
+			CalendarCondition condition = new CalendarCondition(year, month);
 
 			createExpenditures(10, year, month);
 			createIncomes(10, year, month);

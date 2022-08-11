@@ -18,7 +18,9 @@ import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.prgrms.tenwonmoa.domain.user.User;
 import com.prgrms.tenwonmoa.domain.user.dto.TokenResponse;
 import com.prgrms.tenwonmoa.domain.user.repository.UserRepository;
+import com.prgrms.tenwonmoa.domain.user.security.jwt.LogoutAccessToken;
 import com.prgrms.tenwonmoa.domain.user.security.jwt.RefreshToken;
+import com.prgrms.tenwonmoa.domain.user.security.jwt.repository.LogoutAccessTokenRedisRepository;
 import com.prgrms.tenwonmoa.domain.user.security.jwt.repository.RefreshTokenRepository;
 import com.prgrms.tenwonmoa.exception.message.Message;
 
@@ -34,6 +36,9 @@ class JwtServiceTest {
 
 	@Mock
 	private UserRepository userRepository;
+
+	@Mock
+	private LogoutAccessTokenRedisRepository logoutAccessTokenRedisRepository;
 
 	@InjectMocks
 	private JwtService jwtService;
@@ -127,6 +132,21 @@ class JwtServiceTest {
 		assertThatThrownBy(() -> jwtService.refreshToken(accessTokenValue, refreshTokenValue))
 			.isInstanceOf(JWTVerificationException.class)
 			.hasMessage(Message.INVALID_TOKEN.getMessage());
+	}
+
+	@Test
+	void logout_access_token_생성() {
+		String accessTokenValue = "dsvjkrtglffdasfds";
+		Long remainMilliSecs = 1032441L;
+		String email = "test@test.com";
+		LogoutAccessToken logoutAccessToken = new LogoutAccessToken(accessTokenValue, email, remainMilliSecs);
+
+		given(tokenProvider.getRemainMilliSeconds(any(String.class))).willReturn(remainMilliSecs);
+		given(logoutAccessTokenRedisRepository.save(any())).willReturn(logoutAccessToken);
+
+		jwtService.generateLogoutAccessToken(email, accessTokenValue);
+
+		verify(logoutAccessTokenRedisRepository).save(any(LogoutAccessToken.class));
 	}
 
 }

@@ -138,4 +138,19 @@ class UserServiceTest {
 			.hasMessage(Message.INVALID_EMAIL_OR_PASSWORD.getMessage());
 	}
 
+	@Test
+	void 로그아웃_성공() {
+		User user = createUser();
+		String accessToken = "dfdskjvkcldsax";
+
+		given(userRepository.findById(user.getId())).willReturn(Optional.of(user));
+		doNothing().when(jwtService).generateLogoutAccessToken(any(String.class), any(String.class));
+		doNothing().when(jwtService).deleteRefreshToken(any(String.class));
+
+		userService.logout(user.getId(), accessToken);
+
+		verify(jwtService).generateLogoutAccessToken(user.getEmail(), accessToken);
+		verify(jwtService).deleteRefreshToken(user.getEmail());
+	}
+
 }

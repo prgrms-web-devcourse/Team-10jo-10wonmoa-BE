@@ -31,3 +31,8 @@ jwt:
   client-secret: EENY5W0eegTf1naQB2eDeyCLl5kRS2b8xa5c4qLdS0hmVjtbvo8tOyhPMcAmtPuQ
   expiry-seconds-millis: 3600000 # 1시간 = 3,600,000ms
   refresh-expiry-seconds-millis: 1209600000 # 2주 = 1000ms * 60 * 60 * 24 * 14
+
+app:
+  authorized-redirect-uris:
+    - http://localhost:3000/oauth2/redirect
+    - https://team-10jo-10wonmoa-fe.vercel.app/oauth2/redirect

@@ -16,6 +16,8 @@ public class FindBudgetByRegisterDate {
 		this.userCategoryId = userCategoryId;
 		this.categoryName = categoryName;
 		this.amount = amount;
+		this.expenditure = 0L;
+		this.percent = 0L;
 	}
 
 	public void setExpenditure(Long expenditure) {

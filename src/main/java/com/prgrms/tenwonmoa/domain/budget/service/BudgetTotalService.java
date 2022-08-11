@@ -25,10 +25,10 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @Transactional
 public class BudgetTotalService {
-	private static final String INVALID_CALC_EXP_MSG = "예산, 지출 금액이 NULL 일 수 없습니다.";
+	private static final String INVALID_AMOUNT_EXP_MSG = "예산 금액이 0원 입니다.";
 	private static final int PERCENTAGE = 100;
 
-	private static final Long EXPENDITURE_MIN = 0L;
+	private static final Long AMOUNT_MIN = 0L;
 	private static final String YEAR_MONTH_SEPARATOR = "-";
 	private final BudgetRepository budgetRepository;
 	private final UserService userService;
@@ -87,10 +87,10 @@ public class BudgetTotalService {
 
 	private Long calcPercent(Long amount, Long expenditure) {
 		Long percent = 0L;
-		if (Objects.isNull(amount) || Objects.isNull(expenditure)) {
-			throw new IllegalArgumentException(INVALID_CALC_EXP_MSG);
+		if (amount <= AMOUNT_MIN) {
+			throw new IllegalArgumentException(INVALID_AMOUNT_EXP_MSG);
 		}
-		if (expenditure > EXPENDITURE_MIN) {
+		if (expenditure > AMOUNT_MIN) {
 			double doubleData = ((double)expenditure / amount) * PERCENTAGE;
 			percent = (long)Math.floor(doubleData);
 		}

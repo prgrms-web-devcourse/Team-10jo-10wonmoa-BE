@@ -31,6 +31,8 @@ spring:
 logging:
   level:
     org.hibernate.type: trace
+  slack:
+    webhook-url: https://hooks.slack.com/services
 
 jwt:
   header: testToken

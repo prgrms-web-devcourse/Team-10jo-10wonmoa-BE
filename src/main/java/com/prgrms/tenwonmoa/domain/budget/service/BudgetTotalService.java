@@ -61,7 +61,7 @@ public class BudgetTotalService {
 		long amountSum = 0L;
 		long expenditureSum = 0L;
 		for (FindBudgetByRegisterDate budget : budgets) {
-			Long expenditureAmount = expenditures.get(budget.getUserCategoryId());
+			Long expenditureAmount = expenditures.getOrDefault(budget.getUserCategoryId(), AMOUNT_MIN);
 			budget.setExpenditure(expenditureAmount);
 			budget.setPercent(calcPercent(budget.getAmount(), expenditureAmount));
 			amountSum += budget.getAmount();

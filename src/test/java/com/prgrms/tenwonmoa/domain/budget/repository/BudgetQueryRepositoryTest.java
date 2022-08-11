@@ -133,6 +133,46 @@ class BudgetQueryRepositoryTest extends RepositoryFixture {
 	}
 
 	@Test
+	void 월별_예산조회_같은_이름의카테고리_따로조회() {
+		// given
+		Category sameNameCategory = save(new Category("ct1", EXPENDITURE));
+		UserCategory sameCategory = save(createUserCategory(user, sameNameCategory));
+
+		// 같은 이름의 카테고리로 예산을 저장
+		saveBudget(100L, now, user, uc1);
+		saveBudget(200L, now, user, sameCategory);
+
+		// when
+		List<FindBudgetByRegisterDate> result = budgetQueryRepository.searchBudgetByRegisterDate(
+			user.getId(), now.getYear(),
+			now.getMonthValue());
+		// then
+		assertThat(result).hasSize(2);
+		assertThat(result).extracting((data) -> data.getCategoryName(), (data) -> data.getAmount())
+			.contains(tuple("ct1", 100L), tuple("ct1", 200L));
+	}
+
+	@Test
+	void 연별_예산이존재하는_지출조회_같은이름의_카테고리() {
+		// given
+		Category sameNameCategory = save(new Category("ct1", EXPENDITURE));
+		Category sameNameCategory2 = save(new Category("ct1", EXPENDITURE));
+		UserCategory sameCategory = save(createUserCategory(user, sameNameCategory));
+		UserCategory sameCategory2 = save(createUserCategory(user, sameNameCategory2));
+
+		// 같은 이름의 카테고리로 예산을 저장
+		saveBudget(100L, now, user, uc1);
+		saveBudget(200L, now.plusMonths(1), user, sameCategory);
+		saveBudget(300L, now.plusMonths(2), user, sameCategory2);
+
+		// when
+		List<FindBudgetByRegisterDate> result = budgetQueryRepository.searchBudgetByRegisterDate(
+			user.getId(), now.getYear(), null);
+
+		assertThat(result).hasSize(3);
+	}
+
+	@Test
 	void 연별_예산조회_성공() {
 		// given
 		saveBudget(1L, YearMonth.of(now.getYear(), 1), user, uc3);
@@ -186,11 +226,37 @@ class BudgetQueryRepositoryTest extends RepositoryFixture {
 		saveExpenditure(uc3, 100L, of(now.getYear(), now.getMonthValue(), 3, 0, 0));
 
 		// when
-		Map<String, Long> result = budgetQueryRepository.searchExpendituresExistBudget(
+		Map<Long, Long> result = budgetQueryRepository.searchExpendituresExistBudget(
 			user.getId(), now.getYear(), now.getMonthValue());
 
 		assertThat(result).hasSize(1);
-		assertThat(result).containsEntry("ct1", 1L);
+		assertThat(result).containsEntry(uc1.getId(), 1L);
+	}
+
+	@Test
+	void 월별_예산이존재하는_지출_동일한_이름카테고리_조회() {
+		// given
+		Category sameNameCategory = save(new Category("ct1", EXPENDITURE));
+		Category sameNameCategory2 = save(new Category("ct1", EXPENDITURE));
+		UserCategory sameCategory = save(createUserCategory(user, sameNameCategory));
+		UserCategory sameCategory2 = save(createUserCategory(user, sameNameCategory2));
+		// 예산은 uc1에만 등록되어있다.
+		saveBudget(100L, now, user, uc1);
+		saveBudget(100L, now, user, sameCategory);
+		saveBudget(100L, now, user, sameCategory2);
+		// 지출은 uc1, uc2, uc3 모두 발생했다.
+		saveExpenditure(uc1, 1L, of(now.getYear(), now.getMonthValue(), 1, 0, 0));
+		saveExpenditure(sameCategory, 10L, of(now.getYear(), now.getMonthValue(), 2, 0, 0));
+		saveExpenditure(sameCategory2, 100L, of(now.getYear(), now.getMonthValue(), 3, 0, 0));
+
+		// when
+		Map<Long, Long> result = budgetQueryRepository.searchExpendituresExistBudget(
+			user.getId(), now.getYear(), now.getMonthValue());
+
+		assertThat(result).hasSize(3);
+		assertThat(result).containsEntry(uc1.getId(), 1L);
+		assertThat(result).containsEntry(sameCategory.getId(), 10L);
+		assertThat(result).containsEntry(sameCategory2.getId(), 100L);
 	}
 
 	@Test
@@ -228,12 +294,12 @@ class BudgetQueryRepositoryTest extends RepositoryFixture {
 		saveExpenditure(uc2, 80L, of(now.getYear(), 2, 2, 0, 0));
 
 		// when
-		Map<String, Long> result = budgetQueryRepository.searchExpendituresExistBudget(
+		Map<Long, Long> result = budgetQueryRepository.searchExpendituresExistBudget(
 			user.getId(), now.getYear(), null);
 
 		assertThat(result).hasSize(2);
-		assertThat(result).containsEntry("ct1", 130L);
-		assertThat(result).containsEntry("ct2", 80L);
+		assertThat(result).containsEntry(uc1.getId(), 130L);
+		assertThat(result).containsEntry(uc2.getId(), 80L);
 	}
 
 	@Test

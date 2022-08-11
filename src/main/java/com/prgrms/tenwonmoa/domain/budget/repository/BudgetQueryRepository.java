@@ -26,7 +26,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class BudgetQueryRepository {
 	private static final String NEED_TO_YEAR_WHEN_MONTH = "월 조건은 년도가 반드시 입력되어야 합니다.";
-	private static final int BUDGET_MIN = 0;
+
 	private static final NumberPath<Long> AMOUNT = Expressions.numberPath(Long.class, "amount");
 
 	private final JPAQueryFactory queryFactory;
@@ -45,12 +45,12 @@ public class BudgetQueryRepository {
 			.fetch();
 	}
 
-	public Map<String, Long> searchExpendituresExistBudget(Long userId, Integer year, Integer month) {
+	public Map<Long, Long> searchExpendituresExistBudget(Long userId, Integer year, Integer month) {
 		return queryFactory
-			.select(Projections.constructor(FindBudgetByRegisterDate.class,
-				expenditure.userCategory.category.name,
+			.select(
+				expenditure.userCategory.id,
 				expenditure.amount
-			))
+			)
 			.from(expenditure)
 			.where(
 				expenditure.user.id.eq(userId),
@@ -63,13 +63,14 @@ public class BudgetQueryRepository {
 				)
 			)
 			.transform(
-				groupBy(expenditure.userCategory.category.name).as(sum(expenditure.amount))
+				groupBy(expenditure.userCategory.id).as(sum(expenditure.amount))
 			);
 	}
 
 	public List<FindBudgetByRegisterDate> searchBudgetByRegisterDate(Long userId, Integer year, Integer month) {
 		return queryFactory
 			.select(Projections.constructor(FindBudgetByRegisterDate.class,
+				budget.userCategory.id,
 				budget.userCategory.category.name,
 				budget.amount.sum()
 			))
@@ -79,7 +80,7 @@ public class BudgetQueryRepository {
 				yearMonthEqBudget(year, month),
 				budget.amount.gt(0)
 			)
-			.groupBy(budget.userCategory.category.name)
+			.groupBy(budget.userCategory.id, budget.userCategory.category.name)
 			.fetch();
 	}
 

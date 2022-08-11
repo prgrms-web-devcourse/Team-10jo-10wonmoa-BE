@@ -6,12 +6,14 @@ import lombok.ToString;
 @Getter
 @ToString
 public class FindBudgetByRegisterDate {
+	private Long userCategoryId;
 	private String categoryName;
 	private Long amount;
 	private Long expenditure;
 	private Long percent;
 
-	public FindBudgetByRegisterDate(String categoryName, Long amount) {
+	public FindBudgetByRegisterDate(Long userCategoryId, String categoryName, Long amount) {
+		this.userCategoryId = userCategoryId;
 		this.categoryName = categoryName;
 		this.amount = amount;
 	}

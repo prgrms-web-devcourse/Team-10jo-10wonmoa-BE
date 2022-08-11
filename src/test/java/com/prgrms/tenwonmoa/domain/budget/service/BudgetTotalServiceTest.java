@@ -61,15 +61,15 @@ class BudgetTotalServiceTest {
 
 	private static final Long userId = 1L;
 
-	private Map<String, Long> expenditures = Map.of(
-		categories[0], 122860L,
-		categories[1], 46700L,
-		categories[2], 43700L
+	private Map<Long, Long> expenditures = Map.of(
+		1L, 122860L,
+		2L, 46700L,
+		3L, 43700L
 	);
 	private List<FindBudgetByRegisterDate> budgets = List.of(
-		new FindBudgetByRegisterDate(categories[0], 100000L),
-		new FindBudgetByRegisterDate(categories[1], 50000L),
-		new FindBudgetByRegisterDate(categories[2], 50000L)
+		new FindBudgetByRegisterDate(1L, categories[0], 100000L),
+		new FindBudgetByRegisterDate(2L, categories[1], 50000L),
+		new FindBudgetByRegisterDate(3L, categories[2], 50000L)
 	);
 
 	@Test
@@ -163,13 +163,14 @@ class BudgetTotalServiceTest {
 		assertThat(result.getAmount()).isEqualTo(budgetSum);
 		assertThat(result.getExpenditure()).isEqualTo(expenditureSum);
 		assertThat(result.getPercent()).isEqualTo(106L);
-		assertThat(result.getBudgets()).extracting((data) -> data.getCategoryName(),
+		assertThat(result.getBudgets()).extracting((data) -> data.getUserCategoryId(),
+				(data) -> data.getCategoryName(),
 				(data) -> data.getAmount(),
 				(data) -> data.getExpenditure(),
 				(data) -> data.getPercent())
-			.contains(tuple(categories[0], 100000L, 122860L, 122L),
-				tuple(categories[1], 50000L, 46700L, 93L),
-				tuple(categories[2], 50000L, 43700L, 87L));
+			.contains(tuple(1L, categories[0], 100000L, 122860L, 122L),
+				tuple(2L, categories[1], 50000L, 46700L, 93L),
+				tuple(3L, categories[2], 50000L, 43700L, 87L));
 	}
 
 	@Test

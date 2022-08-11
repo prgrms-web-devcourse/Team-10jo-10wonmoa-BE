@@ -54,14 +54,14 @@ public class BudgetTotalService {
 
 	@Transactional(readOnly = true)
 	public FindBudgetWithExpenditureResponse searchBudgetWithExpenditure(Long userId, Integer year, Integer month) {
-		Map<String, Long> expenditures = budgetQueryRepository
+		Map<Long, Long> expenditures = budgetQueryRepository
 			.searchExpendituresExistBudget(userId, year, month);
 		List<FindBudgetByRegisterDate> budgets = budgetQueryRepository
 			.searchBudgetByRegisterDate(userId, year, month);
 		long amountSum = 0L;
 		long expenditureSum = 0L;
 		for (FindBudgetByRegisterDate budget : budgets) {
-			Long expenditureAmount = expenditures.get(budget.getCategoryName());
+			Long expenditureAmount = expenditures.get(budget.getUserCategoryId());
 			budget.setExpenditure(expenditureAmount);
 			budget.setPercent(calcPercent(budget.getAmount(), expenditureAmount));
 			amountSum += budget.getAmount();

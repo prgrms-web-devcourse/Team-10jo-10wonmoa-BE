@@ -41,12 +41,7 @@ public class AccountBookQueryRepository {
 
 	private final JPAQueryFactory queryFactory;
 
-	/**
-	 * 쿼리 개수를 최대 32개에서 고정 4개로 개선
-	 * TODO : queryRepository 사이즈가 너무 커서 조금 나눠야할 필요성을 느끼고 있다...
-	 * 향후 8.10 이후 고려
-	 * Income과 Expenditure에 상관없이 재사용하고싶은 부분이 너무 많은데 어렵다...
-	 * */
+	// 일일 상세내역 pagination version 1
 	public PageCustomImpl<FindDayAccountResponse> findDailyAccount(Long userId, PageCustomRequest pageRequest,
 		LocalDate date) {
 

@@ -3,8 +3,10 @@ package com.prgrms.tenwonmoa.domain.budget.dto;
 import com.prgrms.tenwonmoa.domain.budget.Budget;
 
 import lombok.Getter;
+import lombok.ToString;
 
 @Getter
+@ToString
 public class FindBudgetData {
 	private Long id;
 	private String categoryName;

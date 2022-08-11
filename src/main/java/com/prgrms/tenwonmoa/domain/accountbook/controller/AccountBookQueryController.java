@@ -76,17 +76,14 @@ public class AccountBookQueryController {
 		return ResponseEntity.ok(response);
 	}
 
-	@GetMapping("/calendar/{date}")
+	@GetMapping("/calendar")
 	public ResponseEntity<FindCalendarResponse> findCalendarAccount(
 		@AuthenticationPrincipal Long userId,
-		@PathVariable
-		@DateTimeFormat(pattern = "yyyy-MM-dd")
-			LocalDate date
+		@RequestParam(value = "year") int year,
+		@RequestParam("month") int month
 	) {
-		CalendarCondition condition = new CalendarCondition(date);
-
+		CalendarCondition condition = new CalendarCondition(year, month);
 		FindCalendarResponse response = accountBookQueryService.findCalendarAccount(userId, condition);
-
 		return ResponseEntity.ok(response);
 	}
 

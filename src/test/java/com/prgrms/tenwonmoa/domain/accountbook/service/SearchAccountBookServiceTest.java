@@ -108,4 +108,24 @@ class SearchAccountBookServiceTest {
 		assertThat(sumOfAccountBooks.getIncomeSum()).isEqualTo(20000L);
 		assertThat(sumOfAccountBooks.getTotalSum()).isEqualTo(10000L);
 	}
+
+	@Test
+	void 해당하는_지출_데이터가_존재하지_않을시_합계는_0반환() {
+		SearchAccountBookCmd cmd = SearchAccountBookCmd.of("1,2,3", AMOUNT_MIN, AMOUNT_MAX,
+			LEFT_MOST_REGISTER_DATE, RIGHT_MOST_REGISTER_DATE, "");
+
+		given(expenditureRepository.getSumOfExpenditure(cmd.getMinPrice(), cmd.getMaxPrice(), cmd.getStart(),
+			cmd.getEnd(), cmd.getContent(), cmd.getCategories(), userId)).willReturn(0L);
+
+		given(incomeRepository.getSumOfIncome(cmd.getMinPrice(), cmd.getMaxPrice(), cmd.getStart(),
+			cmd.getEnd(), cmd.getContent(), cmd.getCategories(), userId)).willReturn(20000L);
+
+		FindAccountBookSumResponse sumOfAccountBooks = accountBookService.getSumOfAccountBooks(userId,
+			cmd);
+
+		assertThat(sumOfAccountBooks.getExpenditureSum()).isEqualTo(0);
+		assertThat(sumOfAccountBooks.getIncomeSum()).isEqualTo(20000L);
+		assertThat(sumOfAccountBooks.getTotalSum()).isEqualTo(20000L);
+
+	}
 }

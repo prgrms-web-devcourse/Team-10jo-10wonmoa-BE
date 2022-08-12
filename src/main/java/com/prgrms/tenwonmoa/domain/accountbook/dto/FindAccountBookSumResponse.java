@@ -13,7 +13,9 @@ public class FindAccountBookSumResponse {
 
 	private final Long totalSum;
 
-	public static FindAccountBookSumResponse of(Long incomeSum, Long expenditureSum){
+	public static FindAccountBookSumResponse of(Long incomeSum, Long expenditureSum) {
+		incomeSum = incomeSum == null ? 0 : incomeSum;
+		expenditureSum = expenditureSum == null ? 0 : expenditureSum;
 		return new FindAccountBookSumResponse(incomeSum, expenditureSum, incomeSum - expenditureSum);
 	}
 }

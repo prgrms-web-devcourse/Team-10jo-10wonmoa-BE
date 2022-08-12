@@ -6,6 +6,7 @@ plugins {
     id 'jacoco'
     id "org.asciidoctor.jvm.convert" version "3.3.2"
     id 'com.epages.restdocs-api-spec' version '0.16.0'
+    id "org.flywaydb.flyway" version "8.2.0"
 }
 
 ext {
@@ -209,6 +210,12 @@ openapi3 {
     description = 'Tenwonmoa API description'
     version = '1.0.0'
     format = 'yaml'
+}
+
+flyway {
+    url = "jdbc:mysql://localhost:3306/tenwonmoa-test?serverTimezone=UTC&characterEncoding=UTF-8"
+    user = "root"
+    password = "root1234"
 }
 
 task copyOpenApi(type: Copy) {

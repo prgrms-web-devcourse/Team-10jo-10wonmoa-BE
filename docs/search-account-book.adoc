@@ -3,3 +3,7 @@
 === 지출, 수입 검색
 
 operation::search-account-book/[snippets='http-request,request-parameters,http-response,response-fields']
+
+=== 검색 합계
+
+operation::search-sum-account-book/[snippets='http-request,request-parameters,http-response,response-fields']

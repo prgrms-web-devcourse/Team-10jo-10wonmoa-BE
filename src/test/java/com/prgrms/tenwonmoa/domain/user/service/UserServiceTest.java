@@ -144,12 +144,12 @@ class UserServiceTest {
 		String accessToken = "dfdskjvkcldsax";
 
 		given(userRepository.findById(user.getId())).willReturn(Optional.of(user));
-		doNothing().when(jwtService).generateLogoutAccessToken(any(String.class), any(String.class));
+		doNothing().when(jwtService).saveLogoutAccessToken(any(String.class), any(String.class));
 		doNothing().when(jwtService).deleteRefreshToken(any(String.class));
 
 		userService.logout(user.getId(), accessToken);
 
-		verify(jwtService).generateLogoutAccessToken(user.getEmail(), accessToken);
+		verify(jwtService).saveLogoutAccessToken(user.getEmail(), accessToken);
 		verify(jwtService).deleteRefreshToken(user.getEmail());
 	}
 

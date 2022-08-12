@@ -77,7 +77,7 @@ public class JwtService {
 	}
 
 	@Transactional
-	public void generateLogoutAccessToken(String email, String accessToken) {
+	public void saveLogoutAccessToken(String email, String accessToken) {
 		Long remainMilliSeconds = tokenProvider.getRemainMilliSeconds(accessToken);
 		logoutAccessTokenRedisRepository.save(new LogoutAccessToken(accessToken, email, remainMilliSeconds));
 	}

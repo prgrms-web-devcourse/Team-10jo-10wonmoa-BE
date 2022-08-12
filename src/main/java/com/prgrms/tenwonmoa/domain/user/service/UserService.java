@@ -68,7 +68,7 @@ public class UserService {
 	public void logout(Long userId, String accessToken) {
 		User user = this.findById(userId);
 
-		jwtService.generateLogoutAccessToken(user.getEmail(), accessToken);
+		jwtService.saveLogoutAccessToken(user.getEmail(), accessToken);
 		jwtService.deleteRefreshToken(user.getEmail());
 	}
 

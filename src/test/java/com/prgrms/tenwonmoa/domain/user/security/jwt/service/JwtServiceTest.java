@@ -144,7 +144,7 @@ class JwtServiceTest {
 		given(tokenProvider.getRemainMilliSeconds(any(String.class))).willReturn(remainMilliSecs);
 		given(logoutAccessTokenRedisRepository.save(any())).willReturn(logoutAccessToken);
 
-		jwtService.generateLogoutAccessToken(email, accessTokenValue);
+		jwtService.saveLogoutAccessToken(email, accessTokenValue);
 
 		verify(logoutAccessTokenRedisRepository).save(any(LogoutAccessToken.class));
 	}

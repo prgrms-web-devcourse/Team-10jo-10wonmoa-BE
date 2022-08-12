@@ -63,4 +63,13 @@ public class UserService {
 	public TokenResponse refresh(String accessToken, String refreshToken) {
 		return jwtService.refreshToken(accessToken, refreshToken);
 	}
+
+	@Transactional
+	public void logout(Long userId, String accessToken) {
+		User user = this.findById(userId);
+
+		jwtService.saveLogoutAccessToken(user.getEmail(), accessToken);
+		jwtService.deleteRefreshToken(user.getEmail());
+	}
+
 }

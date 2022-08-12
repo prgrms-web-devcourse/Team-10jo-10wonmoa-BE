@@ -2,10 +2,10 @@ package com.prgrms.tenwonmoa.domain.budget;
 
 import static com.prgrms.tenwonmoa.common.fixture.Fixture.*;
 import static com.prgrms.tenwonmoa.domain.accountbook.AccountBookConst.*;
-import static com.prgrms.tenwonmoa.exception.message.Message.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.text.MessageFormat;
 import java.time.YearMonth;
 
 import org.junit.jupiter.api.Test;
@@ -15,6 +15,9 @@ import com.prgrms.tenwonmoa.domain.category.UserCategory;
 import com.prgrms.tenwonmoa.domain.user.User;
 
 class BudgetTest {
+	private static final int BUDGET_AMOUNT_MIN = 0;
+	private static final String INVALID_BUDGET_AMOUNT_ERR_MSG = MessageFormat.format("입력 가능 범위는 {0}~{1}입니다.",
+		BUDGET_AMOUNT_MIN, AMOUNT_MAX);
 	private User user = createUser();
 	private Category category = createExpenditureCategory();
 	private UserCategory userCategory = createUserCategory(user, category);
@@ -32,14 +35,14 @@ class BudgetTest {
 	@Test
 	void 예산금액은_최대크기를_넘을수없다() {
 		assertThatThrownBy(() -> new Budget(AMOUNT_MAX + 1, now, user, userCategory)).isInstanceOf(
-			IllegalArgumentException.class).hasMessageContaining(INVALID_AMOUNT_ERR_MSG.getMessage());
+			IllegalArgumentException.class).hasMessageContaining(INVALID_BUDGET_AMOUNT_ERR_MSG);
 	}
 
 	@Test
-	void 예산금액금은_0원이하_등록할수없다() {
-		assertThatThrownBy(() -> new Budget(0L, now, user, userCategory))
+	void 예산금액금은_음수를_등록할수없다() {
+		assertThatThrownBy(() -> new Budget(-1L, now, user, userCategory))
 			.isInstanceOf(IllegalArgumentException.class)
-			.hasMessageContaining(INVALID_AMOUNT_ERR_MSG.getMessage());
+			.hasMessageContaining(INVALID_BUDGET_AMOUNT_ERR_MSG);
 	}
 
 	@Test

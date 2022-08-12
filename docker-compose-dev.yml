@@ -7,3 +7,16 @@ services:
       - 8082:8080
     environment:
       API_URL: http://3.39.184.232:8080/docs/openapi3.yaml
+
+  team10-redis:
+    image: redis:alpine
+    command: redis-server --port 6379
+    container_name: tenwonmoa-redis
+    hostname: tenwonmoa-redis
+    labels:
+      - "name=redis"
+      - "mode=standalone"
+    ports:
+      - "6379:6379"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"

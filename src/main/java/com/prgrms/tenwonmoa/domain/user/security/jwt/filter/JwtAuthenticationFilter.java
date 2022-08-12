@@ -18,6 +18,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.auth0.jwt.exceptions.TokenExpiredException;
+import com.prgrms.tenwonmoa.domain.user.security.jwt.JwtConst;
 import com.prgrms.tenwonmoa.domain.user.security.jwt.repository.LogoutAccessTokenRedisRepository;
 import com.prgrms.tenwonmoa.domain.user.security.jwt.service.TokenProvider;
 import com.prgrms.tenwonmoa.exception.UnauthorizedUserException;
@@ -30,7 +31,6 @@ import lombok.extern.slf4j.Slf4j;
 @Component
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
-	private static final String BEARER_PREFIX = "Bearer ";
 	private static final String ATTRIBUTE_EXCEPTION = "exception";
 	private final TokenProvider tokenProvider;
 	private final LogoutAccessTokenRedisRepository logoutAccessTokenRedisRepository;
@@ -73,6 +73,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 			} catch (UnauthorizedUserException ue) {
 				request.setAttribute(ATTRIBUTE_EXCEPTION, Message.LOGOUT_USER.getMessage());
 			} catch (Exception e) {
+				log.error("토큰 실패 {}", e.getMessage());
 				request.setAttribute(ATTRIBUTE_EXCEPTION, Message.INVALID_TOKEN.getMessage());
 			}
 		}
@@ -90,8 +91,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 		// Http 요청의 헤더를 파싱해 Bearer 토큰 리턴
 		String bearerToken = request.getHeader(HttpHeaders.AUTHORIZATION);
 
-		if (StringUtils.hasText(bearerToken) && bearerToken.startsWith(BEARER_PREFIX)) {
-			return bearerToken.substring(BEARER_PREFIX.length());
+		if (StringUtils.hasText(bearerToken) && bearerToken.startsWith(JwtConst.BEARER_PREFIX)) {
+			return bearerToken.substring(JwtConst.BEARER_PREFIX.length());
 		}
 		return null;
 	}

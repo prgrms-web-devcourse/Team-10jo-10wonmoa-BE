@@ -17,6 +17,7 @@ import com.prgrms.tenwonmoa.domain.user.dto.FindUserResponse;
 import com.prgrms.tenwonmoa.domain.user.dto.LoginUserRequest;
 import com.prgrms.tenwonmoa.domain.user.dto.RefreshTokenRequest;
 import com.prgrms.tenwonmoa.domain.user.dto.TokenResponse;
+import com.prgrms.tenwonmoa.domain.user.security.jwt.JwtConst;
 import com.prgrms.tenwonmoa.domain.user.service.UserService;
 
 import lombok.RequiredArgsConstructor;
@@ -55,7 +56,7 @@ public class UserController {
 	@PostMapping("/logout")
 	public ResponseEntity<Void> logout(@AuthenticationPrincipal Long userId,
 		@RequestHeader("Authorization") String accessToken) {
-		userService.logout(userId, accessToken.substring(7));
+		userService.logout(userId, accessToken.substring(JwtConst.BEARER_PREFIX.length()));
 		return ResponseEntity.ok().build();
 	}
 

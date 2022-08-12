@@ -5,7 +5,6 @@ import static com.prgrms.tenwonmoa.domain.accountbook.AccountBookConst.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -18,7 +17,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.prgrms.tenwonmoa.domain.accountbook.dto.AccountBookItem;
 import com.prgrms.tenwonmoa.domain.accountbook.dto.FindAccountBookResponse;
+import com.prgrms.tenwonmoa.domain.accountbook.dto.FindAccountBookSumResponse;
 import com.prgrms.tenwonmoa.domain.accountbook.dto.service.SearchAccountBookCmd;
+import com.prgrms.tenwonmoa.domain.accountbook.repository.ExpenditureRepository;
+import com.prgrms.tenwonmoa.domain.accountbook.repository.IncomeRepository;
 import com.prgrms.tenwonmoa.domain.accountbook.repository.SearchAccountBookRepository;
 import com.prgrms.tenwonmoa.domain.category.Category;
 import com.prgrms.tenwonmoa.domain.category.CategoryType;
@@ -32,6 +34,12 @@ class SearchAccountBookServiceTest {
 
 	@Mock
 	private SearchAccountBookRepository accountBookRepository;
+
+	@Mock
+	private ExpenditureRepository expenditureRepository;
+
+	@Mock
+	private IncomeRepository incomeRepository;
 
 	@InjectMocks
 	private SearchAccountBookService accountBookService;
@@ -83,30 +91,21 @@ class SearchAccountBookServiceTest {
 	}
 
 	@Test
-	void 금액_최소값이_최대값보다_크면_검색_실패() {
-		Long minPrice = AMOUNT_MAX;
-		Long maxPrice = AMOUNT_MIN;
-
-		SearchAccountBookCmd cmd = SearchAccountBookCmd.of("1,2,3", minPrice, maxPrice,
-			LEFT_MOST_REGISTER_DATE, RIGHT_MOST_REGISTER_DATE, "");
-		PageCustomRequest pageRequest = new PageCustomRequest(1, 3);
-
-		assertThatIllegalArgumentException().isThrownBy(
-			() -> accountBookService.searchAccountBooks(userId, cmd, pageRequest)
-		);
-	}
-
-	@Test
-	void 시작일이_종료일보다_뒤이면_검색_실패() {
-		LocalDate start = RIGHT_MOST_REGISTER_DATE;
-		LocalDate end = LEFT_MOST_REGISTER_DATE;
-
+	void 가계부_검색후_합계_조회_성공() {
 		SearchAccountBookCmd cmd = SearchAccountBookCmd.of("1,2,3", AMOUNT_MIN, AMOUNT_MAX,
-			start, end, "");
-		PageCustomRequest pageRequest = new PageCustomRequest(1, 3);
+			LEFT_MOST_REGISTER_DATE, RIGHT_MOST_REGISTER_DATE, "");
 
-		assertThatIllegalArgumentException().isThrownBy(
-			() -> accountBookService.searchAccountBooks(userId, cmd, pageRequest)
-		);
+		given(expenditureRepository.getSumOfExpenditure(cmd.getMinPrice(), cmd.getMaxPrice(), cmd.getStart(),
+			cmd.getEnd(), cmd.getContent(), cmd.getCategories(), userId)).willReturn(10000L);
+
+		given(incomeRepository.getSumOfIncome(cmd.getMinPrice(), cmd.getMaxPrice(), cmd.getStart(),
+			cmd.getEnd(), cmd.getContent(), cmd.getCategories(), userId)).willReturn(20000L);
+
+		FindAccountBookSumResponse sumOfAccountBooks = accountBookService.getSumOfAccountBooks(userId,
+			cmd);
+
+		assertThat(sumOfAccountBooks.getExpenditureSum()).isEqualTo(10000L);
+		assertThat(sumOfAccountBooks.getIncomeSum()).isEqualTo(20000L);
+		assertThat(sumOfAccountBooks.getTotalSum()).isEqualTo(10000L);
 	}
 }

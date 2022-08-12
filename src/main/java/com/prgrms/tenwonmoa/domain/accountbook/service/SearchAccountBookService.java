@@ -1,7 +1,5 @@
 package com.prgrms.tenwonmoa.domain.accountbook.service;
 
-import static com.google.common.base.Preconditions.*;
-
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -9,7 +7,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.prgrms.tenwonmoa.domain.accountbook.dto.AccountBookItem;
 import com.prgrms.tenwonmoa.domain.accountbook.dto.FindAccountBookResponse;
+import com.prgrms.tenwonmoa.domain.accountbook.dto.FindAccountBookSumResponse;
 import com.prgrms.tenwonmoa.domain.accountbook.dto.service.SearchAccountBookCmd;
+import com.prgrms.tenwonmoa.domain.accountbook.repository.ExpenditureRepository;
+import com.prgrms.tenwonmoa.domain.accountbook.repository.IncomeRepository;
 import com.prgrms.tenwonmoa.domain.accountbook.repository.SearchAccountBookRepository;
 import com.prgrms.tenwonmoa.domain.common.page.PageCustomRequest;
 
@@ -22,16 +23,27 @@ public class SearchAccountBookService {
 
 	private final SearchAccountBookRepository repository;
 
+	private final ExpenditureRepository expenditureRepository;
+
+	private final IncomeRepository incomeRepository;
+
 	public FindAccountBookResponse searchAccountBooks(Long authenticatedId, SearchAccountBookCmd cmd,
 		PageCustomRequest pageRequest) {
-
-		checkArgument(cmd.getMinPrice() <= cmd.getMaxPrice(), "최소값은 최대값 보다 작아야 합니다");
-		checkArgument(cmd.getStart().compareTo(cmd.getEnd()) <= 0, "시작일은 종료일 전이여야 합니다");
 
 		List<AccountBookItem> accountBookItems = repository.searchAccountBook(cmd.getMinPrice(), cmd.getMaxPrice(),
 			cmd.getStart(), cmd.getEnd(), cmd.getContent(), cmd.getCategories(), authenticatedId, pageRequest);
 
 		return FindAccountBookResponse.of(pageRequest, accountBookItems);
+	}
+
+	public FindAccountBookSumResponse getSumOfAccountBooks(Long authenticatedId, SearchAccountBookCmd cmd) {
+		Long expenditureSum = expenditureRepository.getSumOfExpenditure(cmd.getMinPrice(), cmd.getMaxPrice(),
+			cmd.getStart(), cmd.getEnd(), cmd.getContent(), cmd.getCategories(), authenticatedId);
+
+		Long incomeSum = incomeRepository.getSumOfIncome(cmd.getMinPrice(), cmd.getMaxPrice(),
+			cmd.getStart(), cmd.getEnd(), cmd.getContent(), cmd.getCategories(), authenticatedId);
+
+		return FindAccountBookSumResponse.of(incomeSum, expenditureSum);
 	}
 
 }

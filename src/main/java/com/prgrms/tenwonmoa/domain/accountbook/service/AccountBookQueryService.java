@@ -5,15 +5,16 @@ import java.time.LocalDate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.prgrms.tenwonmoa.domain.accountbook.dto.CalendarCondition;
 import com.prgrms.tenwonmoa.domain.accountbook.dto.FindCalendarResponse;
 import com.prgrms.tenwonmoa.domain.accountbook.dto.FindDayAccountResponse;
 import com.prgrms.tenwonmoa.domain.accountbook.dto.FindMonthAccountResponse;
 import com.prgrms.tenwonmoa.domain.accountbook.dto.FindSumResponse;
 import com.prgrms.tenwonmoa.domain.accountbook.dto.MonthCondition;
+import com.prgrms.tenwonmoa.domain.accountbook.dto.YearMonthCondition;
 import com.prgrms.tenwonmoa.domain.accountbook.repository.AccountBookQueryRepository;
 import com.prgrms.tenwonmoa.domain.common.page.PageCustomImpl;
 import com.prgrms.tenwonmoa.domain.common.page.PageCustomRequest;
+import com.prgrms.tenwonmoa.domain.common.page.PageResponse;
 
 import lombok.RequiredArgsConstructor;
 
@@ -41,7 +42,13 @@ public class AccountBookQueryService {
 		return accountBookQueryRepository.findMonthAccount(userId, condition);
 	}
 
-	public FindCalendarResponse findCalendarAccount(Long userId, CalendarCondition condition) {
+	public PageResponse<FindDayAccountResponse> findDailyAccountVer2(Long userId,
+		PageCustomRequest pageRequest,
+		YearMonthCondition condition) {
+		return accountBookQueryRepository.findDailyAccountVer2(userId, pageRequest, condition);
+	}
+
+	public FindCalendarResponse findCalendarAccount(Long userId, YearMonthCondition condition) {
 		return accountBookQueryRepository.findCalendarAccount(userId, condition);
 	}
 }

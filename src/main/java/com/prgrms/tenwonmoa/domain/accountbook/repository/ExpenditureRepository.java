@@ -17,4 +17,9 @@ public interface ExpenditureRepository extends JpaRepository<Expenditure, Long> 
 	@Query("update Expenditure e set e.categoryName = :categoryName "
 		+ "where e.userCategory.id = :userCategoryId")
 	void updateCategoryName(Long userCategoryId, String categoryName);
+
+	@Modifying
+	@Query("delete from Expenditure e where e.user.id = :userId")
+	void deleteAllByUserIdInQuery(Long userId);
+
 }

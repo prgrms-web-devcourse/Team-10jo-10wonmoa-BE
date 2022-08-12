@@ -3,6 +3,7 @@ package com.prgrms.tenwonmoa.domain.category.repository;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
@@ -19,4 +20,8 @@ public interface UserCategoryRepository extends JpaRepository<UserCategory, Long
 	List<UserCategory> findByUserIdAndCategoryType(Long userId, CategoryType categoryType);
 
 	List<UserCategory> findByUserId(Long userId);
+
+	@Modifying
+	@Query("delete from UserCategory uc where uc.user.id = :userId")
+	void deleteAllByUserIdInQuery(Long userId);
 }

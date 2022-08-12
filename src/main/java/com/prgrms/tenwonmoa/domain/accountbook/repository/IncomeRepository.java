@@ -20,4 +20,8 @@ public interface IncomeRepository extends JpaRepository<Income, Long> {
 	@Query("update Income i set i.categoryName = :categoryName "
 		+ "where i.userCategory.id = :userCategoryId")
 	void updateCategoryName(Long userCategoryId, String categoryName);
+
+	@Modifying
+	@Query("delete from Income i where i.user.id = :userId")
+	void deleteAllByUserIdInQuery(Long userId);
 }

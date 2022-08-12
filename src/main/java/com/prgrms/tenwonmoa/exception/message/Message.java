@@ -10,10 +10,11 @@ import lombok.Getter;
 public enum Message {
 
 	WRONG_DATE_TIME_FORMAT("잘못된 날짜 양식으로 요청하였습니다"),
-
-	NO_AUTHENTICATION("권한이 없습니다."),
+	// 공통
+	INTERNAL_SERVER_ERROR("예상치 못한 예외가 발생했습니다. 지속적인 예외 발생 시 시스템 관리자에게 문의해주세요"),
 
 	// 사용자
+	NO_AUTHENTICATION("다른 사용자의 데이터에 접근할 수 없습니다."),
 	USER_NOT_FOUND("해당 사용자는 존재하지 않습니다."),
 
 	// 카테고리
@@ -27,6 +28,10 @@ public enum Message {
 	NOT_NULL_AMOUNT("금액은 필수입니다."),
 	EXPENDITURE_NOT_FOUND("해당 지출이 존재 하지 않습니다."),
 	EXPENDITURE_NO_AUTHENTICATION("지출에 대한 접근권한이 없습니다."),
+
+	INVALID_MIN_MAX_VALUE("최소값은 최대값 보다 작아야 합니다"),
+
+	INVALID_START_END_DATE("시작일은 종료일 전이여야 합니다"),
 
 	// 수입
 	INVALID_CONTENT_ERR_MSG(MessageFormat.format("내용은 {0}글자 까지만 가능합니다.", CONTENT_MAX)),

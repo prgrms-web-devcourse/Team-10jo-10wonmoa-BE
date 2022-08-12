@@ -17,6 +17,12 @@ import com.prgrms.tenwonmoa.domain.user.User;
 
 public class RepositoryFixture extends RepositoryTest {
 
+	protected final LocalDateTime defaultTime = LocalDateTime.now();
+
+	protected final Long defaultAmount = 1000L;
+
+	protected final String defaultContent = "냉무";
+
 	public User saveRandomUser() {
 		return save(createRandomUser());
 	}
@@ -48,6 +54,20 @@ public class RepositoryFixture extends RepositoryTest {
 		return save(
 			new Expenditure(registerDate, amount, "content", userCategory.getCategoryName(), userCategory.getUser(),
 				userCategory));
+	}
+
+	public void saveExpenditure(LocalDateTime registerDate, Long amount, String content, String categoryName,
+		User user, UserCategory userCategory) {
+		save(new Expenditure(
+			registerDate, amount, content,
+			categoryName, user, userCategory));
+	}
+
+	public void saveIncome(LocalDateTime registerDate, Long amount, String content, String categoryName, User user,
+		UserCategory userCategory) {
+		save(new Income(
+			registerDate, amount, content,
+			categoryName, user, userCategory));
 	}
 
 	public Budget saveBudget(Long amount, YearMonth registerDate, User user, UserCategory userCategory) {

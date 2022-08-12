@@ -65,12 +65,12 @@ class SearchAccountBookDocsTest {
 	@WithMockCustomUser
 	void 지출_수입_검색() throws Exception {
 		PageCustomRequest pageRequest = new PageCustomRequest(1, 1);
-		FindAccountBookResponse<AccountBookItem> response = of(
+		FindAccountBookResponse response = of(
 			pageRequest,
 			List.of(
 				new AccountBookItem(1L, CategoryType.EXPENDITURE.name(), 10000L, "점심", "식비", LocalDateTime.now()),
-				new AccountBookItem(1L, CategoryType.INCOME.name(), 50000L, "용돈", "용돈", LocalDateTime.now())),
-			50000L, 10000L);
+				new AccountBookItem(1L, CategoryType.INCOME.name(), 50000L, "용돈", "용돈", LocalDateTime.now()))
+		);
 
 		given(accountBookService.searchAccountBooks(anyLong(), any(SearchAccountBookCmd.class), any(
 			PageCustomRequest.class))).willReturn(response);
@@ -100,9 +100,6 @@ class SearchAccountBookDocsTest {
 						parameterWithName("page").description("페이지 번호").optional()
 					),
 					responseFields(
-						fieldWithPath("incomeSum").type(JsonFieldType.NUMBER).description("수입의 총합"),
-						fieldWithPath("expenditureSum").type(JsonFieldType.NUMBER).description("지출의 총합"),
-						fieldWithPath("totalSum").type(JsonFieldType.NUMBER).description("수입,지출 포함 총합"),
 						fieldWithPath("currentPage").type(JsonFieldType.NUMBER).description("현재 페이지"),
 						fieldWithPath("nextPage").type(JsonFieldType.NUMBER).description("다음 페이지"),
 						fieldWithPath("results[]").type(JsonFieldType.ARRAY).description("검색된 지출, 수입 데이터"),

@@ -23,7 +23,7 @@ import com.prgrms.tenwonmoa.domain.category.repository.UserCategoryRepository;
 import com.prgrms.tenwonmoa.domain.user.repository.UserRepository;
 
 @DisplayName("검색 컨트롤러 통합 테스트")
-class SearchAccountBookIntegrationTest extends BaseControllerIntegrationTest {
+class  SearchAccountBookIntegrationTest extends BaseControllerIntegrationTest {
 
 	@Autowired
 	private ExpenditureRepository expenditureRepository;
@@ -76,9 +76,6 @@ class SearchAccountBookIntegrationTest extends BaseControllerIntegrationTest {
 				.param("content", "")
 				.param("size", "3")
 				.param("page", "1"))
-			.andExpect(jsonPath("$.incomeSum").value(0L))
-			.andExpect(jsonPath("$.expenditureSum").value(5000L))
-			.andExpect(jsonPath("$.totalSum").value(-5000L))
 			.andExpect(jsonPath("$.currentPage").value(1))
 			.andExpect(jsonPath("$.nextPage").isEmpty())
 			.andExpect(jsonPath("$.results", hasSize(1)));
@@ -106,9 +103,6 @@ class SearchAccountBookIntegrationTest extends BaseControllerIntegrationTest {
 				.param("content", "")
 				.param("size", "3")
 				.param("page", "1"))
-			.andExpect(jsonPath("$.incomeSum").value(10000L))
-			.andExpect(jsonPath("$.expenditureSum").value(5000L))
-			.andExpect(jsonPath("$.totalSum").value(5000L))
 			.andExpect(jsonPath("$.currentPage").value(1))
 			.andExpect(jsonPath("$.nextPage").isEmpty())
 			.andExpect(jsonPath("$.results", hasSize(2)));
@@ -126,9 +120,6 @@ class SearchAccountBookIntegrationTest extends BaseControllerIntegrationTest {
 		//then
 		mvc.perform(get("/api/v1/account-book/search")
 				.header(HttpHeaders.AUTHORIZATION, accessToken))
-			.andExpect(jsonPath("$.incomeSum").value(10000L))
-			.andExpect(jsonPath("$.expenditureSum").value(5000L))
-			.andExpect(jsonPath("$.totalSum").value(5000L))
 			.andExpect(jsonPath("$.currentPage").value(1))
 			.andExpect(jsonPath("$.nextPage").isEmpty())
 			.andExpect(jsonPath("$.results", hasSize(2)));
@@ -146,9 +137,6 @@ class SearchAccountBookIntegrationTest extends BaseControllerIntegrationTest {
 		//then
 		mvc.perform(get("/api/v1/account-book/search")
 				.header(HttpHeaders.AUTHORIZATION, accessToken))
-			.andExpect(jsonPath("$.incomeSum").value(10000L))
-			.andExpect(jsonPath("$.expenditureSum").value(5000L))
-			.andExpect(jsonPath("$.totalSum").value(5000L))
 			.andExpect(jsonPath("$.currentPage").value(1))
 			.andExpect(jsonPath("$.nextPage").isEmpty())
 			.andExpect(jsonPath("$.results", hasSize(2)));
@@ -159,8 +147,8 @@ class SearchAccountBookIntegrationTest extends BaseControllerIntegrationTest {
 	void 금액의_범위를_벗어나는_값_전송시_조회_실패() throws Exception {
 		validateRequest("minprice", "-1");
 		validateRequest("maxprice", "-1");
-		validateRequest("minprice", "1_000_000_000_001");
-		validateRequest("maxprice", "1_000_000_000_001");
+		validateRequest("minprice", "1000000000001");
+		validateRequest("maxprice", "1000000000001");
 	}
 
 	private void validateRequest(String field, String value) throws Exception {

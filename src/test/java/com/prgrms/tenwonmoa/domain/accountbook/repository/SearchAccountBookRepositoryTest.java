@@ -6,6 +6,7 @@ import static org.assertj.core.api.Assertions.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -75,11 +76,13 @@ class SearchAccountBookRepositoryTest extends RepositoryFixture {
 
 		//when
 		List<AccountBookItem> items = repository.searchAccountBook(
-			1000L, 50000L, LEFT_MOST_REGISTER_DATE, RIGHT_MOST_REGISTER_DATE,
+			1000L, 50000L, LEFT_MOST_REGISTER_DATE.atTime(LocalTime.MIN),
+			RIGHT_MOST_REGISTER_DATE.atTime(LocalTime.MAX),
 			defaultContent, allUserCategoryIds, user.getId(), new PageCustomRequest(1, 10));
 
 		List<AccountBookItem> items2 = repository.searchAccountBook(
-			50000L, 100000L, LEFT_MOST_REGISTER_DATE, RIGHT_MOST_REGISTER_DATE,
+			50000L, 100000L, LEFT_MOST_REGISTER_DATE.atTime(LocalTime.MIN),
+			RIGHT_MOST_REGISTER_DATE.atTime(LocalTime.MAX),
 			defaultContent, allUserCategoryIds, user.getId(), new PageCustomRequest(1, 10));
 
 		//then
@@ -110,8 +113,8 @@ class SearchAccountBookRepositoryTest extends RepositoryFixture {
 
 		//when
 		List<AccountBookItem> items = repository.searchAccountBook(
-			AMOUNT_MIN, AMOUNT_MAX, LEFT_MOST_REGISTER_DATE,
-			RIGHT_MOST_REGISTER_DATE, "영화", allUserCategoryIds, user.getId(),
+			AMOUNT_MIN, AMOUNT_MAX, LEFT_MOST_REGISTER_DATE.atTime(LocalTime.MIN),
+			RIGHT_MOST_REGISTER_DATE.atTime(LocalTime.MAX), "영화", allUserCategoryIds, user.getId(),
 			new PageCustomRequest(1, 10));
 
 		//then
@@ -138,14 +141,14 @@ class SearchAccountBookRepositoryTest extends RepositoryFixture {
 
 		//when
 		List<AccountBookItem> items = repository.searchAccountBook(
-			AMOUNT_MIN, AMOUNT_MAX, LocalDate.now().minusDays(6),
-			LocalDate.now(), defaultContent, allUserCategoryIds, user.getId(),
+			AMOUNT_MIN, AMOUNT_MAX, LocalDate.now().minusDays(6).atTime(LocalTime.MIN),
+			LocalDate.now().atTime(LocalTime.MAX), defaultContent, allUserCategoryIds, user.getId(),
 			new PageCustomRequest(1, 10));
 
 		List<AccountBookItem> items2 = repository.searchAccountBook(
-			AMOUNT_MIN, AMOUNT_MAX, LocalDate.now().minusDays(10),
-			LocalDate.now().minusDays(4), defaultContent, allUserCategoryIds, user.getId(),
-			new PageCustomRequest(1, 10));
+			AMOUNT_MIN, AMOUNT_MAX, LocalDate.now().minusDays(10).atTime(LocalTime.MIN),
+			LocalDate.now().minusDays(4).atTime(LocalTime.MAX), defaultContent,
+			allUserCategoryIds, user.getId(), new PageCustomRequest(1, 10));
 
 		//then
 		assertThat(items).extracting(AccountBookItem::getRegisterTime)
@@ -179,18 +182,21 @@ class SearchAccountBookRepositoryTest extends RepositoryFixture {
 
 		//when
 		List<AccountBookItem> expenditureUserCategoryItems = repository.searchAccountBook(
-			AMOUNT_MIN, AMOUNT_MAX, LEFT_MOST_REGISTER_DATE,
-			RIGHT_MOST_REGISTER_DATE, defaultContent, List.of(expenditureUserCategory.getId()), user.getId(),
+			AMOUNT_MIN, AMOUNT_MAX, LEFT_MOST_REGISTER_DATE.atTime(LocalTime.MIN),
+			RIGHT_MOST_REGISTER_DATE.atTime(LocalTime.MAX), defaultContent, List.of(expenditureUserCategory.getId()),
+			user.getId(),
 			new PageCustomRequest(1, 10));
 
 		List<AccountBookItem> expenditureUserCategory2Items = repository.searchAccountBook(
-			AMOUNT_MIN, AMOUNT_MAX, LEFT_MOST_REGISTER_DATE,
-			RIGHT_MOST_REGISTER_DATE, defaultContent, List.of(expenditureUserCategory2.getId()), user.getId(),
+			AMOUNT_MIN, AMOUNT_MAX, LEFT_MOST_REGISTER_DATE.atTime(LocalTime.MIN),
+			RIGHT_MOST_REGISTER_DATE.atTime(LocalTime.MAX), defaultContent, List.of(expenditureUserCategory2.getId()),
+			user.getId(),
 			new PageCustomRequest(1, 10));
 
 		List<AccountBookItem> incomeUserCategoryItems = repository.searchAccountBook(
-			AMOUNT_MIN, AMOUNT_MAX, LEFT_MOST_REGISTER_DATE,
-			RIGHT_MOST_REGISTER_DATE, defaultContent, List.of(incomeUserCategory.getId()), user.getId(),
+			AMOUNT_MIN, AMOUNT_MAX, LEFT_MOST_REGISTER_DATE.atTime(LocalTime.MIN),
+			RIGHT_MOST_REGISTER_DATE.atTime(LocalTime.MAX), defaultContent, List.of(incomeUserCategory.getId()),
+			user.getId(),
 			new PageCustomRequest(1, 10));
 
 		//then
@@ -228,13 +234,13 @@ class SearchAccountBookRepositoryTest extends RepositoryFixture {
 
 		//when
 		List<AccountBookItem> userItems = repository.searchAccountBook(
-			AMOUNT_MIN, AMOUNT_MAX, LEFT_MOST_REGISTER_DATE,
-			RIGHT_MOST_REGISTER_DATE, defaultContent, allUserCategoryIds, user.getId(),
+			AMOUNT_MIN, AMOUNT_MAX, LEFT_MOST_REGISTER_DATE.atTime(LocalTime.MIN),
+			RIGHT_MOST_REGISTER_DATE.atTime(LocalTime.MAX), defaultContent, allUserCategoryIds, user.getId(),
 			new PageCustomRequest(1, 10));
 
 		List<AccountBookItem> otherUserItems = repository.searchAccountBook(
-			AMOUNT_MIN, AMOUNT_MAX, LEFT_MOST_REGISTER_DATE,
-			RIGHT_MOST_REGISTER_DATE, defaultContent, allUserCategoryIds, otherUser.getId(),
+			AMOUNT_MIN, AMOUNT_MAX, LEFT_MOST_REGISTER_DATE.atTime(LocalTime.MIN),
+			RIGHT_MOST_REGISTER_DATE.atTime(LocalTime.MAX), defaultContent, allUserCategoryIds, otherUser.getId(),
 			new PageCustomRequest(1, 10));
 
 		//then
@@ -259,8 +265,8 @@ class SearchAccountBookRepositoryTest extends RepositoryFixture {
 
 		//when
 		List<AccountBookItem> items = repository.searchAccountBook(
-			AMOUNT_MIN, AMOUNT_MAX, LEFT_MOST_REGISTER_DATE,
-			RIGHT_MOST_REGISTER_DATE, "", allUserCategoryIds, user.getId(),
+			AMOUNT_MIN, AMOUNT_MAX, LEFT_MOST_REGISTER_DATE.atTime(LocalTime.MIN),
+			RIGHT_MOST_REGISTER_DATE.atTime(LocalTime.MAX), "", allUserCategoryIds, user.getId(),
 			new PageCustomRequest(1, 10));
 
 		//then

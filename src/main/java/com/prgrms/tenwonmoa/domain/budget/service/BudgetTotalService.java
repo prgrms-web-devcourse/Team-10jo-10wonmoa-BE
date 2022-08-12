@@ -1,7 +1,5 @@
 package com.prgrms.tenwonmoa.domain.budget.service;
 
-import static com.google.common.base.Preconditions.*;
-
 import java.time.YearMonth;
 import java.util.List;
 import java.util.Map;
@@ -89,7 +87,9 @@ public class BudgetTotalService {
 
 	private Long calcPercent(Long amount, Long expenditure) {
 		Long percent = 0L;
-		checkArgument(amount > AMOUNT_MIN, INVALID_AMOUNT_EXP_MSG);
+		if (amount <= AMOUNT_MIN) {
+			return expenditure;
+		}
 		if (expenditure > AMOUNT_MIN) {
 			double doubleData = ((double)expenditure / amount) * PERCENTAGE;
 			percent = (long)Math.floor(doubleData);

@@ -24,3 +24,21 @@ include::{snippets}/budget-findBy-registerDate/http-request.adoc[]
 include::{snippets}/budget-findBy-registerDate/http-response.adoc[]
 Response Fields
 include::{snippets}/budget-findBy-registerDate/response-fields.adoc[]
+
+=== 예산 통계 조회 - 월 별
+
+.Request
+include::{snippets}/budget_statistics-month/http-request.adoc[]
+.Response
+include::{snippets}/budget_statistics-month/http-response.adoc[]
+Response Fields
+include::{snippets}/budget_statistics-month/response-fields.adoc[]
+
+=== 예산 통계 조회 - 연 별
+
+.Request
+include::{snippets}/budget_statistics-year/http-request.adoc[]
+.Response
+include::{snippets}/budget_statistics-year/http-response.adoc[]
+Response Fields
+include::{snippets}/budget_statistics-year/response-fields.adoc[]

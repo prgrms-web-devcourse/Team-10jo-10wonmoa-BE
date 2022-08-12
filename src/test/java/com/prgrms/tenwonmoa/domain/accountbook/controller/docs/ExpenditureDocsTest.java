@@ -317,7 +317,7 @@ public class ExpenditureDocsTest {
 				.willThrow(new NoSuchElementException(EXPENDITURE_NOT_FOUND.getMessage()));
 
 			mockMvc.perform(get(BASE_URL + "/{expenditureId}", expenditureId))
-				.andExpect(status().isBadRequest())
+				.andExpect(status().isNotFound())
 				.andDo(document("expenditure-get-forbidden",
 					responseFields(
 						ErrorResponseDoc.fieldDescriptors()

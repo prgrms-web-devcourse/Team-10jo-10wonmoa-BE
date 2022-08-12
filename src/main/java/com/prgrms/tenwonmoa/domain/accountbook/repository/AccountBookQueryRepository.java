@@ -231,7 +231,7 @@ public class AccountBookQueryRepository {
 		for (int day = 1; day <= lastDay; day++) {
 			Long incomeSum = getAmountZeroIfNull(incomeDateMap.get(day));
 			Long expenditureSum = getAmountZeroIfNull(expenditureDateMap.get(day));
-			results.add(new DateDetail(day, incomeSum, expenditureSum));
+			results.add(new DateDetail(LocalDate.of(year, month, day), incomeSum, expenditureSum));
 		}
 
 		return new FindCalendarResponse(month, results);

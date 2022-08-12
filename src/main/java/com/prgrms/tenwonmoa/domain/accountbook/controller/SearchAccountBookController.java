@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.prgrms.tenwonmoa.domain.accountbook.dto.FindAccountBookResponse;
+import com.prgrms.tenwonmoa.domain.accountbook.dto.FindAccountBookSumResponse;
 import com.prgrms.tenwonmoa.domain.accountbook.dto.service.SearchAccountBookCmd;
 import com.prgrms.tenwonmoa.domain.accountbook.service.SearchAccountBookService;
 import com.prgrms.tenwonmoa.domain.category.service.FindUserCategoryService;
@@ -56,6 +57,25 @@ public class SearchAccountBookController {
 			SearchAccountBookCmd.of(categories, minPrice, maxPrice, start, end, content), pageRequest);
 
 		return ResponseEntity.ok(response);
+	}
+
+	@GetMapping("/search/sum")
+	public ResponseEntity<FindAccountBookSumResponse> getSumOfSearchResult(
+		@AuthenticationPrincipal Long userId,
+		@RequestParam(defaultValue = "") String categories,
+		@RequestParam(defaultValue = "") String content,
+		@RequestParam(required = false, name = "minprice") @Min(0L) @Max(1_000_000_000_000L) Long minPrice,
+		@RequestParam(required = false, name = "maxprice") @Min(0L) @Max(1_000_000_000_000L) Long maxPrice,
+		@RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate start,
+		@RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate end
+	) {
+
+		categories = categories.isEmpty() ? getAllCategories(userId) : categories;
+
+		FindAccountBookSumResponse sumResponse = accountBookService.getSumOfAccountBooks(userId,
+			SearchAccountBookCmd.of(categories, minPrice, maxPrice, start, end, content));
+
+		return ResponseEntity.ok(sumResponse);
 	}
 
 	private String getAllCategories(Long userId) {

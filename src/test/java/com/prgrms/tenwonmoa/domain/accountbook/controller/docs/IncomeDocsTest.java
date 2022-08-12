@@ -38,7 +38,6 @@ import com.prgrms.tenwonmoa.domain.accountbook.dto.income.FindIncomeResponse;
 import com.prgrms.tenwonmoa.domain.accountbook.dto.income.UpdateIncomeRequest;
 import com.prgrms.tenwonmoa.domain.accountbook.service.IncomeService;
 import com.prgrms.tenwonmoa.domain.accountbook.service.IncomeTotalService;
-import com.prgrms.tenwonmoa.domain.user.controller.UserController;
 import com.prgrms.tenwonmoa.domain.user.security.jwt.filter.JwtAuthenticationFilter;
 import com.prgrms.tenwonmoa.domain.user.service.UserService;
 import com.prgrms.tenwonmoa.exception.UnauthorizedUserException;
@@ -140,7 +139,7 @@ class IncomeDocsTest {
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(objectMapper.writeValueAsString(createIncomeRequest))
 			)
-			.andExpect(status().isBadRequest())
+			.andExpect(status().isNotFound())
 			.andDo(document("income-create-fail", responseFields(
 				ErrorResponseDoc.fieldDescriptors()
 			)));
@@ -166,7 +165,7 @@ class IncomeDocsTest {
 			.willThrow(new NoSuchElementException(INCOME_NOT_FOUND.getMessage()));
 
 		mockMvc.perform(get(LOCATION_PREFIX + "/{incomeId}", findIncomeResponse.getId()))
-			.andExpect(status().isBadRequest())
+			.andExpect(status().isNotFound())
 			.andDo(document("income-find-by-id-fail", responseFields(
 				ErrorResponseDoc.fieldDescriptors()
 			)));
@@ -198,7 +197,7 @@ class IncomeDocsTest {
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(objectMapper.writeValueAsString(updateIncomeRequest))
 			)
-			.andExpect(status().isBadRequest())
+			.andExpect(status().isNotFound())
 			.andDo(document("income-update-fail", responseFields(
 				ErrorResponseDoc.fieldDescriptors()
 			)));

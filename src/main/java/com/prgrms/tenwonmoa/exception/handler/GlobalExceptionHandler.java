@@ -49,7 +49,7 @@ public class GlobalExceptionHandler {
 	// Client의 잘못된 요청으로 인한 에러 처리
 	// 400 : Wrong Date Format - 잘못된 날짜 포맷 요청 (HttpMessage를 Convert 할때 발생하는 에러)
 	@ExceptionHandler(HttpMessageNotReadableException.class)
-	public ResponseEntity<ErrorResponse> handleClientBadTimeFormatRequest(HttpMessageNotReadableException exception) {
+	public ResponseEntity<ErrorResponse> handleHttpMessageConversionException(HttpMessageNotReadableException exception) {
 		List<Throwable> causes = getCauses(exception);
 
 		ErrorResponse errorResponse;
@@ -96,7 +96,7 @@ public class GlobalExceptionHandler {
 
 	// 401: 잘못된 토큰으로 요청
 	@ExceptionHandler({JWTVerificationException.class})
-	public ResponseEntity<ErrorResponse> handleForbidden(JWTVerificationException exception) {
+	public ResponseEntity<ErrorResponse> handleUnauthenticated(JWTVerificationException exception) {
 		log.error(exception.getMessage(), exception);
 		ErrorResponse errorResponse = new ErrorResponse(List.of(exception.getMessage()), UNAUTHORIZED.value());
 		return ResponseEntity
@@ -106,7 +106,7 @@ public class GlobalExceptionHandler {
 
 	// 403 : 권한 없음
 	@ExceptionHandler({UnauthorizedUserException.class})
-	public ResponseEntity<ErrorResponse> handleForbidden(Exception exception) {
+	public ResponseEntity<ErrorResponse> handleUnAuthorized(Exception exception) {
 		log.error(exception.getMessage(), exception);
 		ErrorResponse errorResponse = new ErrorResponse(List.of(exception.getMessage()), FORBIDDEN.value());
 		return ResponseEntity

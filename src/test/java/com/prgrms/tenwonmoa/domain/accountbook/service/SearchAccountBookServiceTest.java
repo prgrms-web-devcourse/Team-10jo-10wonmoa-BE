@@ -70,15 +70,16 @@ class SearchAccountBookServiceTest {
 			.willReturn(List.of(latestIncome, secondExpenditure, thirdExpenditure));
 
 		//when
-		FindAccountBookResponse<AccountBookItem> findAccountBookResponse =
+		FindAccountBookResponse findAccountBookResponse =
 			accountBookService.searchAccountBooks(userId, cmd, pageRequest);
 
 		//then
-		assertThat(findAccountBookResponse.getIncomeSum()).isEqualTo(latestIncome.getAmount());
-		assertThat(findAccountBookResponse.getExpenditureSum())
-			.isEqualTo(secondExpenditure.getAmount() + thirdExpenditure.getAmount());
-		assertThat(findAccountBookResponse.getTotalSum())
-			.isEqualTo(latestIncome.getAmount() - secondExpenditure.getAmount() - thirdExpenditure.getAmount());
+		assertThat(findAccountBookResponse.getResults()).hasSize(3);
+		assertThat(findAccountBookResponse.getResults()).extracting(AccountBookItem::getId)
+			.containsExactlyInAnyOrder(
+				latestIncome.getId(),
+				secondExpenditure.getId(),
+				thirdExpenditure.getId());
 	}
 
 	@Test

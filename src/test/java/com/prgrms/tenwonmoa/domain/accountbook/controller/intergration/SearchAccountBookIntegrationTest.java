@@ -76,9 +76,6 @@ class SearchAccountBookIntegrationTest extends BaseControllerIntegrationTest {
 				.param("content", "")
 				.param("size", "3")
 				.param("page", "1"))
-			.andExpect(jsonPath("$.incomeSum").value(0L))
-			.andExpect(jsonPath("$.expenditureSum").value(5000L))
-			.andExpect(jsonPath("$.totalSum").value(-5000L))
 			.andExpect(jsonPath("$.currentPage").value(1))
 			.andExpect(jsonPath("$.nextPage").isEmpty())
 			.andExpect(jsonPath("$.results", hasSize(1)));
@@ -106,9 +103,6 @@ class SearchAccountBookIntegrationTest extends BaseControllerIntegrationTest {
 				.param("content", "")
 				.param("size", "3")
 				.param("page", "1"))
-			.andExpect(jsonPath("$.incomeSum").value(10000L))
-			.andExpect(jsonPath("$.expenditureSum").value(5000L))
-			.andExpect(jsonPath("$.totalSum").value(5000L))
 			.andExpect(jsonPath("$.currentPage").value(1))
 			.andExpect(jsonPath("$.nextPage").isEmpty())
 			.andExpect(jsonPath("$.results", hasSize(2)));
@@ -126,9 +120,6 @@ class SearchAccountBookIntegrationTest extends BaseControllerIntegrationTest {
 		//then
 		mvc.perform(get("/api/v1/account-book/search")
 				.header(HttpHeaders.AUTHORIZATION, accessToken))
-			.andExpect(jsonPath("$.incomeSum").value(10000L))
-			.andExpect(jsonPath("$.expenditureSum").value(5000L))
-			.andExpect(jsonPath("$.totalSum").value(5000L))
 			.andExpect(jsonPath("$.currentPage").value(1))
 			.andExpect(jsonPath("$.nextPage").isEmpty())
 			.andExpect(jsonPath("$.results", hasSize(2)));
@@ -146,9 +137,6 @@ class SearchAccountBookIntegrationTest extends BaseControllerIntegrationTest {
 		//then
 		mvc.perform(get("/api/v1/account-book/search")
 				.header(HttpHeaders.AUTHORIZATION, accessToken))
-			.andExpect(jsonPath("$.incomeSum").value(10000L))
-			.andExpect(jsonPath("$.expenditureSum").value(5000L))
-			.andExpect(jsonPath("$.totalSum").value(5000L))
 			.andExpect(jsonPath("$.currentPage").value(1))
 			.andExpect(jsonPath("$.nextPage").isEmpty())
 			.andExpect(jsonPath("$.results", hasSize(2)));

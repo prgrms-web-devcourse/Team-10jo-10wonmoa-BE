@@ -11,7 +11,6 @@ import com.prgrms.tenwonmoa.domain.accountbook.dto.AccountBookItem;
 import com.prgrms.tenwonmoa.domain.accountbook.dto.FindAccountBookResponse;
 import com.prgrms.tenwonmoa.domain.accountbook.dto.service.SearchAccountBookCmd;
 import com.prgrms.tenwonmoa.domain.accountbook.repository.SearchAccountBookRepository;
-import com.prgrms.tenwonmoa.domain.category.CategoryType;
 import com.prgrms.tenwonmoa.domain.common.page.PageCustomRequest;
 
 import lombok.RequiredArgsConstructor;
@@ -23,7 +22,7 @@ public class SearchAccountBookService {
 
 	private final SearchAccountBookRepository repository;
 
-	public FindAccountBookResponse<AccountBookItem> searchAccountBooks(Long authenticatedId, SearchAccountBookCmd cmd,
+	public FindAccountBookResponse searchAccountBooks(Long authenticatedId, SearchAccountBookCmd cmd,
 		PageCustomRequest pageRequest) {
 
 		checkArgument(cmd.getMinPrice() <= cmd.getMaxPrice(), "최소값은 최대값 보다 작아야 합니다");
@@ -32,23 +31,7 @@ public class SearchAccountBookService {
 		List<AccountBookItem> accountBookItems = repository.searchAccountBook(cmd.getMinPrice(), cmd.getMaxPrice(),
 			cmd.getStart(), cmd.getEnd(), cmd.getContent(), cmd.getCategories(), authenticatedId, pageRequest);
 
-		return calculateSum(accountBookItems, pageRequest);
-	}
-
-	private FindAccountBookResponse<AccountBookItem> calculateSum(List<AccountBookItem> results,
-		PageCustomRequest pageRequest) {
-		Long incomeSum = 0L;
-		Long expenditureSum = 0L;
-
-		for (AccountBookItem item : results) {
-			if (item.getType().equals(CategoryType.INCOME.name())) {
-				incomeSum += item.getAmount();
-			} else {
-				expenditureSum += item.getAmount();
-			}
-		}
-
-		return FindAccountBookResponse.of(pageRequest, results, incomeSum, expenditureSum);
+		return FindAccountBookResponse.of(pageRequest, accountBookItems);
 	}
 
 }

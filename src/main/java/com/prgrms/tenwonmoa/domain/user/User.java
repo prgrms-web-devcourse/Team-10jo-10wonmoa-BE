@@ -31,7 +31,21 @@ public class User extends BaseEntity {
 	@Column(name = "username", nullable = false)
 	private String username;
 
+	@Column(name = "from_social")
+	private boolean fromSocial;
+
 	public User(String email, String password, String username) {
+		this.fromSocial = false;
+		validateEmail(email);
+		validatePassword(password);
+		validateUsername(username);
+		this.email = email;
+		this.password = password;
+		this.username = username;
+	}
+
+	public User(String email, String password, String username, boolean fromSocial) {
+		this.fromSocial = fromSocial;
 		validateEmail(email);
 		validatePassword(password);
 		validateUsername(username);
@@ -48,9 +62,11 @@ public class User extends BaseEntity {
 
 	private void validateUsername(String username) {
 		checkNotNull(username, NOT_NULL_USERNAME.getMessage());
-		checkArgument(username.length() >= MIN_USERNAME_LENGTH && username.length() <= MAX_USERNAME_LENGTH,
-			INVALID_USERNAME_LENGTH.getMessage());
-		checkArgument(username.matches(USERNAME_REGEX), INVALID_USERNAME_PATTERN.getMessage());
+		if (!fromSocial) {
+			checkArgument(username.length() >= MIN_USERNAME_LENGTH && username.length() <= MAX_USERNAME_LENGTH,
+				INVALID_USERNAME_LENGTH.getMessage());
+			checkArgument(username.matches(USERNAME_REGEX), INVALID_USERNAME_PATTERN.getMessage());
+		}
 	}
 
 	private void validatePassword(String password) {

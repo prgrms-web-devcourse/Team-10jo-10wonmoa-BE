@@ -60,7 +60,10 @@ public enum Message {
 
 	// 달력 요청
 	INVALID_YEAR("년도는 1900년에서 3000년 이하입니다."),
-	INVALID_MONTH("월은 1월에서 12월 이하입니다.");
+	INVALID_MONTH("월은 1월에서 12월 이하입니다."),
+
+	// Page 요쳥
+	INVALID_PAGE_NUMBER("해당 페이지는 존재하지 않습니다.");
 
 	private final String message;
 

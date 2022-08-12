@@ -2,9 +2,7 @@ package com.prgrms.tenwonmoa.domain.accountbook.repository;
 
 import java.math.BigInteger;
 import java.sql.Timestamp;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -25,7 +23,7 @@ public class SearchAccountBookRepository {
 	private EntityManager em;
 
 	public List<AccountBookItem> searchAccountBook(Long minPrice, Long maxPrice,
-		LocalDate startDate, LocalDate endDate,
+		LocalDateTime startDateTime, LocalDateTime endDateTime,
 		String content, List<Long> userCategoryIds,
 		Long userId, PageCustomRequest pageRequest) {
 
@@ -49,7 +47,7 @@ public class SearchAccountBookRepository {
 
 		Query nativeQuery = em.createNativeQuery(unionQuery);
 		setParameters(nativeQuery, userCategoryIds, userId, content, minPrice,
-			maxPrice, startDate.atTime(LocalTime.MIN), endDate.atTime(LocalTime.MAX));
+			maxPrice, startDateTime, endDateTime);
 		setPagingParam(nativeQuery, pageRequest);
 
 		List<Object[]> results = nativeQuery.getResultList();

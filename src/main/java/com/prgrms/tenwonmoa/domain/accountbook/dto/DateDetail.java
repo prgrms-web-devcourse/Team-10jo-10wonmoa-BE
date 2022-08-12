@@ -1,14 +1,16 @@
 package com.prgrms.tenwonmoa.domain.accountbook.dto;
 
+import java.time.LocalDate;
+
 import lombok.Getter;
 
 @Getter
 public class DateDetail extends FindSumResponse {
 
-	private final int day;
+	private final LocalDate date;
 
-	public DateDetail(int day, Long incomeSum, Long expenditureSum) {
+	public DateDetail(LocalDate date, Long incomeSum, Long expenditureSum) {
 		super(incomeSum, expenditureSum);
-		this.day = day;
+		this.date = date;
 	}
 }

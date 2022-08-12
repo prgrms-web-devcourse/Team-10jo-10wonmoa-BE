@@ -45,7 +45,7 @@ public class BudgetController {
 		return ResponseEntity.ok(findBudgetResponse);
 	}
 
-	@GetMapping
+	@GetMapping("/statistics")
 	public ResponseEntity<FindBudgetWithExpenditureResponse> findBudgetWithExpenditure(
 		@AuthenticationPrincipal Long userId,
 		@Valid FindBudgetWithExpenditureRequest request) {

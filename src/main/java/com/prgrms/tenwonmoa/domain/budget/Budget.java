@@ -6,6 +6,7 @@ import static com.prgrms.tenwonmoa.exception.message.Message.*;
 import static javax.persistence.FetchType.*;
 import static lombok.AccessLevel.*;
 
+import java.text.MessageFormat;
 import java.time.YearMonth;
 
 import javax.persistence.Column;
@@ -28,6 +29,9 @@ import lombok.NoArgsConstructor;
 @Getter
 @Table(name = "budget")
 public class Budget extends BaseEntity {
+	private static final int BUDGET_AMOUNT_MIN = 0;
+	private static final String INVALID_BUDGET_AMOUNT_ERR_MSG = MessageFormat.format("입력 가능 범위는 {0}~{1}입니다.",
+		BUDGET_AMOUNT_MIN, AMOUNT_MAX);
 	@Column(name = "amount", nullable = false)
 	private Long amount;
 
@@ -39,7 +43,7 @@ public class Budget extends BaseEntity {
 	@JoinColumn(name = "user_id", nullable = false)
 	private User user;
 
-	@ManyToOne(fetch = LAZY, optional = false)
+	@ManyToOne(optional = false)
 	@JoinColumn(name = "user_category_id", nullable = false)
 	private UserCategory userCategory;
 
@@ -77,7 +81,7 @@ public class Budget extends BaseEntity {
 
 	private void validateAmount(Long amount) {
 		checkArgument(amount != null, NOT_NULL_AMOUNT.getMessage());
-		checkArgument(amount >= AMOUNT_MIN && amount <= AMOUNT_MAX, INVALID_AMOUNT_ERR_MSG.getMessage());
+		checkArgument(amount >= BUDGET_AMOUNT_MIN && amount <= AMOUNT_MAX, INVALID_BUDGET_AMOUNT_ERR_MSG);
 	}
 
 	private void validateRegisterDate(YearMonth registerDate) {

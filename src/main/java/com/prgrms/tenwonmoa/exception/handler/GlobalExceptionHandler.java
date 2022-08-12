@@ -1,9 +1,7 @@
 package com.prgrms.tenwonmoa.exception.handler;
 
-import static com.prgrms.tenwonmoa.exception.message.Message.*;
 import static org.springframework.http.HttpStatus.*;
 
-import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -51,14 +49,8 @@ public class GlobalExceptionHandler {
 	@ExceptionHandler(HttpMessageNotReadableException.class)
 	public ResponseEntity<ErrorResponse> handleHttpMessageConversionException(
 		HttpMessageNotReadableException exception) {
-		List<Throwable> causes = getCauses(exception);
 
-		ErrorResponse errorResponse;
-		if (causes.get(causes.size() - 1) instanceof DateTimeParseException) {
-			errorResponse = new ErrorResponse(List.of(WRONG_DATE_TIME_FORMAT.getMessage()), BAD_REQUEST.value());
-		} else {
-			errorResponse = new ErrorResponse(List.of(exception.getMessage()), BAD_REQUEST.value());
-		}
+		ErrorResponse errorResponse = new ErrorResponse(List.of(exception.getMessage()), BAD_REQUEST.value());
 		log.info(errorResponse.getMessages().get(0), exception);
 
 		return ResponseEntity

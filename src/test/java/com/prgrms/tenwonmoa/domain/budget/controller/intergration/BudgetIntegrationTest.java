@@ -4,6 +4,7 @@ import static com.prgrms.tenwonmoa.common.fixture.Fixture.*;
 import static com.prgrms.tenwonmoa.domain.category.CategoryType.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import java.time.YearMonth;
@@ -19,6 +20,9 @@ import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.ResultMatcher;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.prgrms.tenwonmoa.common.BaseControllerIntegrationTest;
@@ -67,14 +71,13 @@ public class BudgetIntegrationTest extends BaseControllerIntegrationTest {
 
 	@Test
 	void 예산_등록_성공() throws Exception {
-		CreateOrUpdateBudgetRequest createOrUpdateBudgetRequest = new CreateOrUpdateBudgetRequest(
-			1000L, now, userCategory.getId());
+		CreateOrUpdateBudgetRequest createOrUpdateBudgetRequest = new CreateOrUpdateBudgetRequest(1000L, now,
+			userCategory.getId());
 
 		mvc.perform(put(LOCATION_PREFIX)
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(objectMapper.writeValueAsString(createOrUpdateBudgetRequest))
-				.header(HttpHeaders.AUTHORIZATION, accessToken)
-			)
+				.header(HttpHeaders.AUTHORIZATION, accessToken))
 			.andExpect(status().isNoContent());
 
 		Optional<Budget> findBudget = budgetRepository.findByUserCategoryIdAndRegisterDate(userCategory.getId(), now);
@@ -87,8 +90,8 @@ public class BudgetIntegrationTest extends BaseControllerIntegrationTest {
 		Category category = categoryRepository.save(new Category("other", INCOME));
 		UserCategory otherUserCategory = userCategoryRepository.save(new UserCategory(otherUser, category));
 
-		CreateOrUpdateBudgetRequest createOrUpdateBudgetRequest = new CreateOrUpdateBudgetRequest(
-			1000L, now, otherUserCategory.getId());
+		CreateOrUpdateBudgetRequest createOrUpdateBudgetRequest = new CreateOrUpdateBudgetRequest(1000L, now,
+			otherUserCategory.getId());
 
 		mvc.perform(put(LOCATION_PREFIX)
 				.contentType(MediaType.APPLICATION_JSON)
@@ -102,15 +105,13 @@ public class BudgetIntegrationTest extends BaseControllerIntegrationTest {
 	void 예산_등록_수정으로_처리되는_경우() throws Exception {
 		budgetRepository.saveAndFlush(new Budget(1000L, now, loginUser, userCategory));
 
-		CreateOrUpdateBudgetRequest createOrUpdateBudgetRequest = new CreateOrUpdateBudgetRequest(
-			2000L, now, userCategory.getId());
+		CreateOrUpdateBudgetRequest createOrUpdateBudgetRequest = new CreateOrUpdateBudgetRequest(2000L, now,
+			userCategory.getId());
 
 		mvc.perform(put(LOCATION_PREFIX)
-				.contentType(MediaType.APPLICATION_JSON)
-				.content(objectMapper.writeValueAsString(createOrUpdateBudgetRequest))
-				.header(HttpHeaders.AUTHORIZATION, accessToken)
-			)
-			.andExpect(status().isNoContent());
+			.contentType(MediaType.APPLICATION_JSON)
+			.content(objectMapper.writeValueAsString(createOrUpdateBudgetRequest))
+			.header(HttpHeaders.AUTHORIZATION, accessToken)).andExpect(status().isNoContent());
 
 		Optional<Budget> findBudget = budgetRepository.findByUserCategoryIdAndRegisterDate(userCategory.getId(), now);
 		assertThat(findBudget).isPresent();
@@ -155,22 +156,56 @@ public class BudgetIntegrationTest extends BaseControllerIntegrationTest {
 		validateFindRequest("2022-7");
 	}
 
+	@Test
+	void 예산_통계조회_파라미터검증_실패() throws Exception {
+		validateBudgetStatisticsRequest(2022, 13, status().isBadRequest());
+		validateBudgetStatisticsRequest(null, 13, status().isBadRequest());
+		validateBudgetStatisticsRequest(1899, 12, status().isBadRequest());
+	}
+
+	@Test
+	void 예산_통계조회_파라미터검증_성공() throws Exception {
+		validateBudgetStatisticsRequest(2022, 12, status().isOk());
+		validateBudgetStatisticsRequest(2011, null, status().isOk());
+		validateBudgetStatisticsRequest(1900, 1, status().isOk());
+		validateBudgetStatisticsRequest(2010, 8, status().isOk());
+	}
+
 	private void validateFindRequest(String registerDate) throws Exception {
 		mvc.perform(put(LOCATION_PREFIX)
-				.param("registerDate", now.toString())
+				.param("registerDate", registerDate)
 				.header(HttpHeaders.AUTHORIZATION, accessToken))
 			.andExpect(status().isBadRequest());
 	}
 
-	private void validateCreateRequest(ObjectNode createBudgetRequest, String registerDate) throws Exception {
+	private void validateCreateRequest(ObjectNode createBudgetRequest, String registerDate)
+		throws Exception {
 		createBudgetRequest.put("registerDate", registerDate);
 
 		mvc.perform(put(LOCATION_PREFIX)
 				.content(createBudgetRequest.toString())
 				.contentType(MediaType.APPLICATION_JSON)
-				.header(HttpHeaders.AUTHORIZATION, accessToken)
-			)
+				.header(HttpHeaders.AUTHORIZATION, accessToken))
 			.andExpect(status().isBadRequest());
+	}
+
+	private void validateBudgetStatisticsRequest(Integer year, Integer month, ResultMatcher expect) throws Exception {
+		MultiValueMap<String, String> paramMap = new LinkedMultiValueMap<>();
+		if (year != null) {
+			paramMap.add("year", year.toString());
+		} else {
+			paramMap.add("year", null);
+		}
+		if (month != null) {
+			paramMap.add("month", month.toString());
+		} else {
+			paramMap.add("month", null);
+		}
+		mvc.perform(
+				get(LOCATION_PREFIX + "/statistics")
+					.params(paramMap)
+					.header(HttpHeaders.AUTHORIZATION, accessToken))
+			.andExpect(expect);
 	}
 
 	@Disabled

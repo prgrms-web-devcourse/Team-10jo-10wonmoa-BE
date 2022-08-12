@@ -1,7 +1,6 @@
 package com.prgrms.tenwonmoa.exception.handler;
 
 import static com.prgrms.tenwonmoa.exception.message.Message.*;
-import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 import static org.springframework.http.HttpStatus.*;
 
 import java.time.format.DateTimeParseException;
@@ -13,6 +12,7 @@ import java.util.stream.Collectors;
 import javax.validation.ConstraintViolationException;
 
 import org.springframework.context.support.DefaultMessageSourceResolvable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.BindException;
@@ -49,7 +49,8 @@ public class GlobalExceptionHandler {
 	// Client의 잘못된 요청으로 인한 에러 처리
 	// 400 : Wrong Date Format - 잘못된 날짜 포맷 요청 (HttpMessage를 Convert 할때 발생하는 에러)
 	@ExceptionHandler(HttpMessageNotReadableException.class)
-	public ResponseEntity<ErrorResponse> handleHttpMessageConversionException(HttpMessageNotReadableException exception) {
+	public ResponseEntity<ErrorResponse> handleHttpMessageConversionException(
+		HttpMessageNotReadableException exception) {
 		List<Throwable> causes = getCauses(exception);
 
 		ErrorResponse errorResponse;
@@ -140,9 +141,9 @@ public class GlobalExceptionHandler {
 	public ResponseEntity<ErrorResponse> handleBug(RuntimeException exception) {
 		log.error(exception.getMessage(), exception);
 		ErrorResponse errorResponse = new ErrorResponse(List.of(Message.INTERNAL_SERVER_ERROR.getMessage()),
-			INTERNAL_SERVER_ERROR.value());
+			HttpStatus.INTERNAL_SERVER_ERROR.value());
 		return ResponseEntity
-			.status(INTERNAL_SERVER_ERROR.value())
+			.status(HttpStatus.INTERNAL_SERVER_ERROR.value())
 			.body(errorResponse);
 	}
 

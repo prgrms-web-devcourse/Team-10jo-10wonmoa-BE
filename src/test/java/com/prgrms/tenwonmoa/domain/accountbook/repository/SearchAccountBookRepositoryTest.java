@@ -14,9 +14,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.prgrms.tenwonmoa.common.RepositoryTest;
-import com.prgrms.tenwonmoa.domain.accountbook.Expenditure;
-import com.prgrms.tenwonmoa.domain.accountbook.Income;
+import com.prgrms.tenwonmoa.common.fixture.RepositoryFixture;
 import com.prgrms.tenwonmoa.domain.accountbook.dto.AccountBookItem;
 import com.prgrms.tenwonmoa.domain.category.Category;
 import com.prgrms.tenwonmoa.domain.category.CategoryType;
@@ -25,13 +23,7 @@ import com.prgrms.tenwonmoa.domain.common.page.PageCustomRequest;
 import com.prgrms.tenwonmoa.domain.user.User;
 
 @DisplayName("가계부 검색 리포지토리 테스트")
-class SearchAccountBookRepositoryTest extends RepositoryTest {
-
-	private final LocalDateTime defaultTime = LocalDateTime.now();
-
-	private final Long defaultAmount = 1000L;
-
-	private final String defaultContent = "냉무";
+class SearchAccountBookRepositoryTest extends RepositoryFixture {
 
 	private List<Long> allUserCategoryIds;
 
@@ -66,20 +58,6 @@ class SearchAccountBookRepositoryTest extends RepositoryTest {
 
 		allUserCategoryIds = new ArrayList<>(List.of(expenditureUserCategory.getId(), expenditureUserCategory2.getId(),
 			incomeUserCategory.getId()));
-	}
-
-	private void saveExpenditure(LocalDateTime registerDate, Long amount, String content, String categoryName,
-		User user, UserCategory userCategory) {
-		save(new Expenditure(
-			registerDate, amount, content,
-			categoryName, user, userCategory));
-	}
-
-	private void saveIncome(LocalDateTime registerDate, Long amount, String content, String categoryName, User user,
-		UserCategory userCategory) {
-		save(new Income(
-			registerDate, amount, content,
-			categoryName, user, userCategory));
 	}
 
 	@Test

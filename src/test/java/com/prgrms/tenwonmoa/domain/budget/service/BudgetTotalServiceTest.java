@@ -186,4 +186,30 @@ class BudgetTotalServiceTest {
 		// then
 		assertThat(result.getRegisterDate()).isEqualTo("2022");
 	}
+
+	@Test
+	void 예산0원_지출발생한경우_퍼센트는_지출금액으로반환() {
+		given(budgetQueryRepository.searchExpendituresExistBudget(any(), any(), any()))
+			.willReturn(expenditures);
+		List<FindBudgetByRegisterDate> budgets = List.of(
+			new FindBudgetByRegisterDate(1L, categories[0], 0L),
+			new FindBudgetByRegisterDate(2L, categories[1], 0L),
+			new FindBudgetByRegisterDate(3L, categories[2], 0L)
+		);
+		given(budgetQueryRepository.searchBudgetByRegisterDate(any(), any(), any()))
+			.willReturn(budgets);
+
+		// when
+		FindBudgetWithExpenditureResponse result = budgetTotalService.searchBudgetWithExpenditure(
+			userId, 2022, null);
+		// then
+		assertThat(result.getBudgets()).extracting((data) -> data.getUserCategoryId(),
+				(data) -> data.getCategoryName(),
+				(data) -> data.getAmount(),
+				(data) -> data.getExpenditure(),
+				(data) -> data.getPercent())
+			.contains(tuple(1L, categories[0], 0L, 122860L, 122860L),
+				tuple(2L, categories[1], 0L, 46700L, 46700L),
+				tuple(3L, categories[2], 0L, 43700L, 43700L));
+	}
 }

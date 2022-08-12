@@ -28,6 +28,10 @@ public enum Message {
 	EXPENDITURE_NOT_FOUND("해당 지출이 존재 하지 않습니다."),
 	EXPENDITURE_NO_AUTHENTICATION("지출에 대한 접근권한이 없습니다."),
 
+	INVALID_MIN_MAX_VALUE("최소값은 최대값 보다 작아야 합니다"),
+
+	INVALID_START_END_DATE("시작일은 종료일 전이여야 합니다"),
+
 	// 수입
 	INVALID_CONTENT_ERR_MSG(MessageFormat.format("내용은 {0}글자 까지만 가능합니다.", CONTENT_MAX)),
 	INVALID_AMOUNT_ERR_MSG(MessageFormat.format("입력 가능 범위는 {0}~{1}입니다.", AMOUNT_MIN, AMOUNT_MAX)),

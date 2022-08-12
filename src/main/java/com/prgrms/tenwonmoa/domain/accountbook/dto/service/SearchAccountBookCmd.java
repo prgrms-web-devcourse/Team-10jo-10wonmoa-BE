@@ -1,6 +1,7 @@
 package com.prgrms.tenwonmoa.domain.accountbook.dto.service;
 
 import static com.google.common.base.Preconditions.*;
+import static com.prgrms.tenwonmoa.exception.message.Message.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -41,8 +42,8 @@ public final class SearchAccountBookCmd {
 		start = start == null ? AccountBookConst.LEFT_MOST_REGISTER_DATE : start;
 		end = end == null ? AccountBookConst.RIGHT_MOST_REGISTER_DATE : end;
 
-		checkArgument(minPrice <= maxPrice, "최소값은 최대값 보다 작아야 합니다");
-		checkArgument(start.compareTo(end) <= 0, "시작일은 종료일 전이여야 합니다");
+		checkArgument(minPrice <= maxPrice, INVALID_MIN_MAX_VALUE);
+		checkArgument(start.compareTo(end) <= 0, INVALID_START_END_DATE);
 
 		return new SearchAccountBookCmd(categories, minPrice, maxPrice, start.atTime(LocalTime.MIN),
 			end.atTime(LocalTime.MAX), content);

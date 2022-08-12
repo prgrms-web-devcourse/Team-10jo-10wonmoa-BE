@@ -8,6 +8,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -16,6 +17,7 @@ import com.prgrms.tenwonmoa.domain.user.dto.FindUserResponse;
 import com.prgrms.tenwonmoa.domain.user.dto.LoginUserRequest;
 import com.prgrms.tenwonmoa.domain.user.dto.RefreshTokenRequest;
 import com.prgrms.tenwonmoa.domain.user.dto.TokenResponse;
+import com.prgrms.tenwonmoa.domain.user.security.jwt.JwtConst;
 import com.prgrms.tenwonmoa.domain.user.service.UserService;
 
 import lombok.RequiredArgsConstructor;
@@ -49,6 +51,13 @@ public class UserController {
 		TokenResponse refreshResponse = userService.refresh(refreshTokenRequest.getAccessToken(),
 			refreshTokenRequest.getRefreshToken());
 		return ResponseEntity.ok().body(refreshResponse);
+	}
+
+	@PostMapping("/logout")
+	public ResponseEntity<Void> logout(@AuthenticationPrincipal Long userId,
+		@RequestHeader("Authorization") String accessToken) {
+		userService.logout(userId, accessToken.substring(JwtConst.BEARER_PREFIX.length()));
+		return ResponseEntity.ok().build();
 	}
 
 }

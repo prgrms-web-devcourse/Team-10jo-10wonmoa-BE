@@ -18,9 +18,11 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.auth0.jwt.exceptions.TokenExpiredException;
+import com.prgrms.tenwonmoa.domain.user.repository.UserRepository;
 import com.prgrms.tenwonmoa.domain.user.security.jwt.JwtConst;
 import com.prgrms.tenwonmoa.domain.user.security.jwt.repository.LogoutAccessTokenRedisRepository;
 import com.prgrms.tenwonmoa.domain.user.security.jwt.service.TokenProvider;
+import com.prgrms.tenwonmoa.exception.InvalidTokenException;
 import com.prgrms.tenwonmoa.exception.UnauthorizedUserException;
 import com.prgrms.tenwonmoa.exception.message.Message;
 
@@ -34,6 +36,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 	private static final String ATTRIBUTE_EXCEPTION = "exception";
 	private final TokenProvider tokenProvider;
 	private final LogoutAccessTokenRedisRepository logoutAccessTokenRedisRepository;
+	private final UserRepository userRepository;
 
 	@Override
 	protected void doFilterInternal(
@@ -54,6 +57,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
 		if (StringUtils.hasText(token)) {
 			try {
+				checkUserExists(token);
 				checkLogout(token);
 
 				// userId 가져오기
@@ -71,7 +75,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 			} catch (TokenExpiredException te) {    // 예외 메시지를 entry point로 전달
 				request.setAttribute(ATTRIBUTE_EXCEPTION, Message.EXPIRED_ACCESS_TOKEN.getMessage());
 			} catch (UnauthorizedUserException ue) {
-				request.setAttribute(ATTRIBUTE_EXCEPTION, Message.LOGOUT_USER.getMessage());
+				request.setAttribute(ATTRIBUTE_EXCEPTION, ue.getMessage());
 			} catch (Exception e) {
 				log.error("토큰 실패 {}", e.getMessage());
 				request.setAttribute(ATTRIBUTE_EXCEPTION, Message.INVALID_TOKEN.getMessage());
@@ -79,6 +83,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 		}
 
 		filterChain.doFilter(request, response);
+	}
+
+	private void checkUserExists(String token) {
+		String email = tokenProvider.validateAndGetEmail(token);
+		if (!userRepository.existsByEmail(email)) {
+			throw new InvalidTokenException(Message.INVALID_TOKEN);
+		}
 	}
 
 	private void checkLogout(String accessToken) {

@@ -39,7 +39,7 @@ public class BudgetQueryRepository {
 			))
 			.from(budget)
 			.rightJoin(budget.userCategory, userCategory)
-			.on(budget.registerDate.eq(registerDate))
+			.on(budget.registerDate.eq(registerDate), budget.user.id.eq(userId))
 			.where(userCategory.user.id.eq(userId))
 			.orderBy(AMOUNT.desc())
 			.fetch();

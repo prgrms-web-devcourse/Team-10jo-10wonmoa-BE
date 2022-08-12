@@ -26,6 +26,8 @@ public class UserService {
 	private final PasswordEncoder passwordEncoder;
 	private final CreateDefaultUserCategoryService createDefaultUserCategoryService;
 	private final JwtService jwtService;
+	private final UserDeleteService userDeleteService;
+
 
 	public User findById(Long userId) {
 		return userRepository.findById(userId)
@@ -69,6 +71,14 @@ public class UserService {
 		User user = this.findById(userId);
 
 		jwtService.saveLogoutAccessToken(user.getEmail(), accessToken);
+		jwtService.deleteRefreshToken(user.getEmail());
+	}
+
+	@Transactional
+	public void deleteUser(Long userId) {
+		User user = this.findById(userId);
+
+		userDeleteService.deleteUserData(userId);
 		jwtService.deleteRefreshToken(user.getEmail());
 	}
 

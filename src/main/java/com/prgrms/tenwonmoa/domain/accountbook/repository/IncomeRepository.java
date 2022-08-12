@@ -24,6 +24,10 @@ public interface IncomeRepository extends JpaRepository<Income, Long> {
 		+ "where i.userCategory.id = :userCategoryId")
 	void updateCategoryName(Long userCategoryId, String categoryName);
 
+	@Modifying
+	@Query("delete from Income i where i.user.id = :userId")
+	void deleteAllByUserIdInQuery(Long userId);
+
 	@Query("select SUM(i.amount) from Income i "
 		+ "where i.amount >= :minPrice "
 		+ "and i.amount <= :maxPrice "
@@ -35,5 +39,4 @@ public interface IncomeRepository extends JpaRepository<Income, Long> {
 	Long getSumOfIncome(Long minPrice, Long maxPrice,
 		LocalDateTime startDateTime, LocalDateTime endDateTime,
 		String content, List<Long> userCategoryIds, Long userId);
-
 }

@@ -40,6 +40,9 @@ class UserServiceTest {
 	@Mock
 	private JwtService jwtService;
 
+	@Mock
+	private UserDeleteService userDeleteService;
+
 	@InjectMocks
 	private UserService userService;
 
@@ -150,6 +153,20 @@ class UserServiceTest {
 		userService.logout(user.getId(), accessToken);
 
 		verify(jwtService).saveLogoutAccessToken(user.getEmail(), accessToken);
+		verify(jwtService).deleteRefreshToken(user.getEmail());
+	}
+
+	@Test
+	void 유저_삭제_성공() {
+		User user = createUser();
+
+		given(userRepository.findById(any())).willReturn(Optional.of(user));
+		doNothing().when(userDeleteService).deleteUserData(any());
+		doNothing().when(jwtService).deleteRefreshToken(any(String.class));
+
+		userService.deleteUser(user.getId());
+
+		verify(userDeleteService).deleteUserData(user.getId());
 		verify(jwtService).deleteRefreshToken(user.getEmail());
 	}
 

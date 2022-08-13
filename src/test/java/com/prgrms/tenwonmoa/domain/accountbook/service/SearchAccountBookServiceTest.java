@@ -92,17 +92,18 @@ class SearchAccountBookServiceTest {
 
 	@Test
 	void 가계부_검색후_합계_조회_성공() {
-		SearchAccountBookCmd cmd = SearchAccountBookCmd.of("1,2,3", AMOUNT_MIN, AMOUNT_MAX,
+		SearchAccountBookCmd mockCmd = SearchAccountBookCmd.of("1,2,3", AMOUNT_MIN, AMOUNT_MAX,
 			LEFT_MOST_REGISTER_DATE, RIGHT_MOST_REGISTER_DATE, "");
 
-		given(expenditureRepository.getSumOfExpenditure(cmd.getMinPrice(), cmd.getMaxPrice(), cmd.getStart(),
-			cmd.getEnd(), cmd.getContent(), cmd.getCategories(), userId)).willReturn(10000L);
+		given(expenditureRepository.getSumOfExpenditure(mockCmd.getMinPrice(), mockCmd.getMaxPrice(),
+			mockCmd.getStart(), mockCmd.getEnd(), mockCmd.getContent(), mockCmd.getCategories(), userId))
+			.willReturn(10000L);
 
-		given(incomeRepository.getSumOfIncome(cmd.getMinPrice(), cmd.getMaxPrice(), cmd.getStart(),
-			cmd.getEnd(), cmd.getContent(), cmd.getCategories(), userId)).willReturn(20000L);
+		given(incomeRepository.getSumOfIncome(mockCmd.getMinPrice(), mockCmd.getMaxPrice(), mockCmd.getStart(),
+			mockCmd.getEnd(), mockCmd.getContent(), mockCmd.getCategories(), userId)).willReturn(20000L);
 
 		FindAccountBookSumResponse sumOfAccountBooks = accountBookService.getSumOfAccountBooks(userId,
-			cmd);
+			mockCmd);
 
 		assertThat(sumOfAccountBooks.getExpenditureSum()).isEqualTo(10000L);
 		assertThat(sumOfAccountBooks.getIncomeSum()).isEqualTo(20000L);
@@ -110,18 +111,19 @@ class SearchAccountBookServiceTest {
 	}
 
 	@Test
-	void 해당하는_지출_데이터가_존재하지_않을시_합계는_0반환() {
-		SearchAccountBookCmd cmd = SearchAccountBookCmd.of("1,2,3", AMOUNT_MIN, AMOUNT_MAX,
+	void 해당하는_지출_데이터가_존재하지_않을시_합계는_0을_반환() {
+		SearchAccountBookCmd mockCmd = SearchAccountBookCmd.of("1,2,3", AMOUNT_MIN, AMOUNT_MAX,
 			LEFT_MOST_REGISTER_DATE, RIGHT_MOST_REGISTER_DATE, "");
 
-		given(expenditureRepository.getSumOfExpenditure(cmd.getMinPrice(), cmd.getMaxPrice(), cmd.getStart(),
-			cmd.getEnd(), cmd.getContent(), cmd.getCategories(), userId)).willReturn(0L);
+		given(
+			expenditureRepository.getSumOfExpenditure(mockCmd.getMinPrice(), mockCmd.getMaxPrice(), mockCmd.getStart(),
+				mockCmd.getEnd(), mockCmd.getContent(), mockCmd.getCategories(), userId)).willReturn(0L);
 
-		given(incomeRepository.getSumOfIncome(cmd.getMinPrice(), cmd.getMaxPrice(), cmd.getStart(),
-			cmd.getEnd(), cmd.getContent(), cmd.getCategories(), userId)).willReturn(20000L);
+		given(incomeRepository.getSumOfIncome(mockCmd.getMinPrice(), mockCmd.getMaxPrice(), mockCmd.getStart(),
+			mockCmd.getEnd(), mockCmd.getContent(), mockCmd.getCategories(), userId)).willReturn(20000L);
 
 		FindAccountBookSumResponse sumOfAccountBooks = accountBookService.getSumOfAccountBooks(userId,
-			cmd);
+			mockCmd);
 
 		assertThat(sumOfAccountBooks.getExpenditureSum()).isEqualTo(0);
 		assertThat(sumOfAccountBooks.getIncomeSum()).isEqualTo(20000L);

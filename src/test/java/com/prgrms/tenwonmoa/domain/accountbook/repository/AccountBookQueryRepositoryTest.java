@@ -28,7 +28,6 @@ import com.prgrms.tenwonmoa.domain.accountbook.dto.MonthDetail;
 import com.prgrms.tenwonmoa.domain.accountbook.dto.YearMonthCondition;
 import com.prgrms.tenwonmoa.domain.category.Category;
 import com.prgrms.tenwonmoa.domain.category.UserCategory;
-import com.prgrms.tenwonmoa.domain.common.page.PageCustomImpl;
 import com.prgrms.tenwonmoa.domain.common.page.PageCustomRequest;
 import com.prgrms.tenwonmoa.domain.common.page.PageResponse;
 import com.prgrms.tenwonmoa.domain.user.User;
@@ -172,7 +171,7 @@ class AccountBookQueryRepositoryTest extends RepositoryTest {
 		@Test
 		public void 해당_페이징에_데이터가_없을때() {
 
-			PageCustomImpl<FindDayAccountResponse> pageResponse = accountBookQueryRepository.findDailyAccount(
+			PageResponse<FindDayAccountResponse> pageResponse = accountBookQueryRepository.findDailyAccount(
 				user.getId(),
 				new PageCustomRequest(1, 10),
 				LocalDate.parse("2022-08-01", DateTimeFormatter.ofPattern("yyyy-MM-dd"))
@@ -190,13 +189,16 @@ class AccountBookQueryRepositoryTest extends RepositoryTest {
 			createExpenditures(10, 2022, 8);
 			createIncomes(10, 2022, 8);
 
-			PageCustomImpl<FindDayAccountResponse> pageResponse = accountBookQueryRepository.findDailyAccount(
+			PageResponse<FindDayAccountResponse> pageResponse = accountBookQueryRepository.findDailyAccount(
 				user.getId(),
 				new PageCustomRequest(1, 10),
 				LocalDate.parse("2022-08-01", DateTimeFormatter.ofPattern("yyyy-MM-dd"))
 			);
 
 			List<FindDayAccountResponse> results = pageResponse.getResults();
+
+			System.out.println(pageResponse.getTotalElements());
+			System.out.println(pageResponse.getTotalPages());
 
 			// 페이징 잘 처리 되었는지
 			assertThat(pageResponse.getCurrentPage()).isEqualTo(1);
@@ -216,7 +218,7 @@ class AccountBookQueryRepositoryTest extends RepositoryTest {
 			createExpenditures(10, 2022, 8);
 			createIncomes(10, 2022, 8);
 
-			PageCustomImpl<FindDayAccountResponse> pageResponse = accountBookQueryRepository.findDailyAccount(
+			PageResponse<FindDayAccountResponse> pageResponse = accountBookQueryRepository.findDailyAccount(
 				user.getId(),
 				new PageCustomRequest(2, 10),
 				LocalDate.parse("2022-08-01", DateTimeFormatter.ofPattern("yyyy-MM-dd"))

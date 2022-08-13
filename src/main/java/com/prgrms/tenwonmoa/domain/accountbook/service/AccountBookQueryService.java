@@ -12,7 +12,6 @@ import com.prgrms.tenwonmoa.domain.accountbook.dto.FindSumResponse;
 import com.prgrms.tenwonmoa.domain.accountbook.dto.MonthCondition;
 import com.prgrms.tenwonmoa.domain.accountbook.dto.YearMonthCondition;
 import com.prgrms.tenwonmoa.domain.accountbook.repository.AccountBookQueryRepository;
-import com.prgrms.tenwonmoa.domain.common.page.PageCustomImpl;
 import com.prgrms.tenwonmoa.domain.common.page.PageCustomRequest;
 import com.prgrms.tenwonmoa.domain.common.page.PageResponse;
 
@@ -25,7 +24,7 @@ public class AccountBookQueryService {
 
 	private final AccountBookQueryRepository accountBookQueryRepository;
 
-	public PageCustomImpl<FindDayAccountResponse> findDailyAccount(Long userId, PageCustomRequest pageRequest,
+	public PageResponse<FindDayAccountResponse> findDailyAccount(Long userId, PageCustomRequest pageRequest,
 		LocalDate date) {
 		return accountBookQueryRepository.findDailyAccount(userId, pageRequest, date);
 	}

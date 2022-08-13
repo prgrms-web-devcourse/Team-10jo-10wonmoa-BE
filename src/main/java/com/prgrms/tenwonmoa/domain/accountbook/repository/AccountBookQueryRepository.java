@@ -55,19 +55,26 @@ public class AccountBookQueryRepository {
 	}
 
 	// 일일 상세내역 pagination version 1
-	public PageCustomImpl<FindDayAccountResponse> findDailyAccount(Long userId, PageCustomRequest pageRequest,
+	public PageResponse<FindDayAccountResponse> findDailyAccount(Long userId, PageCustomRequest pageRequest,
 		LocalDate date) {
 
 		int year = date.getYear();
 		int month = date.getMonthValue();
 
 		// union으로 쿼리 2개
-		List<LocalDate> dates = getPageDate(pageRequest, userId, date);
+		List<LocalDate> totalDates = getPageTotalDate(pageRequest, userId, date);
+
+		long total = totalDates.size();
 
 		// 해당 월에 입력한 데이터 없으면 빈 데이터 내보내기
-		if (dates.size() == 0) {
-			return new PageCustomImpl<>(pageRequest, Collections.EMPTY_LIST);
+		if (total == 0) {
+			return new PageCustomImpl<>(pageRequest, 0, Collections.EMPTY_LIST);
 		}
+
+		int offset = (int)pageRequest.getOffset();
+		int end = (int)Math.min(offset + pageRequest.getSize(), total);
+
+		List<LocalDate> dates = totalDates.subList(offset, end);
 
 		LocalDate firstDate = dates.get(0);
 		LocalDate lastDate = dates.get(dates.size() - 1);
@@ -131,7 +138,7 @@ public class AccountBookQueryRepository {
 
 		Collections.sort(responses);
 
-		return new PageCustomImpl<>(pageRequest, responses);
+		return new PageCustomImpl<>(pageRequest, total, responses);
 	}
 
 	// 일일 상세내역 pagination version 2
@@ -413,7 +420,7 @@ public class AccountBookQueryRepository {
 			.collect(Collectors.toList());
 	}
 
-	private List<LocalDate> getPageDate(PageCustomRequest pageCustomRequest, Long userId, LocalDate date) {
+	private List<LocalDate> getPageTotalDate(PageCustomRequest pageCustomRequest, Long userId, LocalDate date) {
 
 		long offset = pageCustomRequest.getOffset();
 		int size = pageCustomRequest.getSize();
@@ -446,9 +453,7 @@ public class AccountBookQueryRepository {
 			.sorted((d1, d2) -> d1.isAfter(d2) ? -1 : 1)
 			.collect(Collectors.toList());
 
-		int end = Math.min((int)offset + size, dates.size());
-
-		return dates.subList(((int)offset), end);
+		return dates;
 	}
 
 	private Long getAmountZeroIfNull(Long amount) {

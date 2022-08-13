@@ -13,6 +13,7 @@ import org.springframework.stereotype.Repository;
 
 import com.prgrms.tenwonmoa.domain.budget.dto.FindBudgetByRegisterDate;
 import com.prgrms.tenwonmoa.domain.budget.dto.FindBudgetData;
+import com.prgrms.tenwonmoa.domain.category.CategoryType;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
@@ -39,8 +40,9 @@ public class BudgetQueryRepository {
 			))
 			.from(budget)
 			.rightJoin(budget.userCategory, userCategory)
-			.on(budget.registerDate.eq(registerDate))
-			.where(userCategory.user.id.eq(userId))
+			.on(budget.registerDate.eq(registerDate), budget.user.id.eq(userId))
+			.where(userCategory.user.id.eq(userId),
+				userCategory.category.categoryType.eq(CategoryType.EXPENDITURE))
 			.orderBy(AMOUNT.desc())
 			.fetch();
 	}

@@ -7,6 +7,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -17,7 +18,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.prgrms.tenwonmoa.common.RepositoryTest;
 import com.prgrms.tenwonmoa.domain.accountbook.Expenditure;
 import com.prgrms.tenwonmoa.domain.accountbook.Income;
-import com.prgrms.tenwonmoa.domain.accountbook.dto.CalendarCondition;
 import com.prgrms.tenwonmoa.domain.accountbook.dto.DateDetail;
 import com.prgrms.tenwonmoa.domain.accountbook.dto.FindCalendarResponse;
 import com.prgrms.tenwonmoa.domain.accountbook.dto.FindDayAccountResponse;
@@ -25,11 +25,14 @@ import com.prgrms.tenwonmoa.domain.accountbook.dto.FindMonthAccountResponse;
 import com.prgrms.tenwonmoa.domain.accountbook.dto.FindSumResponse;
 import com.prgrms.tenwonmoa.domain.accountbook.dto.MonthCondition;
 import com.prgrms.tenwonmoa.domain.accountbook.dto.MonthDetail;
+import com.prgrms.tenwonmoa.domain.accountbook.dto.YearMonthCondition;
 import com.prgrms.tenwonmoa.domain.category.Category;
 import com.prgrms.tenwonmoa.domain.category.UserCategory;
 import com.prgrms.tenwonmoa.domain.common.page.PageCustomImpl;
 import com.prgrms.tenwonmoa.domain.common.page.PageCustomRequest;
+import com.prgrms.tenwonmoa.domain.common.page.PageResponse;
 import com.prgrms.tenwonmoa.domain.user.User;
+import com.prgrms.tenwonmoa.exception.message.Message;
 
 @DisplayName("가계부(AccountBook) 조회 레포지토리 테스트")
 class AccountBookQueryRepositoryTest extends RepositoryTest {
@@ -169,17 +172,17 @@ class AccountBookQueryRepositoryTest extends RepositoryTest {
 		@Test
 		public void 해당_페이징에_데이터가_없을때() {
 
-			PageCustomImpl<FindDayAccountResponse> dailyAccount = accountBookQueryRepository.findDailyAccount(
+			PageCustomImpl<FindDayAccountResponse> pageResponse = accountBookQueryRepository.findDailyAccount(
 				user.getId(),
 				new PageCustomRequest(1, 10),
 				LocalDate.parse("2022-08-01", DateTimeFormatter.ofPattern("yyyy-MM-dd"))
 			);
 
-			List<FindDayAccountResponse> results = dailyAccount.getResults();
+			List<FindDayAccountResponse> results = pageResponse.getResults();
 
 			assertThat(results.size()).isEqualTo(0);
-			assertThat(dailyAccount.getCurrentPage()).isEqualTo(1);
-			assertThat(dailyAccount.getNextPage()).isNull();
+			assertThat(pageResponse.getCurrentPage()).isEqualTo(1);
+			assertThat(pageResponse.getNextPage()).isNull();
 		}
 
 		@Test
@@ -187,17 +190,17 @@ class AccountBookQueryRepositoryTest extends RepositoryTest {
 			createExpenditures(10, 2022, 8);
 			createIncomes(10, 2022, 8);
 
-			PageCustomImpl<FindDayAccountResponse> dailyAccount = accountBookQueryRepository.findDailyAccount(
+			PageCustomImpl<FindDayAccountResponse> pageResponse = accountBookQueryRepository.findDailyAccount(
 				user.getId(),
 				new PageCustomRequest(1, 10),
 				LocalDate.parse("2022-08-01", DateTimeFormatter.ofPattern("yyyy-MM-dd"))
 			);
 
-			List<FindDayAccountResponse> results = dailyAccount.getResults();
+			List<FindDayAccountResponse> results = pageResponse.getResults();
 
 			// 페이징 잘 처리 되었는지
-			assertThat(dailyAccount.getCurrentPage()).isEqualTo(1);
-			assertThat(dailyAccount.getNextPage()).isEqualTo(2);
+			assertThat(pageResponse.getCurrentPage()).isEqualTo(1);
+			assertThat(pageResponse.getNextPage()).isEqualTo(2);
 			assertThat(results.size()).isEqualTo(10);
 
 			//날짜 모두 정렬 되었는지
@@ -213,18 +216,117 @@ class AccountBookQueryRepositoryTest extends RepositoryTest {
 			createExpenditures(10, 2022, 8);
 			createIncomes(10, 2022, 8);
 
-			PageCustomImpl<FindDayAccountResponse> dailyAccount = accountBookQueryRepository.findDailyAccount(
+			PageCustomImpl<FindDayAccountResponse> pageResponse = accountBookQueryRepository.findDailyAccount(
 				user.getId(),
 				new PageCustomRequest(2, 10),
 				LocalDate.parse("2022-08-01", DateTimeFormatter.ofPattern("yyyy-MM-dd"))
 			);
 
-			List<FindDayAccountResponse> results = dailyAccount.getResults();
+			List<FindDayAccountResponse> results = pageResponse.getResults();
 
 			// 페이징 잘 처리 되었는지
-			assertThat(dailyAccount.getCurrentPage()).isEqualTo(2);
-			assertThat(dailyAccount.getNextPage()).isNull();
+			assertThat(pageResponse.getCurrentPage()).isEqualTo(2);
+			assertThat(pageResponse.getNextPage()).isNull();
 			assertThat(results.size()).isEqualTo(5);
+		}
+	}
+
+	@Nested
+	@DisplayName("일별 상세내역 페이징 Ver2 조회 중")
+	class FindDayAccountVer2 {
+
+		private final YearMonthCondition yearMonthCondition = new YearMonthCondition(2022, 8);
+
+		@Test
+		public void 해당_페이징에_데이터가_없을때() {
+			PageResponse<FindDayAccountResponse> pageResponse = accountBookQueryRepository.findDailyAccountVer2(
+				user.getId(),
+				new PageCustomRequest(1, 10),
+				yearMonthCondition
+			);
+
+			assertThat(pageResponse.getCurrentPage()).isEqualTo(1);
+			assertThat(pageResponse.getTotalElements()).isEqualTo(0);
+			assertThat(pageResponse.getNextPage()).isNull();
+		}
+
+		@Test
+		public void 날짜를_수입과_지출의_10개를_페이징_처리한다() {
+			/**
+			 * given 2022년 8월
+			 * 1 ~ 19 홀수일은 지출 1000원
+			 * 11 ~ 29 홀수일은 수입 1000원
+			 *
+			 * when
+			 * page = 1, size 10 이면
+			 *
+			 * then
+			 * (29, 27, 25, 23, 21, 19 ,17, 15) 총 8일의 10개의 지출과 수입건 가져온다.
+			 * */
+			createExpenditures(10, 2022, 8);
+			createIncomes(10, 2022, 8);
+			PageResponse<FindDayAccountResponse> pageResponse
+				= accountBookQueryRepository.findDailyAccountVer2(
+				user.getId(),
+				new PageCustomRequest(1, 10),
+				yearMonthCondition
+			);
+
+			List<FindDayAccountResponse> results = pageResponse.getResults();
+
+			// 페이징 잘 처리 되었는지
+			assertThat(pageResponse.getCurrentPage()).isEqualTo(1);
+			assertThat(pageResponse.getNextPage()).isEqualTo(2);
+			assertThat(pageResponse.getTotalPages()).isEqualTo(2);
+			assertThat(pageResponse.getTotalElements()).isEqualTo(20);
+
+			results.iterator().forEachRemaining(result -> System.out.println(result.getRegisterDate()));
+
+			//날짜 모두 정렬 되었는지
+			for (int i = 0; i < results.size(); i++) {
+				FindDayAccountResponse dayAccountResponse = results.get(i);
+				assertThat(dayAccountResponse.getRegisterDate().getDayOfMonth()).isEqualTo(29 - i * 2);
+			}
+		}
+
+		@Test
+		public void 잘못된_페이지를_요청할_경우_No_Such_Element_Exception() {
+			/**
+			 * given: 2022년 8월 지출 한 건인데
+			 *
+			 * when: page 2, size 10을 요청하면
+			 *
+			 * then: 예외 발생
+			 * */
+			createExpenditures(1, 2022, 8);
+			assertThatThrownBy(() ->
+				accountBookQueryRepository.findDailyAccountVer2(
+					user.getId(),
+					new PageCustomRequest(2, 10),
+					yearMonthCondition
+				))
+				.isInstanceOf(NoSuchElementException.class)
+				.hasMessage(Message.INVALID_PAGE_NUMBER.getMessage());
+		}
+
+		@Test
+		public void 마지막_페이지일_경우_응답에서_nextPage를_null로_응답한다() {
+			// paging 15, 13, 11 , 9, 7, 5, 3, 1 8일
+			createExpenditures(10, 2022, 8);
+			createIncomes(10, 2022, 8);
+
+			PageResponse<FindDayAccountResponse> pageResponse
+				= accountBookQueryRepository.findDailyAccountVer2(
+				user.getId(),
+				new PageCustomRequest(2, 10),
+				yearMonthCondition
+			);
+
+			List<FindDayAccountResponse> results = pageResponse.getResults();
+
+			// 페이징 잘 처리 되었는지
+			assertThat(pageResponse.getCurrentPage()).isEqualTo(2);
+			assertThat(pageResponse.getNextPage()).isNull();
 		}
 	}
 
@@ -431,7 +533,7 @@ class AccountBookQueryRepositoryTest extends RepositoryTest {
 			int year = 2020;
 			int month = 2;
 
-			CalendarCondition condition = new CalendarCondition(year, month);
+			YearMonthCondition condition = new YearMonthCondition(year, month);
 
 			createExpenditures(10, year, month);
 			createIncomes(10, year, month);

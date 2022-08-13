@@ -3,23 +3,29 @@ package com.prgrms.tenwonmoa.domain.accountbook.repository;
 import static com.prgrms.tenwonmoa.domain.accountbook.QExpenditure.*;
 import static com.prgrms.tenwonmoa.domain.accountbook.QIncome.*;
 
+import java.math.BigInteger;
+import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import javax.persistence.EntityManager;
+import javax.persistence.Query;
 
 import org.springframework.stereotype.Repository;
 
 import com.prgrms.tenwonmoa.domain.accountbook.Expenditure;
 import com.prgrms.tenwonmoa.domain.accountbook.Income;
 import com.prgrms.tenwonmoa.domain.accountbook.dto.AccountBookItem;
-import com.prgrms.tenwonmoa.domain.accountbook.dto.CalendarCondition;
 import com.prgrms.tenwonmoa.domain.accountbook.dto.DateDetail;
 import com.prgrms.tenwonmoa.domain.accountbook.dto.FindCalendarResponse;
 import com.prgrms.tenwonmoa.domain.accountbook.dto.FindDayAccountResponse;
@@ -27,19 +33,26 @@ import com.prgrms.tenwonmoa.domain.accountbook.dto.FindMonthAccountResponse;
 import com.prgrms.tenwonmoa.domain.accountbook.dto.FindSumResponse;
 import com.prgrms.tenwonmoa.domain.accountbook.dto.MonthCondition;
 import com.prgrms.tenwonmoa.domain.accountbook.dto.MonthDetail;
+import com.prgrms.tenwonmoa.domain.accountbook.dto.YearMonthCondition;
 import com.prgrms.tenwonmoa.domain.category.CategoryType;
 import com.prgrms.tenwonmoa.domain.common.page.PageCustomImpl;
 import com.prgrms.tenwonmoa.domain.common.page.PageCustomRequest;
+import com.prgrms.tenwonmoa.domain.common.page.PageInternalElementsImpl;
+import com.prgrms.tenwonmoa.domain.common.page.PageResponse;
+import com.prgrms.tenwonmoa.exception.message.Message;
 import com.querydsl.core.group.GroupBy;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
-import lombok.RequiredArgsConstructor;
-
 @Repository
-@RequiredArgsConstructor
 public class AccountBookQueryRepository {
 
+	private final EntityManager em;
 	private final JPAQueryFactory queryFactory;
+
+	public AccountBookQueryRepository(EntityManager em, JPAQueryFactory queryFactory) {
+		this.em = em;
+		this.queryFactory = queryFactory;
+	}
 
 	// 일일 상세내역 pagination version 1
 	public PageCustomImpl<FindDayAccountResponse> findDailyAccount(Long userId, PageCustomRequest pageRequest,
@@ -121,6 +134,140 @@ public class AccountBookQueryRepository {
 		return new PageCustomImpl<>(pageRequest, responses);
 	}
 
+	// 일일 상세내역 pagination version 2
+	public PageResponse<FindDayAccountResponse> findDailyAccountVer2(Long userId,
+		PageCustomRequest pageRequest,
+		YearMonthCondition condition) {
+		int year = condition.getYear();
+		int month = condition.getMonth();
+
+		// union 후 page date 다 가져오기.
+		String unionQuery =
+			"SELECT * FROM "
+				+ "(SELECT e.id, c.category_kind, e.amount, e.content, e.category_name, "
+				+ "e.register_date, uc.id as user_category_id, e.user_id FROM expenditure e "
+				+ "LEFT JOIN user_category uc on e.user_category_id = uc.id "
+				+ "JOIN category c on uc.category_id=c.id "
+				+ "UNION "
+				+ "SELECT i.id, c.category_kind, i.amount, i.content, i.category_name, "
+				+ "i.register_date, uc.id as user_category_id, i.user_id from income i "
+				+ "LEFT JOIN user_category uc on i.user_category_id =uc.id "
+				+ "JOIN category c on uc.category_id=c.id) total "
+				+ "WHERE user_id = ? and "
+				+ "YEAR(register_date) = ? and "
+				+ "MONTH(register_date) = ? "
+				+ "ORDER BY register_date desc";
+
+		String countQuery = "SELECT COUNT(*) FROM "
+			+ "(SELECT e.id, c.category_kind, e.amount, e.content, e.category_name, "
+			+ "e.register_date, uc.id as user_category_id, e.user_id FROM expenditure e "
+			+ "LEFT JOIN user_category uc on e.user_category_id = uc.id "
+			+ "JOIN category c on uc.category_id=c.id "
+			+ "UNION "
+			+ "SELECT i.id, c.category_kind, i.amount, i.content, i.category_name, "
+			+ "i.register_date, uc.id as user_category_id, i.user_id from income i "
+			+ "LEFT JOIN user_category uc on i.user_category_id = uc.id "
+			+ "JOIN category c on uc.category_id=c.id) total "
+			+ "WHERE total.user_id = ? and "
+			+ "YEAR (total.register_date) = ? and "
+			+ "MONTH(total.register_date) = ?";
+
+		Query nativeCountQuery = em.createNativeQuery(countQuery);
+		setParameters(nativeCountQuery, userId, year, month);
+		Object countResult = nativeCountQuery.getSingleResult();
+		long totalElements = ((BigInteger)countResult).longValue();
+
+		// 해당 월에 입력한 데이터 없으면 빈 데이터 내보내기
+		if (totalElements == 0) {
+			return new PageInternalElementsImpl<>(pageRequest, totalElements, Collections.EMPTY_LIST);
+		}
+
+		// 요청한 페이지 없을 경우
+		if (totalElements < pageRequest.getOffset()) {
+			throw new NoSuchElementException(Message.INVALID_PAGE_NUMBER.getMessage());
+		}
+
+		// paging 처리후 AccountBookItem으로 binding
+		Query nativeUnionQuery = em.createNativeQuery(unionQuery);
+		setParameters(nativeUnionQuery, userId, year, month);
+		setPagingParam(nativeUnionQuery, pageRequest);
+
+		List<Object[]> resultObjects = nativeUnionQuery.getResultList();
+
+		List<AccountBookItem> accountBookItems = resultObjects.stream()
+			.map(this::bindData)
+			.collect(Collectors.toList());
+
+		// 그리고 수입과 지출이 작성된 날짜, 날짜 중복 X
+		List<LocalDate> registerDates = getRegisterDates(accountBookItems);
+
+		LocalDate startDate = registerDates.get(registerDates.size() - 1);
+		LocalDate endDate = registerDates.get(0);
+
+		// 일일 지출과 수입 합계
+		Map<Integer, Long> expenditureSumMap = getDayExpenditureSum(userId, year, month, startDate, endDate);
+		Map<Integer, Long> incomeSumMap = getDayIncomeSumMap(userId, year, month, startDate, endDate);
+
+		List<FindDayAccountResponse> responses = getFindDayAccountResponses(
+			accountBookItems, registerDates, expenditureSumMap, incomeSumMap);
+
+		return new PageInternalElementsImpl<>(pageRequest, totalElements, responses);
+	}
+
+	private List<FindDayAccountResponse> getFindDayAccountResponses(List<AccountBookItem> accountBookItems,
+		List<LocalDate> registerDates, Map<Integer, Long> expenditureSumMap, Map<Integer, Long> incomeSumMap) {
+		List<FindDayAccountResponse> responses = new ArrayList<>();
+
+		registerDates.iterator().forEachRemaining(
+			d -> {
+				List<AccountBookItem> accounts = accountBookItems.stream().filter(
+					accountBookItem -> accountBookItem.getRegisterTime().toLocalDate().isEqual(d)
+				).collect(Collectors.toList());
+
+				responses.add(
+					new FindDayAccountResponse(d, getAmountZeroIfNull(incomeSumMap.get(d)), getAmountZeroIfNull(
+						expenditureSumMap.get(d)), accounts));
+			}
+		);
+		return responses;
+	}
+
+	private Map<Integer, Long> getDayIncomeSumMap(Long userId, int year, int month, LocalDate startDate,
+		LocalDate endDate) {
+		return queryFactory.from(income)
+			.where(
+				income.registerDate.year().eq(year),
+				income.user.id.eq(userId),
+				income.registerDate.month().eq(month),
+				income.registerDate.between(startDate.atTime(LocalTime.MIN), endDate.atTime(LocalTime.MAX))
+			)
+			.transform(GroupBy.groupBy(income.registerDate.dayOfMonth())
+				.as(GroupBy.sum(income.amount))
+			);
+	}
+
+	private Map<Integer, Long> getDayExpenditureSum(Long userId, int year, int month, LocalDate startDate,
+		LocalDate endDate) {
+		return queryFactory.from(expenditure)
+			.where(
+				expenditure.user.id.eq(userId),
+				expenditure.registerDate.year().eq(year),
+				expenditure.registerDate.month().eq(month),
+				expenditure.registerDate.between(startDate.atTime(LocalTime.MIN), endDate.atTime(LocalTime.MAX))
+			)
+			.transform(GroupBy.groupBy(expenditure.registerDate.dayOfMonth())
+				.as(GroupBy.sum(expenditure.amount))
+			);
+	}
+
+	private List<LocalDate> getRegisterDates(List<AccountBookItem> accountBookItems) {
+		return accountBookItems.stream()
+			.map(accountBookItem -> accountBookItem.getRegisterTime().toLocalDate())
+			.distinct()
+			.sorted((d1, d2) -> d1.isAfter(d2) ? -1 : 1)
+			.collect(Collectors.toList());
+	}
+
 	public FindSumResponse findMonthSum(Long userId, LocalDate month) {
 
 		Long incomeSum = queryFactory.select(income.amount.sum())
@@ -200,7 +347,7 @@ public class AccountBookQueryRepository {
 		return new FindSumResponse(incomeSum, expenditureSum);
 	}
 
-	public FindCalendarResponse findCalendarAccount(Long userId, CalendarCondition condition) {
+	public FindCalendarResponse findCalendarAccount(Long userId, YearMonthCondition condition) {
 
 		int year = condition.getYear();
 		int month = condition.getMonth();
@@ -306,6 +453,28 @@ public class AccountBookQueryRepository {
 
 	private Long getAmountZeroIfNull(Long amount) {
 		return amount == null ? 0 : amount;
+	}
+
+	private AccountBookItem bindData(Object[] objects) {
+		long id = ((BigInteger)objects[0]).longValue();
+		String categoryKind = (String)objects[1];
+		long amount = ((BigInteger)objects[2]).longValue();
+		String content = (String)objects[3];
+		String categoryName = (String)objects[4];
+		LocalDateTime registerTime = ((Timestamp)objects[5]).toLocalDateTime();
+
+		return new AccountBookItem(id, categoryKind, amount, content, categoryName, registerTime);
+	}
+
+	private void setParameters(Query query, Object... params) {
+		for (int i = 1; i <= params.length; i++) {
+			query.setParameter(i, params[i - 1]);
+		}
+	}
+
+	private void setPagingParam(Query query, PageCustomRequest pageRequest) {
+		query.setFirstResult((int)pageRequest.getOffset());
+		query.setMaxResults(pageRequest.getSize());
 	}
 }
 

@@ -310,6 +310,11 @@ class BudgetQueryRepositoryTest extends RepositoryFixture {
 		Category category4 = save(new Category("ct4", EXPENDITURE));
 		Category category5 = save(new Category("ct5", EXPENDITURE));
 
+		Category incomeCategory1 = save(new Category("income1", INCOME));
+		Category incomeCategory2 = save(new Category("income2", INCOME));
+		save(createUserCategory(user, incomeCategory1));
+		save(createUserCategory(user, incomeCategory2));
+
 		uc1 = save(createUserCategory(user, category1));
 		uc2 = save(createUserCategory(user, category2));
 		uc3 = save(createUserCategory(user, category3));

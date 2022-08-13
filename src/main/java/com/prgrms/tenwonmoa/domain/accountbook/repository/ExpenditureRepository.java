@@ -21,6 +21,10 @@ public interface ExpenditureRepository extends JpaRepository<Expenditure, Long> 
 		+ "where e.userCategory.id = :userCategoryId")
 	void updateCategoryName(Long userCategoryId, String categoryName);
 
+	@Modifying
+	@Query("delete from Expenditure e where e.user.id = :userId")
+	void deleteAllByUserIdInQuery(Long userId);
+
 	@Query("select SUM(e.amount) from Expenditure e "
 		+ "where e.amount >= :minPrice "
 		+ "and e.amount <= :maxPrice "
@@ -33,4 +37,5 @@ public interface ExpenditureRepository extends JpaRepository<Expenditure, Long> 
 		LocalDateTime startDateTime, LocalDateTime endDateTime,
 		String content, List<Long> userCategoryIds,
 		Long userId);
+
 }

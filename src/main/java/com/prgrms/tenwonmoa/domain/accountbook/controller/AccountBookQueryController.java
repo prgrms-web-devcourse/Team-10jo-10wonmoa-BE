@@ -12,15 +12,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.prgrms.tenwonmoa.domain.accountbook.dto.CalendarCondition;
 import com.prgrms.tenwonmoa.domain.accountbook.dto.FindCalendarResponse;
 import com.prgrms.tenwonmoa.domain.accountbook.dto.FindDayAccountResponse;
 import com.prgrms.tenwonmoa.domain.accountbook.dto.FindMonthAccountResponse;
 import com.prgrms.tenwonmoa.domain.accountbook.dto.FindSumResponse;
 import com.prgrms.tenwonmoa.domain.accountbook.dto.MonthCondition;
+import com.prgrms.tenwonmoa.domain.accountbook.dto.YearMonthCondition;
 import com.prgrms.tenwonmoa.domain.accountbook.service.AccountBookQueryService;
 import com.prgrms.tenwonmoa.domain.common.page.PageCustomImpl;
 import com.prgrms.tenwonmoa.domain.common.page.PageCustomRequest;
+import com.prgrms.tenwonmoa.domain.common.page.PageResponse;
 
 import lombok.RequiredArgsConstructor;
 
@@ -43,6 +44,22 @@ public class AccountBookQueryController {
 		PageCustomRequest pageRequest = new PageCustomRequest(page, size);
 		PageCustomImpl<FindDayAccountResponse> response = accountBookQueryService.findDailyAccount(userId, pageRequest,
 			date);
+		return ResponseEntity.ok().body(response);
+	}
+
+	@GetMapping("/daily")
+	public ResponseEntity<PageResponse<FindDayAccountResponse>> findDailyAccountVer2(
+		@AuthenticationPrincipal Long userId,
+		@RequestParam int year,
+		@RequestParam int month,
+		@RequestParam(value = "page", defaultValue = "1") int page,
+		@RequestParam(value = "size", defaultValue = "10") int size
+	) {
+		YearMonthCondition condition = new YearMonthCondition(year, month);
+		PageCustomRequest pageRequest = new PageCustomRequest(page, size);
+		PageResponse<FindDayAccountResponse> response = accountBookQueryService.findDailyAccountVer2(userId,
+			pageRequest,
+			condition);
 		return ResponseEntity.ok().body(response);
 	}
 
@@ -82,7 +99,7 @@ public class AccountBookQueryController {
 		@RequestParam(value = "year") int year,
 		@RequestParam("month") int month
 	) {
-		CalendarCondition condition = new CalendarCondition(year, month);
+		YearMonthCondition condition = new YearMonthCondition(year, month);
 		FindCalendarResponse response = accountBookQueryService.findCalendarAccount(userId, condition);
 		return ResponseEntity.ok(response);
 	}

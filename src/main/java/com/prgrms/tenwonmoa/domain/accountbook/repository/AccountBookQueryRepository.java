@@ -37,7 +37,6 @@ import com.prgrms.tenwonmoa.domain.accountbook.dto.YearMonthCondition;
 import com.prgrms.tenwonmoa.domain.category.CategoryType;
 import com.prgrms.tenwonmoa.domain.common.page.PageCustomImpl;
 import com.prgrms.tenwonmoa.domain.common.page.PageCustomRequest;
-import com.prgrms.tenwonmoa.domain.common.page.PageInternalElementsImpl;
 import com.prgrms.tenwonmoa.domain.common.page.PageResponse;
 import com.prgrms.tenwonmoa.exception.message.Message;
 import com.querydsl.core.group.GroupBy;
@@ -186,7 +185,7 @@ public class AccountBookQueryRepository {
 
 		// 해당 월에 입력한 데이터 없으면 빈 데이터 내보내기
 		if (totalElements == 0) {
-			return new PageInternalElementsImpl<>(pageRequest, totalElements, Collections.EMPTY_LIST);
+			return new PageCustomImpl<>(pageRequest, totalElements, Collections.EMPTY_LIST);
 		}
 
 		// 요청한 페이지 없을 경우
@@ -218,7 +217,7 @@ public class AccountBookQueryRepository {
 		List<FindDayAccountResponse> responses = getFindDayAccountResponses(
 			accountBookItems, registerDates, expenditureSumMap, incomeSumMap);
 
-		return new PageInternalElementsImpl<>(pageRequest, totalElements, responses);
+		return new PageCustomImpl<>(pageRequest, totalElements, responses);
 	}
 
 	private List<FindDayAccountResponse> getFindDayAccountResponses(List<AccountBookItem> accountBookItems,

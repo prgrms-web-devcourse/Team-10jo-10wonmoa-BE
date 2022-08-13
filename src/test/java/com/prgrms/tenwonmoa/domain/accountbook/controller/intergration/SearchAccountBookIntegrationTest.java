@@ -144,11 +144,54 @@ class  SearchAccountBookIntegrationTest extends BaseControllerIntegrationTest {
 	}
 
 	@Test
+	void 금액_최소값이_최대값보다_크면_검색_실패() throws Exception {
+		mvc.perform(get("/api/v1/account-book/search")
+				.header(HttpHeaders.AUTHORIZATION, accessToken)
+				.param("minprice", "10000")
+				.param("maxprice", "10"))
+			.andExpect(status().isBadRequest());
+	}
+
+	@Test
+	void 시작일이_종료일보다_뒤이면_검색_실패() throws Exception {
+		mvc.perform(get("/api/v1/account-book/search")
+				.header(HttpHeaders.AUTHORIZATION, accessToken)
+				.param("start", "2022-01-01")
+				.param("end", "2021-12-31"))
+			.andExpect(status().isBadRequest());
+	}
+
+	@Test
 	void 금액의_범위를_벗어나는_값_전송시_조회_실패() throws Exception {
 		validateRequest("minprice", "-1");
 		validateRequest("maxprice", "-1");
 		validateRequest("minprice", "1000000000001");
 		validateRequest("maxprice", "1000000000001");
+	}
+
+	@Test
+	void 검색데이터_합계_Api() throws Exception {
+		//given
+		Long incomeCategoryId = 카테고리_등록("INCOME", "월급");
+		Long expenditureCategoryId = 카테고리_등록("EXPENDITURE", "식비");
+		수입_등록(incomeCategoryId, 10000L, "용돈", LocalDateTime.now());
+		지출_등록(expenditureCategoryId, 5000L, "점심", LocalDateTime.now());
+
+		String categories = String.join(",", String.valueOf(incomeCategoryId), String.valueOf(expenditureCategoryId));
+
+		//when
+		//then
+		mvc.perform(get("/api/v1/account-book/search/sum")
+				.header(HttpHeaders.AUTHORIZATION, accessToken)
+				.param("categories", categories)
+				.param("minprice", "0")
+				.param("maxprice", "5000")
+				.param("start", LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")))
+				.param("end", LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")))
+				.param("content", ""))
+			.andExpect(jsonPath("$.incomeSum").value(0))
+			.andExpect(jsonPath("$.expenditureSum").value(5000))
+			.andExpect(jsonPath("$.totalSum").value(-5000));
 	}
 
 	private void validateRequest(String field, String value) throws Exception {

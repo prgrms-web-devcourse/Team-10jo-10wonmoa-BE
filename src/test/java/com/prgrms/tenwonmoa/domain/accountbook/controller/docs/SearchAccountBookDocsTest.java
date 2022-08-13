@@ -32,6 +32,7 @@ import com.prgrms.tenwonmoa.config.WebSecurityConfig;
 import com.prgrms.tenwonmoa.domain.accountbook.controller.SearchAccountBookController;
 import com.prgrms.tenwonmoa.domain.accountbook.dto.AccountBookItem;
 import com.prgrms.tenwonmoa.domain.accountbook.dto.FindAccountBookResponse;
+import com.prgrms.tenwonmoa.domain.accountbook.dto.FindAccountBookSumResponse;
 import com.prgrms.tenwonmoa.domain.accountbook.dto.service.SearchAccountBookCmd;
 import com.prgrms.tenwonmoa.domain.accountbook.service.SearchAccountBookService;
 import com.prgrms.tenwonmoa.domain.category.CategoryType;
@@ -113,4 +114,42 @@ class SearchAccountBookDocsTest {
 				)
 			);
 	}
+
+	@Test
+	@WithMockCustomUser
+	void 지출_수입_검색_데이터의_합() throws Exception {
+		FindAccountBookSumResponse response = FindAccountBookSumResponse.of(10000L, 20000L);
+
+		given(accountBookService.getSumOfAccountBooks(anyLong(), any(SearchAccountBookCmd.class)))
+			.willReturn(response);
+
+		mockMvc.perform(get("/api/v1/account-book/search/sum")
+				.param("categories", "1,2,3")
+				.param("minprice", "1000")
+				.param("maxprice", "50000")
+				.param("start", "2022-08-01")
+				.param("end", "2022-08-10")
+				.param("content", "점심"))
+			.andExpect(status().isOk())
+			.andDo(
+				document("search-sum-account-book",
+					Preprocessors.preprocessRequest(Preprocessors.prettyPrint()),
+					Preprocessors.preprocessResponse(Preprocessors.prettyPrint()),
+					requestParameters(
+						parameterWithName("categories").description("유저카테고리 아이디").optional(),
+						parameterWithName("minprice").description("최소 가격").optional(),
+						parameterWithName("maxprice").description("최대 가격").optional(),
+						parameterWithName("start").description("시작 등록일").optional(),
+						parameterWithName("end").description("종료 등록일").optional(),
+						parameterWithName("content").description("지출, 수입의 내용").optional()
+					),
+					responseFields(
+						fieldWithPath("incomeSum").type(JsonFieldType.NUMBER).description("수입의 총합"),
+						fieldWithPath("expenditureSum").type(JsonFieldType.NUMBER).description("지출의 총합"),
+						fieldWithPath("totalSum").type(JsonFieldType.NUMBER).description("지출, 수입의 총합")
+					)
+				)
+			);
+	}
+
 }

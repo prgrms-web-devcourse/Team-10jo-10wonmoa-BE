@@ -1,4 +1,4 @@
-package com.prgrms.tenwonmoa.domain.accountbook.dto;
+package com.prgrms.tenwonmoa.domain.accountbook.dto.condition;
 
 import static com.google.common.base.Preconditions.*;
 

@@ -16,10 +16,9 @@ import com.prgrms.tenwonmoa.domain.accountbook.dto.FindCalendarResponse;
 import com.prgrms.tenwonmoa.domain.accountbook.dto.FindDayAccountResponse;
 import com.prgrms.tenwonmoa.domain.accountbook.dto.FindMonthAccountResponse;
 import com.prgrms.tenwonmoa.domain.accountbook.dto.FindSumResponse;
-import com.prgrms.tenwonmoa.domain.accountbook.dto.MonthCondition;
-import com.prgrms.tenwonmoa.domain.accountbook.dto.YearMonthCondition;
+import com.prgrms.tenwonmoa.domain.accountbook.dto.condition.MonthCondition;
+import com.prgrms.tenwonmoa.domain.accountbook.dto.condition.YearMonthCondition;
 import com.prgrms.tenwonmoa.domain.accountbook.service.AccountBookQueryService;
-import com.prgrms.tenwonmoa.domain.common.page.PageCustomImpl;
 import com.prgrms.tenwonmoa.domain.common.page.PageCustomRequest;
 import com.prgrms.tenwonmoa.domain.common.page.PageResponse;
 
@@ -33,7 +32,7 @@ public class AccountBookQueryController {
 	private final AccountBookQueryService accountBookQueryService;
 
 	@GetMapping("/daily/{date}")
-	public ResponseEntity<PageCustomImpl<FindDayAccountResponse>> findDailyAccount(
+	public ResponseEntity<PageResponse<FindDayAccountResponse>> findDailyAccount(
 		@AuthenticationPrincipal Long userId,
 		@RequestParam(value = "page", defaultValue = "1") int page,
 		@RequestParam(value = "size", defaultValue = "10") int size,
@@ -42,7 +41,7 @@ public class AccountBookQueryController {
 			LocalDate date
 	) {
 		PageCustomRequest pageRequest = new PageCustomRequest(page, size);
-		PageCustomImpl<FindDayAccountResponse> response = accountBookQueryService.findDailyAccount(userId, pageRequest,
+		PageResponse<FindDayAccountResponse> response = accountBookQueryService.findDailyAccount(userId, pageRequest,
 			date);
 		return ResponseEntity.ok().body(response);
 	}

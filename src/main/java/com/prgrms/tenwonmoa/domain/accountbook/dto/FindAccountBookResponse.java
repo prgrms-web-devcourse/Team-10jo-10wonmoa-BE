@@ -9,12 +9,12 @@ import lombok.Getter;
 
 @Getter
 public final class FindAccountBookResponse extends PageCustomImpl<AccountBookItem> {
-	private FindAccountBookResponse(PageCustomRequest pageRequest, List<AccountBookItem> results) {
-		super(pageRequest, results);
+	private FindAccountBookResponse(PageCustomRequest pageRequest, long totalElements, List<AccountBookItem> results) {
+		super(pageRequest, totalElements, results);
 	}
 
-	public static FindAccountBookResponse of(PageCustomRequest pageRequest,
+	public static FindAccountBookResponse of(PageCustomRequest pageRequest, long totalElements,
 		List<AccountBookItem> results) {
-		return new FindAccountBookResponse(pageRequest, results);
+		return new FindAccountBookResponse(pageRequest, totalElements, results);
 	}
 }

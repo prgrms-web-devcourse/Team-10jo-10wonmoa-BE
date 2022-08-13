@@ -57,6 +57,35 @@ public class SearchAccountBookRepository {
 			.collect(Collectors.toList());
 	}
 
+	public long countOfSearch(Long minPrice, Long maxPrice,
+		LocalDateTime startDateTime, LocalDateTime endDateTime,
+		String content, List<Long> userCategoryIds,
+		Long userId, PageCustomRequest pageRequest) {
+
+		String countQuery =
+			"SELECT COUNT(*) FROM "
+				+ "(SELECT e.id, c.category_kind, e.amount, e.content, e.category_name, "
+				+ "e.register_date, uc.id as user_category_id, e.user_id FROM expenditure e "
+				+ "LEFT JOIN user_category uc on e.user_category_id=uc.id "
+				+ "JOIN category c on uc.category_id=c.id "
+				+ "UNION "
+				+ "SELECT i.id, c.category_kind, i.amount, i.content, i.category_name, "
+				+ "i.register_date, uc.id as user_category_id, i.user_id from income i "
+				+ "LEFT JOIN user_category uc on i.user_category_id=uc.id "
+				+ "JOIN category c on uc.category_id=c.id) total "
+				+ "WHERE user_id = ? and "
+				+ "content like CONCAT('%', ?, '%') and "
+				+ "? <= amount and amount <= ? and "
+				+ "? <= register_date and register_date <= ? and "
+				+ userCategoryWhere(userCategoryIds);
+
+		Query nativeCountQuery = em.createNativeQuery(countQuery);
+		setParameters(nativeCountQuery, userCategoryIds, userId, content, minPrice,
+			maxPrice, startDateTime, endDateTime);
+		Object countResult = nativeCountQuery.getSingleResult();
+		return ((BigInteger)countResult).longValue();
+	}
+
 	private AccountBookItem bindData(Object[] objects) {
 		long id = ((BigInteger)objects[0]).longValue();
 		String categoryKind = (String)objects[1];

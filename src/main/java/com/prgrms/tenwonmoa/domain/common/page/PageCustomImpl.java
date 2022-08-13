@@ -2,23 +2,41 @@ package com.prgrms.tenwonmoa.domain.common.page;
 
 import java.util.List;
 
-import lombok.Getter;
-
-@Getter
-public class PageCustomImpl<T> extends ChunksCustom<T> {
+public class PageCustomImpl<T> extends ChunksCustom<T> implements PageResponse<T> {
 
 	private final int currentPage;
 
-	private Integer nextPage;
+	private final int pageSize;
 
-	public PageCustomImpl(PageCustomRequest pageRequest, List<T> results) {
+	private final long totalElements;
+
+	public PageCustomImpl(PageCustomRequest pageRequest, long totalElements, List<T> results) {
 		super(results);
 		this.currentPage = pageRequest.getPage();
-		this.nextPage = this.currentPage + 1;
+		this.pageSize = pageRequest.getSize();
+		this.totalElements = totalElements;
+	}
 
-		// 마지막 페이지일 경우
-		if (this.results.size() < pageRequest.getSize()) {
-			nextPage = null;
+	@Override
+	public int getCurrentPage() {
+		return currentPage;
+	}
+
+	@Override
+	public Integer getNextPage() {
+		return this.currentPage == getTotalPages() ? null : currentPage + 1;
+	}
+
+	@Override
+	public long getTotalElements() {
+		return this.totalElements;
+	}
+
+	@Override
+	public int getTotalPages() {
+		if (totalElements == 0) {
+			return 1;
 		}
+		return this.pageSize == 0 ? 1 : (int)Math.ceil((double)totalElements / (double)this.pageSize);
 	}
 }

@@ -26,7 +26,10 @@ public class SearchAccountBookService {
 		List<AccountBookItem> accountBookItems = repository.searchAccountBook(cmd.getMinPrice(), cmd.getMaxPrice(),
 			cmd.getStart(), cmd.getEnd(), cmd.getContent(), cmd.getCategories(), authenticatedId, pageRequest);
 
-		return FindAccountBookResponse.of(pageRequest, accountBookItems);
+		long totalElements = repository.countOfSearch(cmd.getMinPrice(), cmd.getMaxPrice(),
+			cmd.getStart(), cmd.getEnd(), cmd.getContent(), cmd.getCategories(), authenticatedId, pageRequest);
+
+		return FindAccountBookResponse.of(pageRequest, totalElements, accountBookItems);
 	}
 
 }

@@ -67,6 +67,7 @@ class SearchAccountBookDocsTest {
 		PageCustomRequest pageRequest = new PageCustomRequest(1, 1);
 		FindAccountBookResponse response = of(
 			pageRequest,
+			10,
 			List.of(
 				new AccountBookItem(1L, CategoryType.EXPENDITURE.name(), 10000L, "점심", "식비", LocalDateTime.now()),
 				new AccountBookItem(1L, CategoryType.INCOME.name(), 50000L, "용돈", "용돈", LocalDateTime.now()))
@@ -102,6 +103,8 @@ class SearchAccountBookDocsTest {
 					responseFields(
 						fieldWithPath("currentPage").type(JsonFieldType.NUMBER).description("현재 페이지"),
 						fieldWithPath("nextPage").type(JsonFieldType.NUMBER).description("다음 페이지"),
+						fieldWithPath("totalElements").type(JsonFieldType.NUMBER).description("전체 결과 개수"),
+						fieldWithPath("totalPages").type(JsonFieldType.NUMBER).description("페이지"),
 						fieldWithPath("results[]").type(JsonFieldType.ARRAY).description("검색된 지출, 수입 데이터"),
 						fieldWithPath("results[].registerTime").type(JsonFieldType.STRING).description("등록일"),
 						fieldWithPath("results[].amount").type(JsonFieldType.NUMBER).description("금액"),

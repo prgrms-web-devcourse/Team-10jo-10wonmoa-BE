@@ -1,6 +1,7 @@
 package com.prgrms.tenwonmoa.domain.user.security.jwt.filter;
 
 import java.io.IOException;
+import java.util.NoSuchElementException;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -22,7 +23,6 @@ import com.prgrms.tenwonmoa.domain.user.repository.UserRepository;
 import com.prgrms.tenwonmoa.domain.user.security.jwt.JwtConst;
 import com.prgrms.tenwonmoa.domain.user.security.jwt.repository.LogoutAccessTokenRedisRepository;
 import com.prgrms.tenwonmoa.domain.user.security.jwt.service.TokenProvider;
-import com.prgrms.tenwonmoa.exception.InvalidTokenException;
 import com.prgrms.tenwonmoa.exception.UnauthorizedUserException;
 import com.prgrms.tenwonmoa.exception.message.Message;
 
@@ -88,7 +88,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 	private void checkUserExists(String token) {
 		String email = tokenProvider.validateAndGetEmail(token);
 		if (!userRepository.existsByEmail(email)) {
-			throw new InvalidTokenException(Message.INVALID_TOKEN);
+			throw new NoSuchElementException(Message.USER_NOT_FOUND.getMessage());
 		}
 	}
 

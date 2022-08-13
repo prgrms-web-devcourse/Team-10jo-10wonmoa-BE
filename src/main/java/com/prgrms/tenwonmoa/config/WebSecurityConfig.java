@@ -2,6 +2,7 @@ package com.prgrms.tenwonmoa.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -48,8 +49,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 			.cors()
 				.and()
 			.authorizeRequests()
-				.antMatchers("/api/v1/users", "/api/v1/users/login", "/api/v1/users/refresh", "/docs/**",
-					"api/v1/oauth2/**", "/login/**")
+				.antMatchers("/docs/**")
+					.permitAll()
+				.antMatchers(HttpMethod.POST, "/api/v1/users", "/api/v1/users/login",  "/api/v1/users/refresh")
 					.permitAll()
 				.anyRequest().authenticated()
 				.and()

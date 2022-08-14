@@ -16,9 +16,24 @@ include::{snippets}/expenditure-create/http-response.adoc[]
 
 === 지출 상세조회(GET)
 
-
 .Request
 include::{snippets}/expenditure-get/http-request.adoc[]
 
 .Response
 include::{snippets}/expenditure-get/http-response.adoc[]
+
+=== 지출 수정(PUT)
+
+.Request
+include::{snippets}/expenditure-update/http-request.adoc[]
+
+.Response
+include::{snippets}/expenditure-update/http-response.adoc[]
+
+=== 지출 삭제(DELETE)
+
+.Request
+include::{snippets}/expenditure-delete/http-request.adoc[]
+
+.Response
+include::{snippets}/expenditure-delete/http-response.adoc[]

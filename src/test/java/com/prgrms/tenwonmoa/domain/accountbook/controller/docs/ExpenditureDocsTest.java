@@ -58,7 +58,7 @@ public class ExpenditureDocsTest {
 
 	@MockBean
 	private ExpenditureService expenditureService;
-	
+
 	@Nested
 	@DisplayName("지출 등록 API 호출 중 ")
 	class DescribeOfPostExpenditure {
@@ -153,5 +153,5 @@ public class ExpenditureDocsTest {
 			);
 		}
 	}
-
 }
+

@@ -1,7 +1,6 @@
 package com.prgrms.tenwonmoa.domain.accountbook.controller.docs;
 
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.*;
-import static com.prgrms.tenwonmoa.exception.message.Message.*;
 import static org.mockito.BDDMockito.*;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.restdocs.payload.JsonFieldType.*;
@@ -11,7 +10,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.NoSuchElementException;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -29,7 +27,6 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.prgrms.tenwonmoa.common.annotation.WithMockCustomUser;
-import com.prgrms.tenwonmoa.common.documentdto.ErrorResponseDoc;
 import com.prgrms.tenwonmoa.config.JwtConfigure;
 import com.prgrms.tenwonmoa.config.WebSecurityConfig;
 import com.prgrms.tenwonmoa.domain.accountbook.controller.ExpenditureController;
@@ -38,7 +35,6 @@ import com.prgrms.tenwonmoa.domain.accountbook.dto.expenditure.CreateExpenditure
 import com.prgrms.tenwonmoa.domain.accountbook.dto.expenditure.FindExpenditureResponse;
 import com.prgrms.tenwonmoa.domain.accountbook.service.ExpenditureService;
 import com.prgrms.tenwonmoa.domain.user.security.jwt.filter.JwtAuthenticationFilter;
-import com.prgrms.tenwonmoa.exception.UnauthorizedUserException;
 
 @WebMvcTest(controllers = ExpenditureController.class,
 	excludeFilters = {
@@ -92,166 +88,6 @@ public class ExpenditureDocsTest {
 
 		@Test
 		@WithMockCustomUser
-		public void 등록일자가_null일경우_400() throws Exception {
-			CreateExpenditureRequest wrongResult = new CreateExpenditureRequest(
-				null,
-				amount,
-				content,
-				userCategoryId
-			);
-
-			mockMvc.perform(post(BASE_URL)
-					.contentType(MediaType.APPLICATION_JSON)
-					.content(objectMapper.writeValueAsString(wrongResult))
-					.with(csrf())
-				)
-				.andExpect(status().isBadRequest())
-				.andDo(document("expenditure-post-register-date-null",
-					responseFields(
-						ErrorResponseDoc.fieldDescriptors()
-					)
-				));
-		}
-
-		@Test
-		@WithMockCustomUser
-		public void 금액이_null일경우_400() throws Exception {
-			CreateExpenditureRequest wrongResult = new CreateExpenditureRequest(
-				registerDate,
-				null,
-				content,
-				userCategoryId
-			);
-
-			mockMvc.perform(post(BASE_URL)
-					.contentType(MediaType.APPLICATION_JSON)
-					.content(objectMapper.writeValueAsString(wrongResult))
-					.with(csrf())
-				)
-				.andExpect(status().isBadRequest())
-				.andDo(document("expenditure-post-amount-null",
-					responseFields(
-						ErrorResponseDoc.fieldDescriptors()
-					)
-				));
-		}
-
-		@Test
-		@WithMockCustomUser
-		public void 금액의_범위가_0원보다_작을경우_400() throws Exception {
-
-			CreateExpenditureRequest wrongResult = new CreateExpenditureRequest(
-				registerDate,
-				-1L,
-				content,
-				userCategoryId
-			);
-
-			mockMvc.perform(post(BASE_URL)
-					.contentType(MediaType.APPLICATION_JSON)
-					.content(objectMapper.writeValueAsString(wrongResult))
-					.with(csrf())
-				)
-				.andExpect(status().isBadRequest())
-				.andDo(document("expenditure-post-amount-min-error",
-					responseFields(
-						ErrorResponseDoc.fieldDescriptors()
-					)
-				));
-		}
-
-		@Test
-		@WithMockCustomUser
-		public void 금액의_범위가_1조보다_클경우_400() throws Exception {
-
-			CreateExpenditureRequest wrongResult = new CreateExpenditureRequest(
-				registerDate,
-				MAX_AMOUNT + 1,
-				content,
-				userCategoryId
-			);
-
-			mockMvc.perform(post(BASE_URL)
-					.contentType(MediaType.APPLICATION_JSON)
-					.content(objectMapper.writeValueAsString(wrongResult))
-					.with(csrf())
-				)
-				.andExpect(status().isBadRequest())
-				.andDo(document("expenditure-post-amount-max-error",
-					responseFields(
-						ErrorResponseDoc.fieldDescriptors()
-					)
-				));
-		}
-
-		@Test
-		@WithMockCustomUser
-		public void 내용의길이가_50을넘길경우_400() throws Exception {
-			CreateExpenditureRequest wrongResult = new CreateExpenditureRequest(
-				registerDate,
-				amount,
-				MAX_CONTENT,
-				userCategoryId
-			);
-
-			mockMvc.perform(post(BASE_URL)
-					.contentType(MediaType.APPLICATION_JSON)
-					.content(objectMapper.writeValueAsString(wrongResult))
-					.with(csrf())
-				)
-				.andExpect(status().isBadRequest())
-				.andDo(document("expenditure-post-content-max-error",
-					responseFields(
-						ErrorResponseDoc.fieldDescriptors()
-					)
-				));
-
-		}
-
-		@Test
-		@WithMockCustomUser
-		public void 유저카테고리아이디가_null일경우_400() throws Exception {
-			CreateExpenditureRequest wrongResult = new CreateExpenditureRequest(
-				registerDate,
-				MAX_AMOUNT + 1,
-				content,
-				null
-			);
-
-			mockMvc.perform(post(BASE_URL)
-					.contentType(MediaType.APPLICATION_JSON)
-					.content(objectMapper.writeValueAsString(wrongResult))
-					.with(csrf())
-				)
-				.andExpect(status().isBadRequest())
-				.andDo(document("expenditure-post-user-category-id-null",
-					responseFields(
-						ErrorResponseDoc.fieldDescriptors()
-					)
-				));
-		}
-
-		@Test
-		@WithMockCustomUser
-		public void 인증받지않은_사용자일경우_403() throws Exception {
-			given(expenditureService.createExpenditure(any(), any(CreateExpenditureRequest.class)))
-				.willThrow(new UnauthorizedUserException(NO_AUTHENTICATION.getMessage()));
-
-			mockMvc.perform(post(BASE_URL)
-					.contentType(MediaType.APPLICATION_JSON)
-					.content(objectMapper.writeValueAsString(request))
-					.with(csrf())
-				)
-				.andExpect(status().isForbidden())
-				.andDo(document("expenditure-create-forbidden",
-					responseFields(
-						ErrorResponseDoc.fieldDescriptors()
-					)
-				));
-		}
-
-		@Test
-		@WithMockCustomUser
 		public void 성공적으로_지출을_생성_할_수_있다_201() throws Exception {
 			given(expenditureService.createExpenditure(anyLong(), any(CreateExpenditureRequest.class)))
 				.willReturn(response);
@@ -298,34 +134,6 @@ public class ExpenditureDocsTest {
 
 		@Test
 		@WithMockCustomUser
-		public void 권한이없는_사용자일경우_403() throws Exception {
-			given(expenditureService.findExpenditure(any(Long.class), any()))
-				.willThrow(new UnauthorizedUserException(NO_AUTHENTICATION.getMessage()));
-
-			mockMvc.perform(get(BASE_URL + "/{expenditureId}", expenditureId))
-				.andExpect(status().isForbidden())
-				.andDo(document("expenditure-get-forbidden",
-					responseFields(
-						ErrorResponseDoc.fieldDescriptors()
-					)));
-		}
-
-		@Test
-		@WithMockCustomUser
-		public void 없는_지출일경우_400() throws Exception {
-			given(expenditureService.findExpenditure(any(Long.class), any()))
-				.willThrow(new NoSuchElementException(EXPENDITURE_NOT_FOUND.getMessage()));
-
-			mockMvc.perform(get(BASE_URL + "/{expenditureId}", expenditureId))
-				.andExpect(status().isNotFound())
-				.andDo(document("expenditure-get-forbidden",
-					responseFields(
-						ErrorResponseDoc.fieldDescriptors()
-					)));
-		}
-
-		@Test
-		@WithMockCustomUser
 		public void 성공적으로_지출을_조회할_수_있다_200() throws Exception {
 			given(expenditureService.findExpenditure(any(Long.class), any()))
 				.willReturn(response);
@@ -349,4 +157,5 @@ public class ExpenditureDocsTest {
 			);
 		}
 	}
+
 }

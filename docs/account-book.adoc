@@ -7,43 +7,20 @@ endif::[]
 
 === 일일 상세내역 조회
 
-.Request
-include::{snippets}/accountbook-daily-account/http-request.adoc[]
-
-.Response
-include::{snippets}/accountbook-daily-account/http-response.adoc[]
+operation::accountbook-daily-account/[snippets='http-request,http-response,response-fields']
 
 === 월별 상세내역 조회
 
-.Request
-include::{snippets}/accountbook-month-account/http-request.adoc[]
-
-.Response
-include::{snippets}/accountbook-month-account/http-response.adoc[]
-
+operation::accountbook-month-account/[snippets='http-request,http-response,response-fields']
 
 === 월별 합계 조회
 
-.Request
-include::{snippets}/accountbook-month-sum/http-request.adoc[]
-
-.Response
-include::{snippets}/accountbook-month-sum/http-response.adoc[]
-
+operation::accountbook-month-sum/[snippets='http-request,http-response,response-fields']
 
 === 연간 합계 조회
 
-.Request
-include::{snippets}/accountbook-year-sum/http-request.adoc[]
-
-.Response
-include::{snippets}/accountbook-year-sum/http-response.adoc[]
-
+operation::accountbook-year-sum/[snippets='http-request,http-response,response-fields']
 
 === 달력 조회
 
-.Request
-include::{snippets}/accountbook-calendar-account/http-request.adoc[]
-
-.Response
-include::{snippets}/accountbook-calendar-account/http-response.adoc[]
+operation::accountbook-calendar-account/[snippets='http-request,http-response,response-fields']

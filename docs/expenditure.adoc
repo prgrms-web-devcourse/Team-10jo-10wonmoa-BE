@@ -7,33 +7,16 @@ endif::[]
 
 === 지출 등록(POST)
 
-.Request
-include::{snippets}/expenditure-create/http-request.adoc[]
-include::{snippets}/expenditure-create/request-fields.adoc[]
-
-.Response
-include::{snippets}/expenditure-create/http-response.adoc[]
+operation::expenditure-create/[snippets='http-request,request-fields,http-response,response-fields']
 
 === 지출 상세조회(GET)
 
-.Request
-include::{snippets}/expenditure-get/http-request.adoc[]
-
-.Response
-include::{snippets}/expenditure-get/http-response.adoc[]
+operation::expenditure-get/[snippets='http-request,http-response,response-fields']
 
 === 지출 수정(PUT)
 
-.Request
-include::{snippets}/expenditure-update/http-request.adoc[]
-
-.Response
-include::{snippets}/expenditure-update/http-response.adoc[]
+operation::expenditure-update/[snippets='http-request,request-fields,http-response']
 
 === 지출 삭제(DELETE)
 
-.Request
-include::{snippets}/expenditure-delete/http-request.adoc[]
-
-.Response
-include::{snippets}/expenditure-delete/http-response.adoc[]
+operation::expenditure-delete/[snippets='http-request,http-response']

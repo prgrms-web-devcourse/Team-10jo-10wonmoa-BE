@@ -1,0 +1,49 @@
+:hardbreaks:
+ifndef::snippets[]
+:snippets: ../../../target/generated-snippets
+endif::[]
+
+== 가계부 Query 조회
+
+=== 일일 상세내역 조회
+
+.Request
+include::{snippets}/accountbook-daily-account/http-request.adoc[]
+
+.Response
+include::{snippets}/accountbook-daily-account/http-response.adoc[]
+
+=== 월별 상세내역 조회
+
+.Request
+include::{snippets}/accountbook-month-account/http-request.adoc[]
+
+.Response
+include::{snippets}/accountbook-month-account/http-response.adoc[]
+
+
+=== 월별 합계 조회
+
+.Request
+include::{snippets}/accountbook-month-sum/http-request.adoc[]
+
+.Response
+include::{snippets}/accountbook-month-sum/http-response.adoc[]
+
+
+=== 연간 합계 조회
+
+.Request
+include::{snippets}/accountbook-year-sum/http-request.adoc[]
+
+.Response
+include::{snippets}/accountbook-year-sum/http-response.adoc[]
+
+
+=== 달력 조회
+
+.Request
+include::{snippets}/accountbook-calendar-account/http-request.adoc[]
+
+.Response
+include::{snippets}/accountbook-calendar-account/http-response.adoc[]

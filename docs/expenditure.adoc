@@ -1,0 +1,24 @@
+:hardbreaks:
+ifndef::snippets[]
+:snippets: ../../../target/generated-snippets
+endif::[]
+
+== 지출
+
+=== 지출 등록(POST)
+
+.Request
+include::{snippets}/expenditure-create/http-request.adoc[]
+include::{snippets}/expenditure-create/request-fields.adoc[]
+
+.Response
+include::{snippets}/expenditure-create/http-response.adoc[]
+
+=== 지출 상세조회(GET)
+
+
+.Request
+include::{snippets}/expenditure-get/http-request.adoc[]
+
+.Response
+include::{snippets}/expenditure-get/http-response.adoc[]

@@ -28,7 +28,6 @@ public class UserService {
 	private final JwtService jwtService;
 	private final UserDeleteService userDeleteService;
 
-
 	public User findById(Long userId) {
 		return userRepository.findById(userId)
 			.orElseThrow(() -> new NoSuchElementException(Message.USER_NOT_FOUND.getMessage()));
@@ -50,15 +49,15 @@ public class UserService {
 		User user = userRepository.findByEmail(email)
 			.orElseThrow(() -> new IllegalArgumentException(Message.INVALID_EMAIL_OR_PASSWORD.getMessage()));
 
-		if (!checkPassword(user.getPassword(), password)) {
-			throw new IllegalArgumentException(Message.INVALID_EMAIL_OR_PASSWORD.getMessage());
-		}
+		checkPassword(user.getPassword(), password);
 
 		return jwtService.generateToken(user.getId(), email);
 	}
 
-	private boolean checkPassword(String encodedPassword, String requestPassword) {
-		return passwordEncoder.matches(requestPassword, encodedPassword);
+	public void checkPassword(String encodedPassword, String requestPassword) {
+		if (!passwordEncoder.matches(requestPassword, encodedPassword)) {
+			throw new IllegalArgumentException(Message.INVALID_EMAIL_OR_PASSWORD.getMessage());
+		}
 	}
 
 	@Transactional

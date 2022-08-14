@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.prgrms.tenwonmoa.domain.user.User;
+import com.prgrms.tenwonmoa.domain.user.dto.CheckPasswordRequest;
 import com.prgrms.tenwonmoa.domain.user.dto.CreateUserRequest;
 import com.prgrms.tenwonmoa.domain.user.dto.FindUserResponse;
 import com.prgrms.tenwonmoa.domain.user.dto.LoginUserRequest;
@@ -64,6 +66,14 @@ public class UserController {
 	@DeleteMapping("/delete")
 	public ResponseEntity<Void> delete(@AuthenticationPrincipal Long userId) {
 		userService.deleteUser(userId);
+		return ResponseEntity.ok().build();
+	}
+
+	@PostMapping("/password/check")
+	public ResponseEntity<Void> passwordCheck(@AuthenticationPrincipal Long userId,
+		@Valid @RequestBody CheckPasswordRequest checkPasswordRequest) {
+		User user = userService.findById(userId);
+		userService.checkPassword(user.getPassword(), checkPasswordRequest.getPassword());
 		return ResponseEntity.ok().build();
 	}
 

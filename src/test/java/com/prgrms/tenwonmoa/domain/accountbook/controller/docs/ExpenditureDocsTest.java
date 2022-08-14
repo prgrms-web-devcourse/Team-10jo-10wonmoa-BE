@@ -16,6 +16,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.ComponentScan;
@@ -33,6 +34,7 @@ import com.prgrms.tenwonmoa.domain.accountbook.controller.ExpenditureController;
 import com.prgrms.tenwonmoa.domain.accountbook.dto.expenditure.CreateExpenditureRequest;
 import com.prgrms.tenwonmoa.domain.accountbook.dto.expenditure.CreateExpenditureResponse;
 import com.prgrms.tenwonmoa.domain.accountbook.dto.expenditure.FindExpenditureResponse;
+import com.prgrms.tenwonmoa.domain.accountbook.dto.expenditure.UpdateExpenditureRequest;
 import com.prgrms.tenwonmoa.domain.accountbook.service.ExpenditureService;
 import com.prgrms.tenwonmoa.domain.user.security.jwt.filter.JwtAuthenticationFilter;
 
@@ -44,6 +46,7 @@ import com.prgrms.tenwonmoa.domain.user.security.jwt.filter.JwtAuthenticationFil
 	}
 )
 @AutoConfigureRestDocs
+@AutoConfigureMockMvc(addFilters = false)
 @MockBean(JpaMetamodelMappingContext.class)
 @DisplayName("지출 DOCS 테스트: ")
 public class ExpenditureDocsTest {
@@ -120,7 +123,6 @@ public class ExpenditureDocsTest {
 	@Nested
 	@DisplayName("지출 상세 내역 API 호출 중")
 	class DescribeOfGetExpenditure {
-
 		private final Long expenditureId = 1L;
 
 		private final FindExpenditureResponse response = new FindExpenditureResponse(
@@ -135,7 +137,7 @@ public class ExpenditureDocsTest {
 		@Test
 		@WithMockCustomUser
 		public void 성공적으로_지출을_조회할_수_있다_200() throws Exception {
-			given(expenditureService.findExpenditure(any(Long.class), any()))
+			given(expenditureService.findExpenditure(anyLong(), any()))
 				.willReturn(response);
 
 			mockMvc.perform(get(BASE_URL + "/{expenditureId}", expenditureId))
@@ -158,4 +160,50 @@ public class ExpenditureDocsTest {
 		}
 	}
 
+	@Nested
+	@DisplayName("지출 수정 API 호출 중")
+	class DescribeOfUpdateExpenditure {
+
+		private final Long expenditureId = 1L;
+
+		private final UpdateExpenditureRequest request = new UpdateExpenditureRequest(LocalDateTime.now(),
+			10000L,
+			"수정",
+			2L
+		);
+
+		@Test
+		@WithMockCustomUser
+		public void 성공적으로_지출을_수정할_수_있다_204() throws Exception {
+			mockMvc.perform(put(BASE_URL + "/{expenditureId}", expenditureId)
+					.contentType(MediaType.APPLICATION_JSON)
+					.content(objectMapper.writeValueAsString(request))
+				)
+				.andExpect(status().isNoContent())
+				.andDo(document("expenditure-update", requestFields(
+					fieldWithPath("registerDate").type(STRING).description("등록 날짜"),
+					fieldWithPath("amount").type(NUMBER).description("금액"),
+					fieldWithPath("content").type(STRING).description("내용"),
+					fieldWithPath("userCategoryId").type(NUMBER).description("유저 카테고리 ID")
+				)));
+		}
+
+	}
+
+	@Nested
+	@DisplayName("지출 삭제 API 호출 중")
+	class DescribeOfDeleteExpenditure {
+
+		private final Long expenditureId = 1L;
+
+		@Test
+		@WithMockCustomUser
+		public void 성공적으로_지출을_삭제할_수_있다_204() throws Exception {
+			mockMvc.perform(delete(BASE_URL + "/{expenditureId}", expenditureId)
+					.contentType(MediaType.APPLICATION_JSON)
+				)
+				.andExpect(status().isNoContent())
+				.andDo(document("expenditure-delete"));
+		}
+	}
 }

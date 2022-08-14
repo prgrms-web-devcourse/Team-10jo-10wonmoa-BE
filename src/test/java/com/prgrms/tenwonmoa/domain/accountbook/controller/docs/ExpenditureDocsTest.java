@@ -58,11 +58,7 @@ public class ExpenditureDocsTest {
 
 	@MockBean
 	private ExpenditureService expenditureService;
-
-	private static final Long MAX_AMOUNT = 1000000000000L;
-
-	private static final String MAX_CONTENT = "이것은50글자를넘습니다.이것은50글자를넘습니다.이것은50글자를넘습니다.이것은50글자를넘습니다.";
-
+	
 	@Nested
 	@DisplayName("지출 등록 API 호출 중 ")
 	class DescribeOfPostExpenditure {

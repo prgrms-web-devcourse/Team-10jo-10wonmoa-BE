@@ -1,0 +1,22 @@
+:hardbreaks:
+ifndef::snippets[]
+:snippets: ../../../target/generated-snippets
+endif::[]
+
+== 지출
+
+=== 지출 등록(POST)
+
+operation::expenditure-create/[snippets='http-request,request-fields,http-response,response-fields']
+
+=== 지출 상세조회(GET)
+
+operation::expenditure-get/[snippets='http-request,http-response,response-fields']
+
+=== 지출 수정(PUT)
+
+operation::expenditure-update/[snippets='http-request,request-fields,http-response']
+
+=== 지출 삭제(DELETE)
+
+operation::expenditure-delete/[snippets='http-request,http-response']

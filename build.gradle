@@ -5,6 +5,8 @@ plugins {
     id 'checkstyle'
     id 'jacoco'
     id "org.asciidoctor.jvm.convert" version "3.3.2"
+    id 'com.epages.restdocs-api-spec' version '0.16.0'
+    id "org.flywaydb.flyway" version "8.2.0"
 }
 
 ext {
@@ -40,6 +42,9 @@ dependencies {
     // WAS: undertow
     implementation 'org.springframework.boot:spring-boot-starter-undertow'
 
+    //Bean Validation
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+
     //Guava
     implementation group: 'com.google.guava', name: 'guava', version: '30.1.1-jre'
 
@@ -60,15 +65,37 @@ dependencies {
     runtimeOnly 'mysql:mysql-connector-java'
     runtimeOnly 'com.h2database:h2:1.4.199'
 
+    //flyway
+    implementation 'org.flywaydb:flyway-core:8.5.12'
+    implementation 'org.flywaydb:flyway-mysql:8.5.12'
+
+
     //test
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
 
+    // Lombok
+    testCompileOnly 'org.projectlombok:lombok'
+    testAnnotationProcessor 'org.projectlombok:lombok'
+
+    // spring-boot-security
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    testImplementation 'org.springframework.security:spring-security-test'
+    implementation 'com.auth0:java-jwt:3.18.1'
+    annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+
+    // REST-DOCS <-> swagger
+    testImplementation 'com.epages:restdocs-api-spec-mockmvc:0.16.0'
+
+    // Slack logging
+    implementation 'com.github.maricn:logback-slack-appender:1.4.0'
 }
 
 test {
     useJUnitPlatform()
-    finalizedBy 'jacocoTestReport'
+    finalizedBy 'jacocoTestReport', 'openapi3'
     outputs.dir snippetsDir
 }
 
@@ -105,8 +132,9 @@ jacocoTestReport {
                         'com/prgrms/tenwonmoa/config/*',
                         'com/prgrms/tenwonmoa/exception/*',
                         'com/prgrms/tenwonmoa/filter/*',
-                        'com/prgrms/tenwonmoa/domain/budget/*',
                         'com/prgrms/tenwonmoa/domain/common/*',
+                        'com/prgrms/tenwonmoa/domain/**/dto/*',
+                        'com/prgrms/tenwonmoa/domain/user/security/oauth2/*'
                 ] + Qdomains)
             }))
         }
@@ -130,7 +158,7 @@ jacocoTestCoverageVerification {
             limit {
                 counter = 'LINE'
                 value = 'COVEREDRATIO'
-                minimum = 0.00
+                minimum = 0.80
             }
 
             excludes = [
@@ -140,8 +168,8 @@ jacocoTestCoverageVerification {
                     'com/prgrms/tenwonmoa/config/*',
                     'com/prgrms/tenwonmoa/exception/*',
                     'com/prgrms/tenwonmoa/filter/*',
-                    'com/prgrms/tenwonmoa/domain/budget/*',
                     'com/prgrms/tenwonmoa/domain/common/*',
+                    'com/prgrms/tenwonmoa/domain/**/dto/*'
             ] + Qdomains
         }
     }
@@ -163,7 +191,6 @@ clean {
     delete file('src/main/generated')
 }
 
-// custom task
 task copyDocument(type: Copy) {
     dependsOn asciidoctor
     from file("build/docs/asciidoc")
@@ -177,8 +204,26 @@ task copySecret(type: Copy) {
 
 processResources.dependsOn('copySecret')
 
-build {
-    dependsOn copyDocument
+openapi3 {
+    server = 'http://3.39.184.232:8080'
+    title = 'Tenwonmoa API'
+    description = 'Tenwonmoa API description'
+    version = '1.0.0'
+    format = 'yaml'
 }
 
+flyway {
+    url = "jdbc:mysql://localhost:3306/tenwonmoa-test?serverTimezone=UTC&characterEncoding=UTF-8"
+    user = "root"
+    password = "root1234"
+}
 
+task copyOpenApi(type: Copy) {
+    from file("build/api-spec")
+    into file("src/main/resources/static/docs")
+}
+
+build {
+    dependsOn copyDocument
+    finalizedBy 'copyOpenApi'
+}

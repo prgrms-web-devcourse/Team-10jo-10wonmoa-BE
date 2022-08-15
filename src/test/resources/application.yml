@@ -17,7 +17,29 @@ spring:
       hibernate:
         format_sql: true
     database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: client-id
+            client-secret: client-secret
+            redirect-uri: "redirecturl"
+            scope:
+              - email
+  redis:
+    host: localhost
+    port: 6379
 
 logging:
   level:
     org.hibernate.type: trace
+  slack:
+    webhook-url: https://hooks.slack.com/services
+
+jwt:
+  header: testToken
+  issuer: testIssuer
+  client-secret: lsuvomkeoiotkbzdjrejfgdsfngusviykzsvjoriyukscpmxiijmpfsdwveljsml
+  expiry-seconds-millis: 3600000
+  refresh-expiry-seconds-millis: 1209600000

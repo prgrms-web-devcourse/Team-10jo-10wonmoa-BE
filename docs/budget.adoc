@@ -1,0 +1,44 @@
+:hardbreaks:
+ifndef::snippets[]
+:snippets: ../../../target/generated-snippets
+endif::[]
+
+== 예산
+
+=== 예산 등록 or 수정
+
+.Request
+include::{snippets}/budget-create/http-request.adoc[]
+
+Request Fields
+include::{snippets}/budget-create/request-fields.adoc[]
+
+.Response
+include::{snippets}/budget-create/http-response.adoc[]
+
+=== 월별 예산 조회
+
+.Request
+include::{snippets}/budget-findBy-registerDate/http-request.adoc[]
+.Response
+include::{snippets}/budget-findBy-registerDate/http-response.adoc[]
+Response Fields
+include::{snippets}/budget-findBy-registerDate/response-fields.adoc[]
+
+=== 예산 통계 조회 - 월 별
+
+.Request
+include::{snippets}/budget_statistics-month/http-request.adoc[]
+.Response
+include::{snippets}/budget_statistics-month/http-response.adoc[]
+Response Fields
+include::{snippets}/budget_statistics-month/response-fields.adoc[]
+
+=== 예산 통계 조회 - 연 별
+
+.Request
+include::{snippets}/budget_statistics-year/http-request.adoc[]
+.Response
+include::{snippets}/budget_statistics-year/http-response.adoc[]
+Response Fields
+include::{snippets}/budget_statistics-year/response-fields.adoc[]

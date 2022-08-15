@@ -49,7 +49,7 @@ public class MonthCondition {
 			return set;
 		}
 
-		Integer maxMonth = Collections.max(monthSet);
+		Integer maxMonth = monthSet.isEmpty() ? 0 : Collections.max(monthSet);
 		int currMonth = getNowMonth();
 
 		// 현재년도에서 작성된 월과 현재 해당월의 크기 비교

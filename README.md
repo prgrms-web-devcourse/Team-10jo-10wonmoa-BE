@@ -33,7 +33,7 @@
 
 
 ### 💰 우리는 다음과 같은 기능을 제공합니다
-- [API]()
+- [API REST DOCS](https://prgrms-web-devcourse.github.io/Team-10jo-10wonmoa-BE/)
 
 ### 💰 목적
 - 토큰기반 로그인 기능 구현

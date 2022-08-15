@@ -1,0 +1,18 @@
+[[Tenwonmoa]]
+= Tenwonmoa
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 2
+:sectlinks:
+:docinfo: shared-head
+
+include::{docdir}/user.adoc[]
+include::{docdir}/income.adoc[]
+include::{docdir}/expenditure.adoc[]
+include::{docdir}/user-category.adoc[]
+include::{docdir}/account-book.adoc[]
+include::{docdir}/search-account-book.adoc[]
+include::{docdir}/statistics.adoc[]
+include::{docdir}/budget.adoc[]

@@ -124,7 +124,7 @@ Develop, Main 브랜치는 Pull Request를 통해 코드 리뷰를 진행한 후
 - [PR Convention](https://github.com/prgrms-web-devcourse/Team-10jo-10wonmoa-BE/blob/main/.github/pull_request_template.md)
 - [Issue Convention](https://github.com/prgrms-web-devcourse/Team-10jo-10wonmoa-BE/tree/main/.github/ISSUE_TEMPLATE)
 
-###  Merge Convention
+###  💰 Merge Convention
 - [CI](https://github.com/prgrms-web-devcourse/Team-10jo-10wonmoa-BE/blob/main/.github/workflows/tenwonmoa-ci.yml)
 - [CI/CD](https://github.com/prgrms-web-devcourse/Team-10jo-10wonmoa-BE/blob/main/.github/workflows/tenwonmoa-cicd.yml)
 - Review Approve 2개

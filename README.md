@@ -18,8 +18,8 @@
 ![Forks](https://img.shields.io/github/forks/prgrms-be-devcourse/BE-02-MarBox)
 
 ## 💸 Index
-- [What is Tenwonmoa?](https://github.com/prgrms-web-devcourse/Team-10jo-10wonmoa-BE/edit/main/README.md#-what-is-tenwonmoa)
-- [Planning](https://github.com/prgrms-web-devcourse/Team-10jo-10wonmoa-BE/edit/main/README.md#-planning)
+- [What is Tenwonmoa?](https://github.com/prgrms-web-devcourse/Team-10jo-10wonmoa-BE#-what-is-tenwonmoa)
+- [Planning](https://github.com/prgrms-web-devcourse/Team-10jo-10wonmoa-BE#-planning)
 - [ERD & EntityDiagram](https://github.com/prgrms-web-devcourse/Team-10jo-10wonmoa-BE#-erd--entitydiagram)
 - [Environment](https://github.com/prgrms-web-devcourse/Team-10jo-10wonmoa-BE#-environment)
 - [What we use](https://github.com/prgrms-web-devcourse/Team-10jo-10wonmoa-BE#-what-we-use)

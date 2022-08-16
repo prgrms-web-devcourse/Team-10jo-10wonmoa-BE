@@ -18,19 +18,21 @@
 ![Forks](https://img.shields.io/github/forks/prgrms-be-devcourse/BE-02-MarBox)
 
 ## 💸 Index
-- What is Tenwonmoa?
-- Planning
-- ERD & EntityDiagram
-- Environment
-- What we use
-- Convention
-- Get Start
-- Member
+- [What is Tenwonmoa?](https://github.com/prgrms-web-devcourse/Team-10jo-10wonmoa-BE/edit/main/README.md#-what-is-tenwonmoa)
+- [Planning](https://github.com/prgrms-web-devcourse/Team-10jo-10wonmoa-BE/edit/main/README.md#-planning)
+- [ERD & EntityDiagram](https://github.com/prgrms-web-devcourse/Team-10jo-10wonmoa-BE#-erd--entitydiagram)
+- [Environment](https://github.com/prgrms-web-devcourse/Team-10jo-10wonmoa-BE#-environment)
+- [What we use](https://github.com/prgrms-web-devcourse/Team-10jo-10wonmoa-BE#-what-we-use)
+- [Convention](https://github.com/prgrms-web-devcourse/Team-10jo-10wonmoa-BE#-convention)
+- [Get Start](https://github.com/prgrms-web-devcourse/Team-10jo-10wonmoa-BE#-get-start)
+- [Member](https://github.com/prgrms-web-devcourse/Team-10jo-10wonmoa-BE#--member)
 
 ## 💸 What is Tenwonmoa?
 > 현재 많은 가계부 서비스들은 재테크에 관심이 없다면 애플리케이션에서 제공하는 기능을 이해하고 사용하기가 어렵다고 느꼈습니다.
 > 10원모아 서비스는 가계부에 필요한 핵심 서비스를 최소한으로 제공함으로써 복잡한 가계부 서비스를 쉽게 사용할 수 있도록 기획하였습니다.
 
+### 💰 서비스 주소
+- [10원 모아 서비스](https://team-10jo-10wonmoa-fe.vercel.app/)
 
 ### 💰 우리는 다음과 같은 기능을 제공합니다
 - [API REST DOCS](https://prgrms-web-devcourse.github.io/Team-10jo-10wonmoa-BE/)
@@ -40,6 +42,9 @@
 - 실제 이용가능한 수준의 서비스 구현
 - CI/CD 구축
 - Front 협업에서 발생하는 경험과 이슈해결
+
+### 💰 프론트 팀 링크
+- [링크](https://github.com/prgrms-web-devcourse/Team-10jo-10wonmoa-FE)
 
 ## 💸 Planning
 프로젝트 기간: 2022.07.15 ~ 2022.08.16
@@ -75,38 +80,9 @@
 
 
 ## 💸 What we use
+![image](https://user-images.githubusercontent.com/26343023/184843615-48acf32a-2a15-4689-b8ed-75885f7c0226.png)
 
-### 💰 Backend
-- Java
-- Spring Boot
-- Spring Security
-- Jpa
-- QueryDSL
 
-### 💰 Devops
-- AWS
-    - EC2
-    - RDS
-    - CodeDeploy
-- Docker
-- Nginx
-- Github Actions
-  - Check Style
-  - Jacoco
-
-### 💰 Tool
-- IntelliJ
-- Postman
-
-### 💰 Collaborate
-- Git
-- Github
-- Notion
-- Slack
-
-### 💰 Docs
-- Spring Rest Docs
-- Swagger-UI
 
 ## 💸 Convention
 ### 💰 브랜치 전략

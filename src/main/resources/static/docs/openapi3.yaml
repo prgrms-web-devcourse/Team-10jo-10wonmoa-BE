@@ -44,35 +44,9 @@ paths:
     post:
       tags:
       - api
-      operationId: expenditure-
+      operationId: expenditure-create
       requestBody:
         content:
-          application/json;charset=UTF-8:
-            schema:
-              $ref: '#/components/schemas/api-v1-expenditures486549215'
-            examples:
-              expenditure-create-forbidden:
-                value: "{\"registerDate\":\"2022-08-12T08:11:00\",\"amount\":1000,\"\
-                  content\":\"식비\",\"userCategoryId\":2}"
-              expenditure-post-amount-max-error:
-                value: "{\"registerDate\":\"2022-08-12T08:11:00\",\"amount\":1000000000001,\"\
-                  content\":\"식비\",\"userCategoryId\":2}"
-              expenditure-post-register-date-null:
-                value: "{\"registerDate\":null,\"amount\":1000,\"content\":\"식비\"\
-                  ,\"userCategoryId\":2}"
-              expenditure-post-amount-null:
-                value: "{\"registerDate\":\"2022-08-12T08:11:00\",\"amount\":null,\"\
-                  content\":\"식비\",\"userCategoryId\":2}"
-              expenditure-post-user-category-id-null:
-                value: "{\"registerDate\":\"2022-08-12T08:11:00\",\"amount\":1000000000001,\"\
-                  content\":\"식비\",\"userCategoryId\":null}"
-              expenditure-post-content-max-error:
-                value: "{\"registerDate\":\"2022-08-12T08:11:00\",\"amount\":1000,\"\
-                  content\":\"이것은50글자를넘습니다.이것은50글자를넘습니다.이것은50글자를넘습니다.이것은50글자를넘습니다\
-                  .\",\"userCategoryId\":2}"
-              expenditure-post-amount-min-error:
-                value: "{\"registerDate\":\"2022-08-12T08:11:00\",\"amount\":-1,\"\
-                  content\":\"식비\",\"userCategoryId\":2}"
           application/json:
             schema:
               $ref: '#/components/schemas/api-v1-expenditures1023026241'
@@ -81,36 +55,6 @@ paths:
                 value: "{\"registerDate\":\"2022-08-12T08:11:00\",\"amount\":1000,\"\
                   content\":\"식비\",\"userCategoryId\":2}"
       responses:
-        "403":
-          description: "403"
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/api-v1-expenditures-940438351'
-              examples:
-                expenditure-create-forbidden:
-                  value: "{\"messages\":[\"다른 사용자의 데이터에 접근할 수 없습니다.\"],\"status\"\
-                    :403}"
-        "400":
-          description: "400"
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/api-v1-expenditures-940438351'
-              examples:
-                expenditure-post-amount-max-error:
-                  value: "{\"messages\":[\"최대값은 1조입니다\"],\"status\":400}"
-                expenditure-post-register-date-null:
-                  value: "{\"messages\":[\"등록일을 채워주세요\"],\"status\":400}"
-                expenditure-post-amount-null:
-                  value: "{\"messages\":[\"must not be null\"],\"status\":400}"
-                expenditure-post-user-category-id-null:
-                  value: "{\"messages\":[\"최대값은 1조입니다\",\"유저 카테고리 아이디를 채워주세요\"],\"\
-                    status\":400}"
-                expenditure-post-content-max-error:
-                  value: "{\"messages\":[\"내용의 최대 길이는 50입니다\"],\"status\":400}"
-                expenditure-post-amount-min-error:
-                  value: "{\"messages\":[\"최소값은 0입니다\"],\"status\":400}"
         "201":
           description: "201"
           content:
@@ -178,7 +122,7 @@ paths:
       operationId: user-create
       requestBody:
         content:
-          application/json;charset=UTF-8:
+          application/json:
             schema:
               $ref: '#/components/schemas/api-v1-users-28069028'
             examples:
@@ -344,14 +288,14 @@ paths:
                         "amount" : 10000,
                         "content" : "점심",
                         "categoryName" : "식비",
-                        "registerTime" : "2022-08-14T22:45:28.207416"
+                        "registerTime" : "2022-08-18T03:45:46.653254"
                       }, {
                         "id" : 1,
                         "type" : "INCOME",
                         "amount" : 50000,
                         "content" : "용돈",
                         "categoryName" : "용돈",
-                        "registerTime" : "2022-08-14T22:45:28.207477"
+                        "registerTime" : "2022-08-18T03:45:46.653293"
                       } ],
                       "currentPage" : 1,
                       "totalElements" : 10,
@@ -398,15 +342,6 @@ paths:
         schema:
           type: string
       responses:
-        "404":
-          description: "404"
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/api-v1-expenditures-940438351'
-              examples:
-                expenditure-get-forbidden:
-                  value: "{\"messages\":[\"해당 지출이 존재 하지 않습니다.\"],\"status\":404}"
         "200":
           description: "200"
           content:
@@ -415,7 +350,7 @@ paths:
                 $ref: '#/components/schemas/api-v1-expenditures-expenditureId2033270015'
               examples:
                 expenditure-get:
-                  value: "{\"id\":1,\"registerDate\":\"2022-08-14T22:45:22.805991\"\
+                  value: "{\"id\":1,\"registerDate\":\"2022-08-18T03:45:42.7612\"\
                     ,\"amount\":20000,\"content\":\"돈까스마시써\",\"userCategoryId\":3,\"\
                     categoryName\":\"식비\"}"
     put:
@@ -436,7 +371,7 @@ paths:
               $ref: '#/components/schemas/api-v1-expenditures-expenditureId440992244'
             examples:
               expenditure-update:
-                value: "{\"registerDate\":\"2022-08-14T22:45:22.463009\",\"amount\"\
+                value: "{\"registerDate\":\"2022-08-18T03:45:42.357131\",\"amount\"\
                   :10000,\"content\":\"수정\",\"userCategoryId\":2}"
       responses:
         "204":
@@ -467,10 +402,10 @@ paths:
               $ref: '#/components/schemas/api-v1-incomes-1988379506'
             examples:
               income-create:
-                value: "{\"registerDate\":\"2022-08-14T22:45:25.767283\",\"amount\"\
+                value: "{\"registerDate\":\"2022-08-18T03:45:44.729137\",\"amount\"\
                   :1000,\"content\":\"content\",\"userCategoryId\":1}"
               income-create-fail:
-                value: "{\"registerDate\":\"2022-08-14T22:45:25.888186\",\"amount\"\
+                value: "{\"registerDate\":\"2022-08-18T03:45:44.86378\",\"amount\"\
                   :1000,\"content\":\"content\",\"userCategoryId\":1}"
       responses:
         "201":
@@ -487,7 +422,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/api-v1-expenditures-940438351'
+                $ref: '#/components/schemas/api-v1-incomes--940438351'
               examples:
                 income-create-fail:
                   value: "{\"messages\":[\"해당 사용자 카테고리는 존재하지 않습니다.\"],\"status\":404}"
@@ -509,7 +444,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/api-v1-expenditures-940438351'
+                $ref: '#/components/schemas/api-v1-incomes--940438351'
               examples:
                 income-find-by-id-fail:
                   value: "{\"messages\":[\"수입 정보가 존재하지 않습니다.\"],\"status\":404}"
@@ -521,7 +456,7 @@ paths:
                 $ref: '#/components/schemas/api-v1-incomes-incomeId-1674408626'
               examples:
                 income-find-by-id:
-                  value: "{\"id\":1,\"registerDate\":\"2022-08-14T22:45:25.938641\"\
+                  value: "{\"id\":1,\"registerDate\":\"2022-08-18T03:45:44.913539\"\
                     ,\"amount\":1000,\"content\":\"content\",\"userCategoryId\":1,\"\
                     categoryName\":\"용돈\"}"
         "403":
@@ -529,7 +464,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/api-v1-expenditures-940438351'
+                $ref: '#/components/schemas/api-v1-incomes--940438351'
               examples:
                 income-forbidden:
                   value: "{\"messages\":[\"다른 사용자의 데이터에 접근할 수 없습니다.\"],\"status\"\
@@ -552,10 +487,10 @@ paths:
               $ref: '#/components/schemas/api-v1-incomes-1988379506'
             examples:
               income-update:
-                value: "{\"registerDate\":\"2022-08-14T22:45:23.10866\",\"amount\"\
+                value: "{\"registerDate\":\"2022-08-18T03:45:42.986644\",\"amount\"\
                   :2000,\"content\":\"updateContent\",\"userCategoryId\":2}"
               income-update-fail:
-                value: "{\"registerDate\":\"2022-08-14T22:45:25.649155\",\"amount\"\
+                value: "{\"registerDate\":\"2022-08-18T03:45:44.667116\",\"amount\"\
                   :2000,\"content\":\"updateContent\",\"userCategoryId\":2}"
       responses:
         "204":
@@ -565,7 +500,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/api-v1-expenditures-940438351'
+                $ref: '#/components/schemas/api-v1-incomes--940438351'
               examples:
                 income-update-fail:
                   value: "{\"messages\":[\"수입 정보가 존재하지 않습니다.\"],\"status\":404}"
@@ -583,6 +518,93 @@ paths:
       responses:
         "204":
           description: "204"
+  /api/v1/users/delete:
+    delete:
+      tags:
+      - api
+      operationId: user-delete
+      parameters:
+      - name: Authorization
+        in: header
+        description: Jwt token
+        required: true
+        schema:
+          type: string
+        example: accessToken
+      responses:
+        "200":
+          description: "200"
+  /api/v1/users/login:
+    post:
+      tags:
+      - api
+      operationId: user-login
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/api-v1-users-login-74814376'
+            examples:
+              user-login:
+                value: "{\"email\":\"test@test.com\",\"password\":\"12345678\"}"
+      responses:
+        "200":
+          description: "200"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/api-v1-users-refresh-547383767'
+              examples:
+                user-login:
+                  value: "{\"accessToken\":\"access-token\",\"refreshToken\":\"refresh-token\"\
+                    }"
+  /api/v1/users/logout:
+    post:
+      tags:
+      - api
+      operationId: logoutuser-logout
+      parameters:
+      - name: Authorization
+        in: header
+        description: Jwt token
+        required: true
+        schema:
+          type: string
+        example: accessToken
+      responses:
+        "200":
+          description: "200"
+  /api/v1/users/refresh:
+    post:
+      tags:
+      - api
+      operationId: refreshuser-token-refresh
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/api-v1-users-refresh-547383767'
+            examples:
+              refresh:
+                value: "{\"accessToken\":\"accessTokenValue\",\"refreshToken\":\"\
+                  refreshTokenValue\"}"
+              user-token-refresh:
+                value: "{\"accessToken\":\"accessTokenValue\",\"refreshToken\":\"\
+                  refreshTokenValue\"}"
+      responses:
+        "200":
+          description: "200"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/api-v1-users-refresh1742971760'
+              examples:
+                refresh:
+                  value: "{\"accessToken\":\"newAccessTokenValue\",\"refreshToken\"\
+                    :\"refreshTokenValue\"}"
+                user-token-refresh:
+                  value: "{\"accessToken\":\"newAccessTokenValue\",\"refreshToken\"\
+                    :\"refreshTokenValue\"}"
   /api/v1/account-book/month/{year}:
     get:
       tags:
@@ -671,11 +693,35 @@ paths:
                       "expenditureSum" : 20000,
                       "totalSum" : -10000
                     }
+  /api/v1/users/password/check:
+    post:
+      tags:
+      - api
+      operationId: user-check-password
+      parameters:
+      - name: Authorization
+        in: header
+        description: Jwt token
+        required: true
+        schema:
+          type: string
+        example: accessToken
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/api-v1-users-password-check684151845'
+            examples:
+              user-check-password:
+                value: "{\"password\":\"12345678\"}"
+      responses:
+        "200":
+          description: "200"
   /api/v1/account-book/sum/month/{date}:
     get:
       tags:
       - api
-      operationId: accountbook-month
+      operationId: accountbook-month-sum
       parameters:
       - name: date
         in: path
@@ -689,12 +735,9 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/api-v1-account-book-sum-month-date698625968'
+                $ref: '#/components/schemas/api-v1-account-book-sum-year-year698625968'
               examples:
                 accountbook-month-sum:
-                  value: "{\"incomeSum\":100000,\"expenditureSum\":50000,\"totalSum\"\
-                    :50000}"
-                accountbook-monthSum:
                   value: "{\"incomeSum\":100000,\"expenditureSum\":50000,\"totalSum\"\
                     :50000}"
   /api/v1/account-book/sum/year/{year}:
@@ -715,7 +758,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/api-v1-account-book-sum-month-date698625968'
+                $ref: '#/components/schemas/api-v1-account-book-sum-year-year698625968'
               examples:
                 accountbook-year-sum:
                   value: "{\"incomeSum\":20000000000,\"expenditureSum\":50000000,\"\
@@ -739,6 +782,27 @@ components:
               categoryName:
                 type: string
                 description: 카테고리 이름
+    api-v1-users-password-check684151845:
+      type: object
+      properties:
+        password:
+          type: string
+          description: 비밀번호
+    api-v1-incomes--940438351:
+      type: object
+      properties:
+        messages:
+          type: array
+          description: 예외 메시지
+          items:
+            oneOf:
+            - type: object
+            - type: boolean
+            - type: string
+            - type: number
+        status:
+          type: number
+          description: 에러 코드
     api-v1-account-book-daily-1395639693:
       type: object
       properties:
@@ -790,21 +854,6 @@ components:
         totalElements:
           type: number
           description: 전체 결과 개수
-    api-v1-expenditures-940438351:
-      type: object
-      properties:
-        messages:
-          type: array
-          description: 예외 메시지
-          items:
-            oneOf:
-            - type: object
-            - type: boolean
-            - type: string
-            - type: number
-        status:
-          type: number
-          description: 에러 코드
     api-v1-statistics-1753393928:
       type: object
       properties:
@@ -1008,7 +1057,25 @@ components:
         registerDate:
           type: string
           description: 예산 등록일
-    api-v1-account-book-sum-month-date698625968:
+    api-v1-users-login-74814376:
+      type: object
+      properties:
+        password:
+          type: string
+          description: 비밀번호
+        email:
+          type: string
+          description: 이메일
+    api-v1-users-refresh1742971760:
+      type: object
+      properties:
+        accessToken:
+          type: string
+          description: 새로 발급한 액세스 토큰
+        refreshToken:
+          type: string
+          description: 리프레시 토큰
+    api-v1-account-book-sum-year-year698625968:
       type: object
       properties:
         totalSum:
@@ -1041,6 +1108,15 @@ components:
         id:
           type: number
           description: 생성된 수입 아이디
+    api-v1-users-refresh-547383767:
+      type: object
+      properties:
+        accessToken:
+          type: string
+          description: 액세스 토큰
+        refreshToken:
+          type: string
+          description: 리프레시 토큰
     api-v1-expenditures780147897:
       type: object
       properties:
@@ -1122,5 +1198,3 @@ components:
               expenditureSum:
                 type: number
                 description: 월별 지출 합계
-    api-v1-expenditures486549215:
-      type: object

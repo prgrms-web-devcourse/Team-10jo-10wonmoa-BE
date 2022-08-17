@@ -14,6 +14,24 @@ include::{snippets}/user-create/request-fields.adoc[]
 .Response
 include::{snippets}/user-create/http-response.adoc[]
 
+=== 로그인
+
+.Request
+include::{snippets}/user-login/http-request.adoc[]
+include::{snippets}/user-login/request-fields.adoc[]
+
+.Response
+include::{snippets}/user-login/http-response.adoc[]
+include::{snippets}/user-login/response-fields.adoc[]
+
+=== 로그아웃
+
+.Request
+include::{snippets}/user-logout/http-request.adoc[]
+include::{snippets}/user-logout/request-headers.adoc[]
+
+.Response
+include::{snippets}/user-logout/http-response.adoc[]
 
 === 유저 정보 조회
 
@@ -23,5 +41,31 @@ include::{snippets}/user-info/http-request.adoc[]
 .Response
 include::{snippets}/user-info/http-response.adoc[]
 
+=== 유저 삭제
 
+.Request
+include::{snippets}/user-delete/http-request.adoc[]
+include::{snippets}/user-delete/request-headers.adoc[]
 
+.Response
+include::{snippets}/user-delete/http-response.adoc[]
+
+=== 토큰 재발급
+
+.Request
+include::{snippets}/user-token-refresh/http-request.adoc[]
+include::{snippets}/user-token-refresh/request-fields.adoc[]
+
+.Response
+include::{snippets}/user-token-refresh/http-response.adoc[]
+include::{snippets}/user-token-refresh/response-fields.adoc[]
+
+=== 비밀번호 확인
+
+.Request
+include::{snippets}/user-check-password/http-request.adoc[]
+include::{snippets}/user-check-password/request-headers.adoc[]
+include::{snippets}/user-check-password/request-body.adoc[]
+
+.Response
+include::{snippets}/user-check-password/http-response.adoc[]

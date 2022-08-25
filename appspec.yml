@@ -12,7 +12,15 @@ permissions:
     group: ubuntu
 
 hooks:
+  AfterInstall:
+    - location: stop.sh # Nginx 와 연결되지 않은 부트 종료
+      timeout: 60
+      runas: ubuntu
   ApplicationStart:
-    - location: deploy.sh
+    - location: start.sh # Nginx 와 연결되어 있지 않은 Port로 새 버전의 부트 시작
+      timeout: 60
+      runas: ubuntu
+  ValidateService:
+    - location: health.sh # 새 스프링 부트가 정상적으로 실행됐는지 확인
       timeout: 60
       runas: ubuntu

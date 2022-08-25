@@ -1,4 +1,8 @@
-#!/bin/bash
+#!/usr/bin/env bash
+
+ABSPATH=$(readlink -f $0)
+ABSDIR=$(dirname $ABSPATH)
+source ${ABSDIR}/profile.sh
 
 REPOSITORY="/home/ubuntu/app"
 PROJECT_NAME="tenwonmoa"
@@ -37,5 +41,9 @@ sudo docker-compose -f $REPOSITORY/zip/docker-compose-dev.yml up -d
 
 echo "> $JAR_NAME 실행"
 
-nohup java -jar -Dspring.profiles.active=dev $JAR_NAME --server.port=8080 \
+IDLE_PROFILE=$(find_idle_profile)
+
+echo "> $JAR_NAME 을 profile=$IDLE_PROFILE 로 실행."
+
+nohup java -jar -Dspring.profiles.active=${IDLE_PROFILE} \
 $JAR_NAME > $REPOSITORY/nohup.out 2>&1 &

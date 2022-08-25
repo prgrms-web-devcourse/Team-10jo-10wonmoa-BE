@@ -34,7 +34,3 @@ function find_idle_port()
     echo "8081"
   fi
 }
-
-
-find_idle_profile
-find_idle_port

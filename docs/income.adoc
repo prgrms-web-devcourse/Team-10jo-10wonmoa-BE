@@ -1,54 +1,29 @@
-:hardbreaks:
-ifndef::snippets[]
-:snippets: ../../../target/generated-snippets
-endif::[]
-
 == 수입
 
 === 수입등록
 
-.Request
-include::{snippets}/income-create/http-request.adoc[]
-include::{snippets}/income-create/request-fields.adoc[]
+operation::income-docs-test/수입_등록_성공[snippets='http-request,request-fields,http-response,response-fields']
 
-.Response
-include::{snippets}/income-create/http-response.adoc[]
-
-.Exception
-include::{snippets}/income-create-fail/http-response.adoc[]
+==== Exception
+operation::income-docs-test/수입_등록_실패[snippets='http-request,http-response,response-fields']
 
 === 수입 상세조회
-
-.Request
-include::{snippets}/income-find-by-id/http-request.adoc[]
-
-.Response
-include::{snippets}/income-find-by-id/http-response.adoc[]
-
-.Exception
-include::{snippets}/income-find-by-id-fail/http-response.adoc[]
+operation::income-docs-test/수입_상세조회_성공[snippets='http-request,http-response,response-fields']
+==== Exception
+operation::income-docs-test/수입_상세조회_실패[snippets='http-request,http-response,response-fields']
 
 === 수입 수정
 
-.Request
-include::{snippets}/income-update/http-request.adoc[]
+operation::income-docs-test/수입_수정_성공[snippets='http-request,request-fields,http-response']
 
-.Response
-include::{snippets}/income-update/http-response.adoc[]
-
-.Exception
-include::{snippets}/income-update-fail/http-response.adoc[]
+==== Exception
+operation::income-docs-test/수입_수정_실패[snippets='http-request,http-response,response-fields']
 
 
 === 수입 삭제
-
-.Request
-include::{snippets}/income-delete/http-request.adoc[]
-
-.Response
-include::{snippets}/income-delete/http-response.adoc[]
+operation::income-docs-test/수입_삭제_성공[snippets='http-request,http-response']
 
 === 수입 권한없음
+operation::income-docs-test/수입_권한_없음[snippets='http-request,http-response,response-fields']
 
-.Response
-include::{snippets}/income-forbidden/http-response.adoc[]
+

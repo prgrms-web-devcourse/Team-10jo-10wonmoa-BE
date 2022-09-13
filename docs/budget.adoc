@@ -1,44 +1,13 @@
-:hardbreaks:
-ifndef::snippets[]
-:snippets: ../../../target/generated-snippets
-endif::[]
-
 == 예산
 
 === 예산 등록 or 수정
-
-.Request
-include::{snippets}/budget-create/http-request.adoc[]
-
-Request Fields
-include::{snippets}/budget-create/request-fields.adoc[]
-
-.Response
-include::{snippets}/budget-create/http-response.adoc[]
+operation::budget-controller-test/예산_등록_성공[snippets='http-request,request-fields,http-response']
 
 === 월별 예산 조회
-
-.Request
-include::{snippets}/budget-findBy-registerDate/http-request.adoc[]
-.Response
-include::{snippets}/budget-findBy-registerDate/http-response.adoc[]
-Response Fields
-include::{snippets}/budget-findBy-registerDate/response-fields.adoc[]
+operation::budget-controller-test/월별_예산조회_성공[snippets='http-request,http-response']
 
 === 예산 통계 조회 - 월 별
-
-.Request
-include::{snippets}/budget_statistics-month/http-request.adoc[]
-.Response
-include::{snippets}/budget_statistics-month/http-response.adoc[]
-Response Fields
-include::{snippets}/budget_statistics-month/response-fields.adoc[]
+operation::budget-controller-test/월별_예산_통계조회_성공[snippets='http-request,http-response,response-fields']
 
 === 예산 통계 조회 - 연 별
-
-.Request
-include::{snippets}/budget_statistics-year/http-request.adoc[]
-.Response
-include::{snippets}/budget_statistics-year/http-response.adoc[]
-Response Fields
-include::{snippets}/budget_statistics-year/response-fields.adoc[]
+oper2ation::budget-controller-test/연별_예산_통계조회_성공[snippets='http-request,http-response,response-fields']

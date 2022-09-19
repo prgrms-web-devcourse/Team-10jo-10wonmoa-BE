@@ -7,6 +7,7 @@ import java.util.NoSuchElementException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.prgrms.tenwonmoa.aop.annotation.ValidateIncome;
 import com.prgrms.tenwonmoa.domain.accountbook.Income;
 import com.prgrms.tenwonmoa.domain.accountbook.dto.income.FindIncomeResponse;
 import com.prgrms.tenwonmoa.domain.accountbook.repository.IncomeRepository;
@@ -17,7 +18,6 @@ import lombok.RequiredArgsConstructor;
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class IncomeService {
-
 	private final IncomeRepository incomeRepository;
 
 	@Transactional
@@ -25,11 +25,9 @@ public class IncomeService {
 		return incomeRepository.save(income).getId();
 	}
 
-	public FindIncomeResponse findIncome(Long incomeId, Long authId) {
-		Income findIncome = findById(incomeId);
-
-		findIncome.validateOwner(authId);
-		return FindIncomeResponse.of(findIncome);
+	@ValidateIncome
+	public FindIncomeResponse findIncome(Long authId, Long incomeId) {
+		return FindIncomeResponse.of(findById(incomeId));
 	}
 
 	public Income findById(Long incomeId) {

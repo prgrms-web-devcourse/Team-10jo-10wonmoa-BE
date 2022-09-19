@@ -111,6 +111,7 @@ class IncomeTotalServiceTest {
 
 	@Test
 	void 수입_수정_실패_수입정보_없는경우() {
+		validateUserCategoryMock();
 		given(incomeService.findById(any())).willThrow(
 			new NoSuchElementException(INCOME_NOT_FOUND.getMessage()));
 		assertThatThrownBy(() -> incomeTotalService.updateIncome(userId,
@@ -122,10 +123,6 @@ class IncomeTotalServiceTest {
 
 	@Test
 	void 수입_수정_실패_유저카테고리_없는경우() {
-		given(incomeService.findById(any())).willReturn(mockIncome);
-		given(mockIncome.getUser()).willReturn(mockUser);
-		doNothing().when(mockUser).validateLoginUser(anyLong());
-
 		given(userCategoryService.findById(any())).willThrow(
 			new NoSuchElementException(USER_CATEGORY_NOT_FOUND.getMessage()));
 		assertThatThrownBy(() -> incomeTotalService.updateIncome(userId,

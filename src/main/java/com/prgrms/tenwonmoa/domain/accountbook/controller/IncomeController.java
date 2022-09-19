@@ -46,7 +46,7 @@ public class IncomeController {
 	@GetMapping("/{incomeId}")
 	public FindIncomeResponse findIncome(@PathVariable Long incomeId,
 		@AuthenticationPrincipal Long userId) {
-		return incomeService.findIncome(incomeId, userId);
+		return incomeService.findIncome(userId, incomeId);
 	}
 
 	@PutMapping("/{incomeId}")

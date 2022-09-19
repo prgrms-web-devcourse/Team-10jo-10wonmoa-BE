@@ -3,6 +3,7 @@ package com.prgrms.tenwonmoa.domain.accountbook.service;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.prgrms.tenwonmoa.aop.annotation.ValidateIncome;
 import com.prgrms.tenwonmoa.domain.accountbook.Income;
 import com.prgrms.tenwonmoa.domain.accountbook.dto.income.CreateIncomeRequest;
 import com.prgrms.tenwonmoa.domain.accountbook.dto.income.UpdateIncomeRequest;
@@ -32,24 +33,23 @@ public class IncomeTotalService {
 		return incomeService.save(income);
 	}
 
+	@ValidateIncome
 	public void updateIncome(Long authId, Long incomeId, UpdateIncomeRequest updateIncomeRequest) {
-		Income income = incomeService.findById(incomeId);
-		income.validateOwner(authId);
 		UserCategory userCategory = userCategoryService.findById(updateIncomeRequest.getUserCategoryId());
 		userCategory.getUser().validateLoginUser(authId);
 		if (CategoryType.isExpenditure(userCategory.getCategory().getCategoryType())) {
 			incomeService.deleteById(incomeId);
 			expenditureRepository.save(
-				updateIncomeRequest.toExpenditure(income.getUser(), userCategory, userCategory.getCategoryName()));
+				updateIncomeRequest.toExpenditure(userCategory.getUser(), userCategory, userCategory.getCategoryName())
+			);
 		} else {
+			Income income = incomeService.findById(incomeId);
 			income.update(userCategory, updateIncomeRequest);
 		}
 	}
 
-	public void deleteIncome(Long incomeId, Long authId) {
-		Income income = incomeService.findById(incomeId);
-		income.validateOwner(authId);
+	@ValidateIncome
+	public void deleteIncome(Long authId, Long incomeId) {
 		incomeService.deleteById(incomeId);
 	}
-
 }

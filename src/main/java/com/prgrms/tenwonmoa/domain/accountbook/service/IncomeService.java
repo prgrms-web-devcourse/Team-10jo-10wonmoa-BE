@@ -24,6 +24,7 @@ public class IncomeService {
 	public Long save(Income income) {
 		return incomeRepository.save(income).getId();
 	}
+
 	@ValidateIncome
 	public FindIncomeResponse findIncome(Long authId, Long incomeId) {
 		return FindIncomeResponse.of(findById(incomeId));

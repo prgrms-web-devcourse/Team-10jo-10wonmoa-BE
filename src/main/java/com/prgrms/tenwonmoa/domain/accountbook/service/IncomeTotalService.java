@@ -32,6 +32,7 @@ public class IncomeTotalService {
 		Income income = createIncomeRequest.toEntity(authUser, userCategory, userCategory.getCategory().getName());
 		return incomeService.save(income);
 	}
+
 	@ValidateIncome
 	public void updateIncome(Long authId, Long incomeId, UpdateIncomeRequest updateIncomeRequest) {
 		UserCategory userCategory = userCategoryService.findById(updateIncomeRequest.getUserCategoryId());
@@ -39,7 +40,8 @@ public class IncomeTotalService {
 		if (CategoryType.isExpenditure(userCategory.getCategory().getCategoryType())) {
 			incomeService.deleteById(incomeId);
 			expenditureRepository.save(
-				updateIncomeRequest.toExpenditure(userCategory.getUser(), userCategory, userCategory.getCategoryName()));
+				updateIncomeRequest.toExpenditure(userCategory.getUser(), userCategory, userCategory.getCategoryName())
+			);
 		} else {
 			Income income = incomeService.findById(incomeId);
 			income.update(userCategory, updateIncomeRequest);

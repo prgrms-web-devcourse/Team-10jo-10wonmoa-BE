@@ -137,7 +137,8 @@ class IncomeIntegrationTest extends BaseControllerIntegrationTest {
 
 	@Test
 	void 수입_상세조회_성공() throws Exception {
-		mvc.perform(get(LOCATION_PREFIX + "/{incomeId}", income.getId()).header(HttpHeaders.AUTHORIZATION, accessToken))
+		mvc.perform(get(LOCATION_PREFIX + "/{incomeId}", income.getId())
+				.header(HttpHeaders.AUTHORIZATION, accessToken))
 			.andExpect(status().isOk())
 			.andExpect(jsonPath("id").value(income.getId()))
 			.andExpect(jsonPath("amount").value(income.getAmount()))

@@ -22,6 +22,19 @@ import com.prgrms.tenwonmoa.domain.accountbook.repository.StatisticsQueryReposit
 class StatisticsServiceTest {
 	private static final List<String> INCOME_DEFAULT = List.of("용돈", "상여", "금융소득");
 	private static final List<String> EXPENDITURE_DEFAULT = List.of("교통/차량", "문화생활", "마트/편의점");
+	private static final Long AUTH_ID = 1L;
+	private static final Integer YEAR = 2022;
+	private static final Integer MONTH = 01;
+	private static List<FindStatisticsData> incomes = List.of(
+		new FindStatisticsData(INCOME_DEFAULT.get(0), 30L),
+		new FindStatisticsData(INCOME_DEFAULT.get(1), 20L),
+		new FindStatisticsData(INCOME_DEFAULT.get(2), 10L)
+	);
+	private static List<FindStatisticsData> expenditures = List.of(
+		new FindStatisticsData(EXPENDITURE_DEFAULT.get(0), 45L),
+		new FindStatisticsData(EXPENDITURE_DEFAULT.get(1), 44L),
+		new FindStatisticsData(EXPENDITURE_DEFAULT.get(2), 43L)
+	);
 	@Mock
 	private StatisticsQueryRepository statisticsQueryRepository;
 	@InjectMocks
@@ -29,17 +42,12 @@ class StatisticsServiceTest {
 
 	@Test
 	void 통계_조회_성공_행위검증() {
-		// given
-		List<FindStatisticsData> incomes = mock(List.class);
-		List<FindStatisticsData> expenditures = mock(List.class);
-
-		given(statisticsQueryRepository.searchIncomeByRegisterDate(anyLong(), anyInt(), anyInt())).willReturn(incomes);
-		given(statisticsQueryRepository.searchExpenditureByRegisterDate(anyLong(), anyInt(), anyInt())).willReturn(
-			expenditures);
-
+		given(statisticsQueryRepository.searchIncomeByRegisterDate(anyLong(), anyInt(), anyInt()))
+			.willReturn(incomes);
+		given(statisticsQueryRepository.searchExpenditureByRegisterDate(anyLong(), anyInt(), anyInt()))
+			.willReturn(expenditures);
 		// when
-		statisticsService.searchStatistics(anyLong(), anyInt(), anyInt());
-
+		statisticsService.searchStatistics(AUTH_ID, YEAR, MONTH);
 		// then
 		verify(statisticsQueryRepository).searchIncomeByRegisterDate(anyLong(), anyInt(), anyInt());
 		verify(statisticsQueryRepository).searchExpenditureByRegisterDate(anyLong(), anyInt(), anyInt());
@@ -47,27 +55,15 @@ class StatisticsServiceTest {
 
 	@Test
 	void 통계_조회_성공_상태검증() {
-		List<FindStatisticsData> incomes = List.of(
-			new FindStatisticsData(INCOME_DEFAULT.get(0), 30L),
-			new FindStatisticsData(INCOME_DEFAULT.get(1), 20L),
-			new FindStatisticsData(INCOME_DEFAULT.get(2), 10L));
-		// given
-		List<FindStatisticsData> expenditures = List.of(
-			new FindStatisticsData(EXPENDITURE_DEFAULT.get(0), 45L),
-			new FindStatisticsData(EXPENDITURE_DEFAULT.get(1), 44L),
-			new FindStatisticsData(EXPENDITURE_DEFAULT.get(2), 43L)
-		);
-		given(statisticsQueryRepository.searchIncomeByRegisterDate(anyLong(), anyInt(), anyInt())).willReturn(incomes);
-		given(statisticsQueryRepository.searchExpenditureByRegisterDate(anyLong(), anyInt(), anyInt())).willReturn(
-			expenditures);
-
+		given(statisticsQueryRepository.searchIncomeByRegisterDate(anyLong(), anyInt(), anyInt()))
+			.willReturn(incomes);
+		given(statisticsQueryRepository.searchExpenditureByRegisterDate(anyLong(), anyInt(), anyInt()))
+			.willReturn(expenditures);
 		// when
-		FindStatisticsResponse findStatisticsResponse = statisticsService.searchStatistics(1L, 2022, 07);
-		System.out.println(findStatisticsResponse);
-
+		FindStatisticsResponse findStatisticsResponse = statisticsService.searchStatistics(AUTH_ID, YEAR, MONTH);
 		// then
-		assertThat(findStatisticsResponse.getYear()).isEqualTo(2022);
-		assertThat(findStatisticsResponse.getMonth()).isEqualTo(07);
+		assertThat(findStatisticsResponse.getYear()).isEqualTo(YEAR);
+		assertThat(findStatisticsResponse.getMonth()).isEqualTo(MONTH);
 		assertThat(findStatisticsResponse.getIncomeTotalSum()).isEqualTo(60L);
 		assertThat(findStatisticsResponse.getExpenditureTotalSum()).isEqualTo(132L);
 		assertThat(findStatisticsResponse.getIncomes()).hasSize(3);
@@ -80,19 +76,17 @@ class StatisticsServiceTest {
 
 	@Test
 	void 통계_조회_성공_상태검증_비어있는경우() {
-		List<FindStatisticsData> incomes = Collections.emptyList();
-		List<FindStatisticsData> expenditures = Collections.emptyList();
-
-		given(statisticsQueryRepository.searchIncomeByRegisterDate(anyLong(), anyInt(), anyInt())).willReturn(incomes);
-		given(statisticsQueryRepository.searchExpenditureByRegisterDate(anyLong(), anyInt(), anyInt())).willReturn(
-			expenditures);
+		given(statisticsQueryRepository.searchIncomeByRegisterDate(anyLong(), anyInt(), anyInt()))
+			.willReturn(Collections.emptyList());
+		given(statisticsQueryRepository.searchExpenditureByRegisterDate(anyLong(), anyInt(), anyInt()))
+			.willReturn(Collections.emptyList());
 
 		// when
-		FindStatisticsResponse findStatisticsResponse = statisticsService.searchStatistics(1L, 2022, 07);
+		FindStatisticsResponse findStatisticsResponse = statisticsService.searchStatistics(AUTH_ID, YEAR, MONTH);
 
 		// then
-		assertThat(findStatisticsResponse.getYear()).isEqualTo(2022);
-		assertThat(findStatisticsResponse.getMonth()).isEqualTo(07);
+		assertThat(findStatisticsResponse.getYear()).isEqualTo(YEAR);
+		assertThat(findStatisticsResponse.getMonth()).isEqualTo(MONTH);
 		assertThat(findStatisticsResponse.getIncomeTotalSum()).isEqualTo(0L);
 		assertThat(findStatisticsResponse.getExpenditureTotalSum()).isEqualTo(0L);
 		assertThat(findStatisticsResponse.getIncomes()).isEmpty();

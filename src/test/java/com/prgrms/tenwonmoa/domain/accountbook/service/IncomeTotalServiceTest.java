@@ -31,6 +31,13 @@ import com.prgrms.tenwonmoa.domain.user.service.UserService;
 @DisplayName("수입 통합 서비스 테스트")
 @ExtendWith(MockitoExtension.class)
 class IncomeTotalServiceTest {
+	private static final Long USER_ID = 1L;
+	private static final Long INCOME_ID = 1L;
+	private static final Expenditure expenditure = createExpenditure(createUserCategory(createUser(),
+		createExpenditureCategory()));
+	private static final User mockUser = mock(User.class);
+	private static final Income mockIncome = mock(Income.class);
+	private static final UserCategory mockUserCategory = mock(UserCategory.class);
 	@Mock
 	private UserCategoryService userCategoryService;
 	@Mock
@@ -41,15 +48,6 @@ class IncomeTotalServiceTest {
 	private ExpenditureRepository expenditureRepository;
 	@InjectMocks
 	private IncomeTotalService incomeTotalService;
-
-	private final Long userId = 1L;
-	private final Income income = createIncome(createUserCategory(createUser(), createIncomeCategory()));
-	private final UserCategory userCategory = income.getUserCategory();
-	private final User user = income.getUser();
-	private final User mockUser = mock(User.class);
-	private final Income mockIncome = mock(Income.class);
-	private final UserCategory mockUserCategory = mock(UserCategory.class);
-
 	private final CreateIncomeRequest request = new CreateIncomeRequest(LocalDateTime.now(),
 		1000L,
 		"content",
@@ -59,76 +57,87 @@ class IncomeTotalServiceTest {
 		2000L,
 		"updateContent",
 		2L);
+
 	@Test
 	void 수입_생성_성공() {
-		validateUserCategoryMock();
+		validateUserCategoryMock(new Category("income", CategoryType.INCOME));
 		given(userService.findById(anyLong())).willReturn(mockUser);
-		given(incomeService.save(income)).willReturn(userId);
+		given(incomeService.save(any(Income.class))).willReturn(USER_ID);
 
-		incomeTotalService.createIncome(userId, request);
+		incomeTotalService.createIncome(USER_ID, request);
 		assertAll(
-			() -> verify(userCategoryService).findById(any()),
-			() -> verify(userService).findById(any()),
-			() -> verify(incomeService).save(income)
+			() -> verify(userCategoryService).findById(anyLong()),
+			() -> verify(userService).findById(anyLong()),
+			() -> verify(incomeService).save(any(Income.class))
 		);
-	}
-
-	private void validateUserCategoryMock() {
-		given(userCategoryService.findById(any())).willReturn(mockUserCategory);
-		given(mockUserCategory.getUser()).willReturn(mockUser);
-		given(mockUserCategory.getCategory()).willReturn(new Category("income", CategoryType.INCOME));
-		doNothing().when(mockUser).validateLoginUser(any());
 	}
 
 	@Test
 	void 수입_생성실패_유저카테고리_없는경우() {
 		given(userCategoryService.findById(anyLong())).willThrow(
 			new NoSuchElementException(USER_CATEGORY_NOT_FOUND.getMessage()));
-		assertThatThrownBy(() -> incomeTotalService.createIncome(userId, request))
+
+		assertThatThrownBy(() -> incomeTotalService.createIncome(USER_ID, request))
 			.isInstanceOf(NoSuchElementException.class)
 			.hasMessage(USER_CATEGORY_NOT_FOUND.getMessage());
 	}
 
 	@Test
 	void 수입_수정_성공() {
-		given(incomeService.findById(any())).willReturn(mockIncome);
+		given(incomeService.findById(anyLong())).willReturn(mockIncome);
 		given(mockIncome.getUser()).willReturn(mockUser);
-		validateUserCategoryMock();
-		doNothing().when(mockUser).validateLoginUser(anyLong());
+		validateUserCategoryMock(new Category("income", CategoryType.INCOME));
+		given(userCategoryService.findById(anyLong())).willReturn(mockUserCategory);
 
-		given(userCategoryService.findById(any(Long.class))).willReturn(mockUserCategory);
-		incomeTotalService.updateIncome(userId,
-			income.getId(),
-			updateIncomeRequest
-		);
+		incomeTotalService.updateIncome(USER_ID, INCOME_ID, updateIncomeRequest);
 		assertAll(
-			() -> verify(incomeService, never()).deleteById(any()),
+			() -> verify(incomeService, never()).deleteById(anyLong()),
 			() -> verify(expenditureRepository, never()).save(any(Expenditure.class)),
-			() -> verify(incomeService).findById(any()),
-			() -> verify(userCategoryService).findById(any())
+			() -> verify(incomeService).findById(anyLong()),
+			() -> verify(userCategoryService).findById(anyLong())
+		);
+	}
+
+	@Test
+	void 수입_지출변경_성공() {
+		given(userCategoryService.findById(anyLong())).willReturn(mockUserCategory);
+		validateUserCategoryMock(expenditure.getUserCategory().getCategory());
+		given(mockUserCategory.getCategoryName()).willReturn("categoryName");
+		given(expenditureRepository.save(any(Expenditure.class))).willReturn(expenditure);
+		doNothing().when(incomeService).deleteById(anyLong());
+
+		incomeTotalService.updateIncome(USER_ID, INCOME_ID, updateIncomeRequest);
+		assertAll(
+			() -> verify(incomeService).deleteById(anyLong()),
+			() -> verify(expenditureRepository).save(any(Expenditure.class)),
+			() -> verify(incomeService, never()).findById(any())
 		);
 	}
 
 	@Test
 	void 수입_수정_실패_수입정보_없는경우() {
-		validateUserCategoryMock();
-		given(incomeService.findById(any())).willThrow(
+		validateUserCategoryMock(new Category("income", CategoryType.INCOME));
+
+		given(incomeService.findById(anyLong())).willThrow(
 			new NoSuchElementException(INCOME_NOT_FOUND.getMessage()));
-		assertThatThrownBy(() -> incomeTotalService.updateIncome(userId,
-			income.getId(),
-			updateIncomeRequest))
+		assertThatThrownBy(() -> incomeTotalService.updateIncome(USER_ID, INCOME_ID, updateIncomeRequest))
 			.isInstanceOf(NoSuchElementException.class)
 			.hasMessage(INCOME_NOT_FOUND.getMessage());
 	}
 
 	@Test
 	void 수입_수정_실패_유저카테고리_없는경우() {
-		given(userCategoryService.findById(any())).willThrow(
+		given(userCategoryService.findById(anyLong())).willThrow(
 			new NoSuchElementException(USER_CATEGORY_NOT_FOUND.getMessage()));
-		assertThatThrownBy(() -> incomeTotalService.updateIncome(userId,
-			income.getId(),
-			updateIncomeRequest))
+		assertThatThrownBy(() -> incomeTotalService.updateIncome(USER_ID, INCOME_ID, updateIncomeRequest))
 			.isInstanceOf(NoSuchElementException.class)
 			.hasMessage(USER_CATEGORY_NOT_FOUND.getMessage());
+	}
+
+	private void validateUserCategoryMock(Category category) {
+		given(userCategoryService.findById(anyLong())).willReturn(mockUserCategory);
+		given(mockUserCategory.getUser()).willReturn(mockUser);
+		given(mockUserCategory.getCategory()).willReturn(category);
+		doNothing().when(mockUser).validateLoginUser(anyLong());
 	}
 }
